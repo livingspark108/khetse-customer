@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:user/constants/color_constants.dart';
-import 'package:user/screens/use_rating.dart';
-import 'package:user/widgets/rate_widget.dart';
+import 'package:user/screens/user_rating.dart';
 
 class ShowRatingsScreen extends StatelessWidget {
   ShowRatingsScreen({super.key});
