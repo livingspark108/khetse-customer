@@ -12,7 +12,12 @@ import 'package:user/widgets/order_history_card.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OrderHistoryScreen extends BaseRoute {
-  OrderHistoryScreen({super.analytics, super.observer, super.routeName = 'OrderHistoryScreen'});
+  final bool disableWillpop;
+  OrderHistoryScreen(
+      {super.analytics,
+      super.observer,
+      this.disableWillpop = true,
+      super.routeName = 'OrderHistoryScreen'});
 
   @override
   _OrderHistoryScreenState createState() => _OrderHistoryScreenState();
@@ -25,20 +30,23 @@ class _OrderHistoryScreenState extends BaseRouteState {
 
   @override
   Widget build(BuildContext context) {
-    final shouldNotShowData = global.nearStoreModel == null && global.nearStoreModel?.id == null;
+    final shouldNotShowData =
+        global.nearStoreModel == null && global.nearStoreModel?.id == null;
     TextTheme textTheme = Theme.of(context).textTheme;
     return WillPopScope(
       onWillPop: () async {
-        return false;
+        return !(widget as OrderHistoryScreen).disableWillpop;
       },
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading:
+              !(widget as OrderHistoryScreen).disableWillpop,
           toolbarHeight: 100,
+          centerTitle: true,
           title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppBarTitleMessage(showMessage: false),
+              !(widget as OrderHistoryScreen).disableWillpop ? SizedBox() : AppBarTitleMessage(showMessage: false),
               Text(
                 "${AppLocalizations.of(context)!.tle_order_history}",
                 style: textTheme.titleLarge,
@@ -46,8 +54,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
             ],
           ),
         ),
-        body:
-        shouldNotShowData
+        body: shouldNotShowData
             ? Padding(
                 padding: EdgeInsets.only(top: 150),
                 child: Center(
@@ -81,13 +88,16 @@ class _OrderHistoryScreenState extends BaseRouteState {
                       Expanded(
                         child: GetX<OrderController>(
                           builder: (controller) {
-                            print("controller.isActiveOrderListLoaded.value = ${controller.isActiveOrderListLoaded.value}");
-                            print("controller.isCompletedOrderHistoryListLoaded = ${controller.isCompletedOrderHistoryListLoaded}");
+                            print(
+                                "controller.isActiveOrderListLoaded.value = ${controller.isActiveOrderListLoaded.value}");
+                            print(
+                                "controller.isCompletedOrderHistoryListLoaded = ${controller.isCompletedOrderHistoryListLoaded}");
                             if (controller.isActiveOrderListLoaded.value ==
                                     true &&
                                 controller.isCompletedOrderHistoryListLoaded ==
                                     true) {
-                              return TabBarView(children: [
+                              return TabBarView(
+                                children: [
                                   AllOrderHistoryList(),
                                   PastOrderHistoryList()
                                 ],
@@ -149,16 +159,17 @@ class _OrderHistoryScreenState extends BaseRouteState {
                     fixedSize: Size.fromWidth(350.0),
                     minimumSize: Size.fromHeight(55),
                     // foregroundColor: Color(0xffFF0000),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () {
                     homeController.navigateToHome();
                   }
-                    //   Get.to(() => HomeScreen(
-                    //     a: widget.analytics,
-                    //     o: widget.observer,
-                    // screenId: 0,
-                    //   ))
+                  //   Get.to(() => HomeScreen(
+                  //     a: widget.analytics,
+                  //     o: widget.observer,
+                  // screenId: 0,
+                  //   ))
                   ,
                   child: Text(
                     "${AppLocalizations.of(context)!.lbl_let_shop} ",
@@ -186,7 +197,10 @@ class _OrderHistoryScreenState extends BaseRouteState {
                     itemCount: 3,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
-                      return SizedBox(height: 230, width: MediaQuery.of(context).size.width, child: Card());
+                      return SizedBox(
+                          height: 230,
+                          width: MediaQuery.of(context).size.width,
+                          child: Card());
                     }),
               ],
             ),
@@ -209,7 +223,9 @@ final class AllOrderHistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async { await _onRefresh(); },
+      onRefresh: () async {
+        await _onRefresh();
+      },
       child: SingleChildScrollView(
         controller: scrollController,
         child: Padding(
@@ -234,7 +250,9 @@ final class AllOrderHistoryList extends StatelessWidget {
                   );
                 },
               ),
-              orderController.isMoreDataLoaded.value == true ? SizedBox(child: CircularProgressIndicator()) : SizedBox()
+              orderController.isMoreDataLoaded.value == true
+                  ? SizedBox(child: CircularProgressIndicator())
+                  : SizedBox()
             ],
           ),
         ),
@@ -246,10 +264,10 @@ final class AllOrderHistoryList extends StatelessWidget {
     try {
       orderController.getOrderHistory();
     } catch (e) {
-      print("Exception - order_history_screen.dart - _onRefresh():" + e.toString());
+      print("Exception - order_history_screen.dart - _onRefresh():" +
+          e.toString());
     }
   }
-
 }
 
 final class PastOrderHistoryList extends StatelessWidget {
@@ -266,7 +284,9 @@ final class PastOrderHistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async { await _onRefresh(); },
+      onRefresh: () async {
+        await _onRefresh();
+      },
       child: SingleChildScrollView(
         controller: scrollController,
         child: Padding(
@@ -291,7 +311,9 @@ final class PastOrderHistoryList extends StatelessWidget {
                   );
                 },
               ),
-              orderController.isMoreDataLoaded.value == true ? SizedBox(child: CircularProgressIndicator()) : SizedBox()
+              orderController.isMoreDataLoaded.value == true
+                  ? SizedBox(child: CircularProgressIndicator())
+                  : SizedBox()
             ],
           ),
         ),
@@ -303,8 +325,8 @@ final class PastOrderHistoryList extends StatelessWidget {
     try {
       orderController.getOrderHistory();
     } catch (e) {
-      print("Exception - order_history_screen.dart - _onRefresh():" + e.toString());
+      print("Exception - order_history_screen.dart - _onRefresh():" +
+          e.toString());
     }
   }
-
 }

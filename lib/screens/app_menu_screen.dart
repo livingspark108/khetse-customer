@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:user/constants/image_constants.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -12,16 +11,10 @@ import 'package:user/screens/aboutUsAndTermsOfServices.dart';
 import 'package:user/screens/all_categories_screen.dart';
 import 'package:user/screens/app_setting_screen.dart';
 import 'package:user/screens/chat_screen.dart';
-import 'package:user/screens/choose_language_screen.dart';
 import 'package:user/screens/contact_us_screen.dart';
 import 'package:user/screens/coupons_screen.dart';
 import 'package:user/screens/faq_screen.dart';
-import 'package:user/screens/home_screen.dart';
 import 'package:user/screens/login_screen.dart';
-import 'package:user/screens/membership_screen.dart';
-import 'package:user/screens/product_request_screen.dart';
-import 'package:user/screens/rating_review_screen.dart';
-import 'package:user/screens/refer_and_earn_screen.dart';
 import 'package:user/screens/reward_screen.dart';
 import 'package:user/screens/show_ratings_screen.dart';
 import 'package:user/screens/top_deals_screen.dart';
@@ -169,22 +162,6 @@ class _AppMenuScreenState extends BaseRouteState {
                   // SizedBox(height: 8.0),
                   SizedBox(height: 8.0),
                   AppMenuListTile(
-                      label:
-                          "${AppLocalizations.of(context)!.btn_membership}  ",
-                      icon: Icons.card_membership_sharp,
-                      onPressed: () {
-                        if (global.currentUser!.id == null) {
-                          Get.to(() => LoginScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer));
-                        } else {
-                          Get.to(() => MemberShipScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer));
-                        }
-                      }),
-                  SizedBox(height: 8.0),
-                  AppMenuListTile(
                       label: "${AppLocalizations.of(context)!.lbl_reward}  ",
                       icon: Icons.wallet_giftcard_sharp,
                       onPressed: () {
@@ -224,22 +201,6 @@ class _AppMenuScreenState extends BaseRouteState {
                   ),
                   SizedBox(height: 8.0),
                   AppMenuListTile(
-                      label:
-                          "${AppLocalizations.of(context)!.btn_refer_earn}  ",
-                      icon: MdiIcons.giftOutline,
-                      onPressed: () {
-                        if (global.currentUser!.id == null) {
-                          Get.to(() => LoginScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer));
-                        } else {
-                          Get.to(() => ReferAndEarnScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer));
-                        }
-                      }),
-                  SizedBox(height: 8.0),
-                  AppMenuListTile(
                     label: "${AppLocalizations.of(context)!.btn_app_setting}  ",
                     icon: Icons.settings_outlined,
                     onPressed: () => Get.to(() => SettingScreen(
@@ -252,29 +213,7 @@ class _AppMenuScreenState extends BaseRouteState {
                   //   icon: Icons.translate_outlined,
                   //   onPressed: () => Get.to(() => ChooseLanguageScreen(analytics: widget.analytics, observer: widget.observer)),
                   // ),
-                  SizedBox(height: 8.0),
-                  global.nearStoreModel != null &&
-                          global.nearStoreModel!.id != null &&
-                          global.appInfo!.liveChat != null &&
-                          global.appInfo!.liveChat == 1
-                      ? AppMenuListTile(
-                          label:
-                              "${AppLocalizations.of(context)!.txt_live_chat}  ",
-                          leadingIconUrl: ImageConstants.LIVE_CHAT_LOGO_URL,
-                          onPressed: () {
-                            if (global.currentUser!.id == null) {
-                              Get.to(() => LoginScreen(
-                                  analytics: widget.analytics,
-                                  observer: widget.observer));
-                            } else {
-                              if (global.nearStoreModel != null) {
-                                Get.to(() => ChatScreen(
-                                    analytics: widget.analytics,
-                                    observer: widget.observer));
-                              }
-                            }
-                          })
-                      : SizedBox(),
+                  // SizedBox(height: 8.0),
                   SizedBox(height: 8.0),
                   AppMenuListTile(
                       label:
@@ -323,22 +262,6 @@ class _AppMenuScreenState extends BaseRouteState {
                   //     Get.to(() => RatingReviewScreen());
                   //   },
                   // ),
-                  SizedBox(height: 8.0),
-                  AppMenuListTile(
-                    label: global.currentUser?.id == null
-                        ? '${AppLocalizations.of(context)!.btn_signup}  '
-                        : "${AppLocalizations.of(context)!.btn_logout} ",
-                    leadingIconUrl: ImageConstants.LOGOUT_LOGO_URL,
-                    onPressed: () {
-                      if (global.currentUser!.id == null) {
-                        Get.to(() => LoginScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer));
-                      } else {
-                        _signOutDialog();
-                      }
-                    },
-                  ),
                   SizedBox(height: 32)
                 ],
               ),
