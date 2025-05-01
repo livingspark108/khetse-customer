@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Khet Se</string>
+    <string name="default_notification_channel_id">1234</string>
+    <string name="facebook_app_id">1866220637527975</string>
+    <string name="fb_login_protocol_scheme">fb1866220637527975</string>
+    <string name="facebook_client_token">e8e53fa494c91d24b915ef4b62834d2c</string>
+    <string name="map_key">AIzaSyDJD4uR9IS6X7lg5cX9Hp5Ef0-Xot6M8zQ</string>
+</resources>

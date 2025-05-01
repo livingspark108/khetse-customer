@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "705090576020",
+    "project_id": "khet-se",
+    "storage_bucket": "khet-se.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705090576020:android:c8acd286932747d633de81",
+        "android_client_info": {
+          "package_name": "com.tecmanic.gogrocer.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705090576020-frakljovtjkl6ed3ue3il3num5bdoge2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tecmanic.gogrocer.user",
+            "certificate_hash": "1e03d59236b9adb656c270474345d524c2a96d82"
+          }
+        },
+        {
+          "client_id": "705090576020-dkpv9sllqg7qpr9p6gkidla1akts1794.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNzNI4KCoaTGaccvyiA-YzBVOtW2S5gII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705090576020-dkpv9sllqg7qpr9p6gkidla1akts1794.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
