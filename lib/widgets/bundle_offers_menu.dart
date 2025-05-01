@@ -20,10 +20,19 @@ class BundleOffersMenu extends StatefulWidget {
   final List<Product>? categoryProductList;
   final Function(int)? onSelected;
 
-  BundleOffersMenu({this.onSelected, this.categoryProductList, this.analytics, this.observer}) : super();
+  BundleOffersMenu(
+      {this.onSelected,
+      this.categoryProductList,
+      this.analytics,
+      this.observer})
+      : super();
 
   @override
-  _BundleOffersMenuState createState() => _BundleOffersMenuState(onSelected: onSelected, categoryProductList: categoryProductList, analytics: analytics, observer: observer);
+  _BundleOffersMenuState createState() => _BundleOffersMenuState(
+      onSelected: onSelected,
+      categoryProductList: categoryProductList,
+      analytics: analytics,
+      observer: observer);
 }
 
 class BundleOffersMenuItem extends StatefulWidget {
@@ -31,10 +40,12 @@ class BundleOffersMenuItem extends StatefulWidget {
 
   final dynamic analytics;
   final dynamic observer;
-  BundleOffersMenuItem({required this.product, this.analytics, this.observer}) : super();
+  BundleOffersMenuItem({required this.product, this.analytics, this.observer})
+      : super();
 
   @override
-  _BundleOffersMenuItemState createState() => _BundleOffersMenuItemState(product: product, analytics: analytics, observer: observer);
+  _BundleOffersMenuItemState createState() => _BundleOffersMenuItemState(
+      product: product, analytics: analytics, observer: observer);
 }
 
 class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
@@ -56,14 +67,15 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
           builder: (value) => Card(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
-                    width: 1.5,
+                    color: Colors.black,
+                    width: 1,
                   ),
-                  borderRadius: BorderRadius.circular(4.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 elevation: 0,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 10, top: 10),
+                  padding: const EdgeInsets.only(
+                      left: 12, right: 12, bottom: 10, top: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -72,7 +84,8 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                         child: Container(
                           alignment: Alignment.center,
                           child: CachedNetworkImage(
-                            imageUrl: global.appInfo!.imageUrl! + product!.productImage!,
+                            imageUrl: global.appInfo!.imageUrl! +
+                                product!.productImage!,
                             imageBuilder: (context, imageProvider) => Container(
                               width: (screenWidth * 0.53) - 24,
                               alignment: Alignment.center,
@@ -84,7 +97,9 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                 visible: product!.stock! > 0 ? false : true,
                                 child: Container(
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.6), borderRadius: BorderRadius.circular(5)),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.6),
+                                      borderRadius: BorderRadius.circular(5)),
                                   padding: const EdgeInsets.all(5),
                                   child: Center(
                                     child: Transform.rotate(
@@ -92,14 +107,21 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                       child: Text(
                                         '${AppLocalizations.of(context)!.txt_out_of_stock}',
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            placeholder: (context, url) => SizedBox(child: Center(child: CircularProgressIndicator())),
+                            placeholder: (context, url) => SizedBox(
+                                child:
+                                    Center(child: CircularProgressIndicator())),
                             errorWidget: (context, url, error) => SizedBox(
                               child: Center(
                                 child: Icon(
@@ -124,26 +146,34 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.start,
                                 maxLines: 1,
-                                style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                                style: textTheme.bodyLarge!.copyWith(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5),
                               child: Text(
-                                product!.type != null && product!.type != '' ? product!.type! : '',
+                                product!.type != null && product!.type != ''
+                                    ? product!.type!
+                                    : '',
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.ellipsis,
-                                style: normalCaptionStyle(context).copyWith(fontSize: 11),
+                                style: normalCaptionStyle(context)
+                                    .copyWith(fontSize: 11),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5),
                               child: Text(
-                                product!.description != null && product!.description != '' ? product!.description! : '',
+                                product!.description != null &&
+                                        product!.description != ''
+                                    ? product!.description!
+                                    : '',
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                style: normalCaptionStyle(context).copyWith(fontSize: 12),
+                                style: normalCaptionStyle(context)
+                                    .copyWith(fontSize: 12),
                               ),
                             ),
                             Row(
@@ -153,77 +183,100 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                   children: [
                                     Text(
                                       "${global.appInfo!.currencySign} ${product!.price}",
-                                      style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
+                                      style: textTheme.bodyLarge!.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14),
                                     ),
                                     product!.price == product!.mrp
                                         ? SizedBox()
                                         : Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        "${global.appInfo!.currencySign}${product!.mrp}",
-                                        style: textTheme.labelSmall!.copyWith(decoration: TextDecoration.lineThrough, fontSize: 11),
-                                      ),
-                                    ),
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Text(
+                                              "${global.appInfo!.currencySign}${product!.mrp}",
+                                              style: textTheme.labelSmall!
+                                                  .copyWith(
+                                                      decoration: TextDecoration
+                                                          .lineThrough,
+                                                      fontSize: 11),
+                                            ),
+                                          ),
                                   ],
                                 ),
                                 product!.stock! > 0
                                     ? InkWell(
-                                  onTap: () async {
-                                    if (global.currentUser!.id == null) {
-                                      Get.to(LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer,
-                                      ));
-                                    } else {
-                                      _showVarientModalBottomSheet(textTheme, cartController);
-                                    }
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.all(3),
-                                    color: Theme.of(context).colorScheme.secondaryContainer,
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 15.0,
-                                      color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                    ),
-                                  ),
-                                )
+                                        onTap: () async {
+                                          if (global.currentUser!.id == null) {
+                                            Get.to(LoginScreen(
+                                              analytics: widget.analytics,
+                                              observer: widget.observer,
+                                            ));
+                                          } else {
+                                            _showVarientModalBottomSheet(
+                                                textTheme, cartController);
+                                          }
+                                        },
+                                        child: Container(
+                                            alignment: Alignment.center,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryContainer,
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Text("Add")),
+                                      )
                                     : SizedBox()
                               ],
                             ),
                             product!.rating != null && product!.rating! > 0
                                 ? Padding(
-                              padding: EdgeInsets.only(top: 3),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 10,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: "${product!.rating} ",
-                                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
+                                    padding: EdgeInsets.only(top: 3),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        TextSpan(
-                                          text: '|',
-                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
+                                        Icon(
+                                          Icons.star,
+                                          size: 10,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                         ),
-                                        TextSpan(
-                                          text: ' ${product!.ratingCount} ${AppLocalizations.of(context)!.txt_ratings}',
-                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
-                                        )
+                                        RichText(
+                                          text: TextSpan(
+                                            text: "${product!.rating} ",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(fontSize: 11),
+                                            children: [
+                                              TextSpan(
+                                                text: '|',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall!
+                                                    .copyWith(fontSize: 11),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${product!.ratingCount} ${AppLocalizations.of(context)!.txt_ratings}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall!
+                                                    .copyWith(fontSize: 11),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
+                                  )
                                 : SizedBox(),
                           ],
                         ),
@@ -276,14 +329,31 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                           '${product!.varient[i].description}',
                           trimLines: 2,
                           trimMode: TrimMode.Line,
-                          trimCollapsedText: '${AppLocalizations.of(context)!.txt_show_more}',
-                          trimExpandedText: '${AppLocalizations.of(context)!.txt_show_less}',
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
-                          lessStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
-                          moreStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
+                          trimCollapsedText:
+                              '${AppLocalizations.of(context)!.txt_show_more}',
+                          trimExpandedText:
+                              '${AppLocalizations.of(context)!.txt_show_less}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontSize: 16),
+                          lessStyle: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontSize: 16),
+                          moreStyle: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontSize: 16),
                         ),
-                        subtitle: Text('${product!.varient[i].quantity} ${product!.varient[i].unit} / ${global.appInfo!.currencySign} ${product!.varient[i].price}  ', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 15)),
-                        trailing: product!.varient[i].cartQty == null || product!.varient[i].cartQty == 0
+                        subtitle: Text(
+                            '${product!.varient[i].quantity} ${product!.varient[i].unit} / ${global.appInfo!.currencySign} ${product!.varient[i].price}  ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(fontSize: 15)),
+                        trailing: product!.varient[i].cartQty == null ||
+                                product!.varient[i].cartQty == 0
                             ? InkWell(
                                 onTap: () async {
                                   if (global.currentUser!.id == null) {
@@ -295,7 +365,9 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                     _qty = 1;
                                     showOnlyLoaderDialog();
                                     ATCMS? isSuccess;
-                                    isSuccess = await value.addToCart(product, _qty, false, varient: product!.varient[i]);
+                                    isSuccess = await value.addToCart(
+                                        product, _qty, false,
+                                        varient: product!.varient[i]);
                                     if (isSuccess!.isSuccess != null) {
                                       Navigator.of(context).pop();
                                     }
@@ -307,30 +379,40 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                   height: 23,
                                   width: 23,
                                   alignment: Alignment.center,
-                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
                                   child: Icon(
                                     Icons.add,
                                     size: 17.0,
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
                                   ),
                                 ),
                               )
                             : Padding(
-                                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                padding:
+                                    const EdgeInsets.only(top: 5, bottom: 5),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     InkWell(
                                       onTap: () async {
-                                        if (product!.varient[i].cartQty != null && product!.varient[i].cartQty == 1) {
+                                        if (product!.varient[i].cartQty !=
+                                                null &&
+                                            product!.varient[i].cartQty == 1) {
                                           _qty = 0;
                                         } else {
-                                          _qty = product!.varient[i].cartQty! - 1;
+                                          _qty =
+                                              product!.varient[i].cartQty! - 1;
                                         }
 
                                         showOnlyLoaderDialog();
                                         ATCMS? isSuccess;
-                                        isSuccess = await value.addToCart(product, _qty, true, varient: product!.varient[i]);
+                                        isSuccess = await value.addToCart(
+                                            product, _qty, true,
+                                            varient: product!.varient[i]);
 
                                         if (isSuccess!.isSuccess != null) {
                                           Navigator.of(context).pop();
@@ -342,18 +424,25 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                           height: 23,
                                           width: 23,
                                           alignment: Alignment.center,
-                                          color: Theme.of(context).colorScheme.primaryContainer,
-                                          child: product!.varient[i].cartQty == 1
-                                              ? Icon(
-                                                  Icons.delete,
-                                                  size: 17.0,
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                                )
-                                              : Icon(
-                                                  MdiIcons.minus,
-                                                  size: 17.0,
-                                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                                )),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
+                                          child:
+                                              product!.varient[i].cartQty == 1
+                                                  ? Icon(
+                                                      Icons.delete,
+                                                      size: 17.0,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                    )
+                                                  : Icon(
+                                                      MdiIcons.minus,
+                                                      size: 17.0,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                    )),
                                     ),
                                     SizedBox(
                                       width: 5,
@@ -364,9 +453,13 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           width: 1.0,
-                                          color: Theme.of(context).colorScheme.primary,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                         ),
-                                        borderRadius: BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                                5.0) //                 <--- border radius here
                                             ),
                                       ),
                                       child: Center(
@@ -374,7 +467,9 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                           "${product!.varient[i].cartQty}",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                             fontSize: 16,
                                           ),
                                         ),
@@ -389,7 +484,9 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
 
                                         showOnlyLoaderDialog();
                                         ATCMS? isSuccess;
-                                        isSuccess = await value.addToCart(product, _qty, false, varient: product!.varient[i]);
+                                        isSuccess = await value.addToCart(
+                                            product, _qty, false,
+                                            varient: product!.varient[i]);
                                         if (isSuccess!.isSuccess != null) {
                                           Navigator.of(context).pop();
                                         }
@@ -400,7 +497,9 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                           height: 23,
                                           width: 23,
                                           alignment: Alignment.center,
-                                          color: Theme.of(context).colorScheme.primaryContainer,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
                                           child: Icon(
                                             MdiIcons.plus,
                                             size: 17,
@@ -430,7 +529,11 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
   dynamic observer;
   APIHelper apiHelper = APIHelper();
 
-  _BundleOffersMenuState({this.onSelected, this.categoryProductList, this.analytics, this.observer});
+  _BundleOffersMenuState(
+      {this.onSelected,
+      this.categoryProductList,
+      this.analytics,
+      this.observer});
 
   Future<bool> addRemoveWishList(int? varientId) async {
     bool _isAddedSuccesFully = false;
@@ -445,13 +548,16 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
             _isAddedSuccesFully = false;
             Navigator.pop(context);
 
-            showSnackBar(snackBarMessage: '${AppLocalizations.of(context)!.txt_please_try_again_after_sometime} ');
+            showSnackBar(
+                snackBarMessage:
+                    '${AppLocalizations.of(context)!.txt_please_try_again_after_sometime} ');
           }
         }
       });
       return _isAddedSuccesFully;
     } catch (e) {
-      print("Exception - bundle_offers_menu.dart - addRemoveWishList():" + e.toString());
+      print("Exception - bundle_offers_menu.dart - addRemoveWishList():" +
+          e.toString());
       return _isAddedSuccesFully;
     }
   }
@@ -459,13 +565,16 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.width*1/2/1,
+      height: MediaQuery.of(context).size.width * 1 / 2 / 1,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: categoryProductList!.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => Get.to(() => ProductDescriptionScreen(analytics: widget.analytics, observer: widget.observer, productId: categoryProductList![index].productId)),
+              onTap: () => Get.to(() => ProductDescriptionScreen(
+                  analytics: widget.analytics,
+                  observer: widget.observer,
+                  productId: categoryProductList![index].productId)),
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Stack(
@@ -479,30 +588,38 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                       left: 0,
                       top: 0,
                       child: Padding(
-                        padding: const EdgeInsets.all(6),
-                        child: categoryProductList![index].discount != null && categoryProductList![index].discount! > 0
+                        padding: const EdgeInsets.all(10),
+                        child: categoryProductList![index].discount != null &&
+                                categoryProductList![index].discount! > 0
                             ? Container(
-                          height: 16,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              bottomRight: Radius.circular(4),
-                            ),
-                          ),
-                          child: Text(
-                            "${categoryProductList![index].discount} % OFF",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).primaryTextTheme.bodySmall!.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        )
+                                height: 16,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(6),
+                                    bottomRight: Radius.circular(4),
+                                  ),
+                                ),
+                                child: Text(
+                                  "${categoryProductList![index].discount} % OFF",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,
+                                      ),
+                                ),
+                              )
                             : SizedBox(
-                          height: 16,
-                          width: 60,
-                        ),
+                                height: 16,
+                                width: 60,
+                              ),
                       ),
                     ),
                     Positioned(
@@ -511,24 +628,24 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                       child: IconButton(
                         icon: categoryProductList![index].isFavourite
                             ? Icon(
-                          MdiIcons.heart,
-                          size: 20,
-                          color: Colors.red,
-                        )
+                                MdiIcons.heart,
+                                size: 20,
+                                color: Colors.red,
+                              )
                             : Icon(
-                          MdiIcons.heartOutline,
-                          size: 20,
-                          color: Colors.red,
-                        ),
+                                MdiIcons.heartOutline,
+                                size: 20,
+                                color: Colors.red,
+                              ),
                         onPressed: () async {
                           if (global.currentUser!.id == null) {
                             Future.delayed(Duration.zero, () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) => LoginScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                    )),
+                                          analytics: widget.analytics,
+                                          observer: widget.observer,
+                                        )),
                               );
                             });
                           } else {
@@ -536,7 +653,8 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                               categoryProductList![index].varientId,
                             );
                             if (_isAdded) {
-                              categoryProductList![index].isFavourite = !categoryProductList![index].isFavourite;
+                              categoryProductList![index].isFavourite =
+                                  !categoryProductList![index].isFavourite;
                             }
 
                             setState(() {});
