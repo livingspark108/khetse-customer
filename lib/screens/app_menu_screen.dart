@@ -23,6 +23,7 @@ import 'package:user/screens/product_request_screen.dart';
 import 'package:user/screens/rating_review_screen.dart';
 import 'package:user/screens/refer_and_earn_screen.dart';
 import 'package:user/screens/reward_screen.dart';
+import 'package:user/screens/show_ratings_screen.dart';
 import 'package:user/screens/top_deals_screen.dart';
 import 'package:user/screens/wallet_screen.dart';
 import 'package:user/screens/wishlist_screen.dart';
@@ -211,6 +212,14 @@ class _AppMenuScreenState extends BaseRouteState {
                             analytics: widget.analytics,
                             observer: widget.observer));
                       }
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  AppMenuListTile(
+                    label: "Ratings & Reviews",
+                    icon: Icons.star_border_outlined,
+                    onPressed: () {
+                      Get.to(() => ShowRatingsScreen());
                     },
                   ),
                   SizedBox(height: 8.0),

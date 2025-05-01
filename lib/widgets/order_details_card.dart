@@ -17,7 +17,8 @@ class OrderDetailsCard extends StatefulWidget {
   OrderDetailsCard(this.order, {this.analytics, this.observer}) : super();
 
   @override
-  _OrderDetailsCardState createState() => _OrderDetailsCardState(order, analytics, observer);
+  _OrderDetailsCardState createState() =>
+      _OrderDetailsCardState(order, analytics, observer);
 }
 
 class OrderedProductsMenuItem extends StatefulWidget {
@@ -28,7 +29,8 @@ class OrderedProductsMenuItem extends StatefulWidget {
   }) : super();
 
   @override
-  _OrderedProductsMenuItemState createState() => _OrderedProductsMenuItemState(product: product);
+  _OrderedProductsMenuItemState createState() =>
+      _OrderedProductsMenuItemState(product: product);
 }
 
 class _OrderDetailsCardState extends State<OrderDetailsCard> {
@@ -67,7 +69,8 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        OrderedProductsMenuItem(product: order!.productList[index]),
+                        OrderedProductsMenuItem(
+                            product: order!.productList[index]),
                         Spacer(),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -77,7 +80,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                               children: [
                                 Text(
                                   "${order!.productList[index].qty}",
-                                  style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: textTheme.bodyLarge!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                                 Text(
                                   ' | ',
@@ -85,49 +90,82 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                 ),
                                 Text(
                                   "${global.appInfo!.currencySign} ${order!.productList[index].price}",
-                                  style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: textTheme.bodyLarge!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                               ],
                             ),
                             order!.orderStatus == "Completed"
-                                ? order!.productList[index].userRating != null && order!.productList[index].userRating!.toDouble() > 0.0
+                                ? order!.productList[index].userRating !=
+                                            null &&
+                                        order!.productList[index].userRating!
+                                                .toDouble() >
+                                            0.0
                                     ? Column(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(top: 8),
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
                                             child: RatingBar.builder(
-                                              initialRating: order!.productList[index].userRating != null ? double.parse(order!.productList[index].userRating.toString()).toDouble() : 0,
+                                              initialRating: order!
+                                                          .productList[index]
+                                                          .userRating !=
+                                                      null
+                                                  ? double.parse(order!
+                                                          .productList[index]
+                                                          .userRating
+                                                          .toString())
+                                                      .toDouble()
+                                                  : 0,
                                               minRating: 0,
                                               direction: Axis.horizontal,
                                               allowHalfRating: true,
                                               ignoreGestures: true,
                                               itemCount: 5,
                                               itemSize: 15,
-                                              itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 1.0),
                                               itemBuilder: (context, _) => Icon(
                                                 Icons.star,
-                                                color: Theme.of(context).colorScheme.primary,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
                                               ),
                                               updateOnDrag: false,
                                               onRatingUpdate: (double value) {},
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(top: 5),
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
                                             child: SizedBox(
                                               height: 25,
                                               child: ElevatedButton(
                                                   onPressed: () {
-                                                    Get.to(() => RateOrderScreen(
+                                                    Get.to(() =>
+                                                        RateOrderScreen(
                                                           order,
                                                           index,
-                                                          analytics: widget.analytics,
-                                                          observer: widget.observer,
+                                                          analytics:
+                                                              widget.analytics,
+                                                          observer:
+                                                              widget.observer,
                                                         ));
                                                   },
-                                                  child: Text('${AppLocalizations.of(context)!.btn_edit_review}', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white, fontSize: 13))),
+                                                  child: Text(
+                                                      '${AppLocalizations.of(context)!.btn_edit_review}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelSmall!
+                                                          .copyWith(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 13))),
                                             ),
                                           ),
                                         ],
@@ -141,11 +179,19 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                                                 Get.to(() => RateOrderScreen(
                                                       order,
                                                       index,
-                                                      analytics: widget.analytics,
+                                                      analytics:
+                                                          widget.analytics,
                                                       observer: widget.observer,
                                                     ));
                                               },
-                                              child: Text('${AppLocalizations.of(context)!.btn_write_review}', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white, fontSize: 13))),
+                                              child: Text(
+                                                  '${AppLocalizations.of(context)!.btn_write_review}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall!
+                                                      .copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 13))),
                                         ),
                                       )
                                 : SizedBox(),
@@ -183,7 +229,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                     style: textTheme.bodyLarge,
                   ),
                   Text(
-                    order!.discountonmrp != null && order!.discountonmrp! > 0 ? "- ${global.appInfo!.currencySign} ${order!.discountonmrp!.toStringAsFixed(2)}" : '${global.appInfo!.currencySign} 0',
+                    order!.discountonmrp != null && order!.discountonmrp! > 0
+                        ? "- ${global.appInfo!.currencySign} ${order!.discountonmrp!.toStringAsFixed(2)}"
+                        : '${global.appInfo!.currencySign} 0',
                     style: textTheme.titleSmall,
                   )
                 ],
@@ -215,7 +263,9 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                     style: textTheme.bodyLarge,
                   ),
                   Text(
-                    order!.couponDiscount != null && order!.couponDiscount! > 0 ? "- ${global.appInfo!.currencySign} ${order!.couponDiscount!.toStringAsFixed(2)}" : '${global.appInfo!.currencySign} 0',
+                    order!.couponDiscount != null && order!.couponDiscount! > 0
+                        ? "- ${global.appInfo!.currencySign} ${order!.couponDiscount!.toStringAsFixed(2)}"
+                        : '${global.appInfo!.currencySign} 0',
                     style: textTheme.titleSmall,
                   )
                 ],
@@ -260,11 +310,13 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                 children: [
                   Text(
                     "Order Amount",
-                    style: textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: textTheme.bodyLarge!
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
                   ),
                   Text(
                     "${global.appInfo!.currencySign} ${(order!.priceWithoutDelivery! - order!.couponDiscount!).toStringAsFixed(2)}",
-                    style: textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: textTheme.titleSmall!
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
                   )
                 ],
               ),
@@ -338,10 +390,16 @@ class _OrderedProductsMenuItemState extends State<OrderedProductsMenuItem> {
                 child: Container(
                   height: 80,
                   width: 40,
-                  decoration: BoxDecoration(color: Color(0xffF7F7F7), image: DecorationImage(image: imageProvider, fit: BoxFit.contain)),
+                  decoration: BoxDecoration(
+                      color: Color(0xffF7F7F7),
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.contain)),
                 ),
               ),
-              placeholder: (context, url) => SizedBox(height: 80, width: 40, child: Center(child: CircularProgressIndicator())),
+              placeholder: (context, url) => SizedBox(
+                  height: 80,
+                  width: 40,
+                  child: Center(child: CircularProgressIndicator())),
               errorWidget: (context, url, error) => Container(
                 height: 80,
                 width: 40,
@@ -360,14 +418,17 @@ class _OrderedProductsMenuItemState extends State<OrderedProductsMenuItem> {
                   child: Text(
                     product.productName!,
                     overflow: TextOverflow.ellipsis,
-                    style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: textTheme.bodyLarge!
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 SizedBox(height: 8.0),
                 SizedBox(
                   width: 140,
                   child: Text(
-                    product.description != null && product.description != '' ? product.description! : product.type!,
+                    product.description != null && product.description != ''
+                        ? product.description!
+                        : product.type!,
                     overflow: TextOverflow.ellipsis,
                     style: normalCaptionStyle(context),
                   ),
