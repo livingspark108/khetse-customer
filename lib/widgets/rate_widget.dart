@@ -4,8 +4,10 @@ import 'package:user/constants/color_constants.dart';
 class RateWidget extends StatefulWidget {
   final Function(int)? onRatingChanged;
   int rating;
+  int size;
+  bool editable;
 
-  RateWidget({Key? key, this.onRatingChanged, this.rating = 0}) : super(key: key);
+  RateWidget({Key? key, this.onRatingChanged, this.rating = 0, this.size = 50, this.editable = true}) : super(key: key);
 
   @override
   State<RateWidget> createState() => _RateWidgetState();
@@ -26,8 +28,8 @@ class _RateWidgetState extends State<RateWidget> {
     IconData iconData = index < widget.rating ? Icons.star : Icons.star_border;
 
     return GestureDetector(
-        onTap: () => onRatingChangedInternal(index + 1),
-      child: Icon(iconData, color: ColorConstants.getForegroundColor(context), size: 50),
+        onTap: widget.editable ? () => onRatingChangedInternal(index + 1) : null,
+      child: Icon(iconData, color: ColorConstants.getForegroundColor(context), size: widget.size.toDouble()),
     );
   }
 
