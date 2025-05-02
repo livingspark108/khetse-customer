@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user/constants/image_constants.dart';
 import 'package:user/controllers/user_profile_controller.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
@@ -10,9 +13,15 @@ import 'package:user/models/userModel.dart';
 import 'package:user/screens/add_address_screen.dart';
 import 'package:user/screens/addressListScreen.dart';
 import 'package:user/screens/change_password_screen.dart';
+import 'package:user/screens/chat_screen.dart';
+import 'package:user/screens/login_screen.dart';
+import 'package:user/screens/membership_screen.dart';
+import 'package:user/screens/order_history_screen.dart';
 import 'package:user/screens/profile_edit_screen.dart';
+import 'package:user/screens/refer_and_earn_screen.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/profile_picture.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class UserInfoTile extends StatefulWidget {
   final String? value;
@@ -50,7 +59,8 @@ class UserOrdersDashboardBox extends StatefulWidget {
 }
 
 class UserProfileScreen extends BaseRoute {
-  UserProfileScreen({super.analytics, super.observer, super.routeName = 'UserProfileScreen'});
+  UserProfileScreen(
+      {super.analytics, super.observer, super.routeName = 'UserProfileScreen'});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -153,6 +163,48 @@ class _UserOrdersDashboardBoxState extends State<UserOrdersDashboardBox> {
   }
 }
 
+_signOutDialog(BuildContext context) async {
+  try {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Theme(
+            data: ThemeData(dialogBackgroundColor: Colors.white),
+            child: CupertinoAlertDialog(
+              title: Text(
+                '${AppLocalizations.of(context)!.btn_logout}  ',
+              ),
+              content: Text(
+                '${AppLocalizations.of(context)!.txt_logout_app_msg}  ',
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('${AppLocalizations.of(context)!.lbl_cancel}'),
+                  onPressed: () {
+                    return Navigator.of(context).pop(false);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('${AppLocalizations.of(context)!.btn_logout}',
+                      style: TextStyle(color: Colors.red)),
+                  onPressed: () async {
+                    global.sp!.remove("currentUser");
+                    global.currentUser = CurrentUser();
+                    Get.offAll(
+                      () => LoginScreen(),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  } catch (e) {
+    print(
+        'Exception - app_menu_screen.dart - exitAppDialog(): ' + e.toString());
+  }
+}
+
 class _UserProfileScreenState extends BaseRouteState {
   bool _isDataLoaded = false;
 
@@ -191,7 +243,8 @@ class _UserProfileScreenState extends BaseRouteState {
                 builder: (value) => RefreshIndicator(
                       onRefresh: () async {
                         _isDataLoaded = false;
-                        global.userProfileController.currentUser = CurrentUser();
+                        global.userProfileController.currentUser =
+                            CurrentUser();
                         setState(() {});
                         await _getMyProfile();
                       },
@@ -215,10 +268,15 @@ class _UserProfileScreenState extends BaseRouteState {
                                   global.userProfileController.currentUser
                                                   ?.name !=
                                               null &&
-                                      (global.userProfileController
-                                                  .currentUser?.name?.isNotEmpty ?? false)
-                                      ? global.userProfileController
-                                          .currentUser?.name ?? ''
+                                          (global
+                                                  .userProfileController
+                                                  .currentUser
+                                                  ?.name
+                                                  ?.isNotEmpty ??
+                                              false)
+                                      ? global.userProfileController.currentUser
+                                              ?.name ??
+                                          ''
                                       : 'User',
                                   style: textTheme.titleLarge,
                                 ),
@@ -255,9 +313,9 @@ class _UserProfileScreenState extends BaseRouteState {
                                 heading:
                                     "${AppLocalizations.of(context)!.txt_address}",
                                 onPressed: () {
-                                  global.userProfileController
-                                                  .addressList.length >
-                                              0
+                                  global.userProfileController.addressList
+                                              .length >
+                                          0
                                       ? Get.to(() => AddressListScreen(
                                                 analytics: widget.analytics,
                                                 observer: widget.observer,
@@ -274,9 +332,9 @@ class _UserProfileScreenState extends BaseRouteState {
                                           setState(() {});
                                         });
                                 },
-                                value: global.userProfileController
-                                                .addressList.length >
-                                            0
+                                value: global.userProfileController.addressList
+                                            .length >
+                                        0
                                     ? global.userProfileController
                                         .addressList[0].houseNo
                                     : '${AppLocalizations.of(context)!.txt_nothing_to_show}',
@@ -303,7 +361,100 @@ class _UserProfileScreenState extends BaseRouteState {
                                 ),
                               ),
                               SizedBox(height: 16),
-
+                              UserInfoTile(
+                                heading:
+                                    "${AppLocalizations.of(context)!.btn_membership}",
+                                onPressed: () {
+                                  Get.to(() => MemberShipScreen(
+                                      analytics: widget.analytics,
+                                      observer: widget.observer));
+                                },
+                                leadingIcon: Icon(
+                                  Icons.card_membership_sharp,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                heading:
+                                    "${AppLocalizations.of(context)!.lbl_order} ",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    if (global.nearStoreModel != null) {
+                                      Get.to(() => OrderHistoryScreen(
+                                            analytics: widget.analytics,
+                                            observer: widget.observer,
+                                            disableWillpop: false,
+                                          ));
+                                    }
+                                  }
+                                },
+                                leadingIcon: Icon(Icons.history),
+                              ),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                heading:
+                                    "${AppLocalizations.of(context)!.btn_refer_earn}",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    Get.to(() => ReferAndEarnScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  }
+                                },
+                                leadingIcon: Icon(
+                                  MdiIcons.giftOutline,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                heading:
+                                    "${AppLocalizations.of(context)!.txt_live_chat} ",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    if (global.nearStoreModel != null) {
+                                      Get.to(() => ChatScreen(
+                                          analytics: widget.analytics,
+                                          observer: widget.observer));
+                                    }
+                                  }
+                                },
+                                leadingIcon: SvgPicture.asset(
+                                  ImageConstants.LIVE_CHAT_LOGO_URL,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                heading: global.currentUser?.id == null
+                                    ? '${AppLocalizations.of(context)!.btn_signup}  '
+                                    : "${AppLocalizations.of(context)!.btn_logout} ",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    _signOutDialog(context);
+                                  }
+                                },
+                                leadingIcon: SvgPicture.asset(
+                                  ImageConstants.LOGOUT_LOGO_URL,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 16),
                             ],
                           ),
                         ),
