@@ -32,7 +32,7 @@ class DashboardLocationTitle extends StatelessWidget {
         global.currentLocation != null
             ? Text(
                 "${AppLocalizations.of(context)!.txt_deliver}",
-                style: boldCaptionStyle(context),
+                style: boldCaptionStyle(context).copyWith(color: Colors.white),
               )
             : SizedBox(),
         GestureDetector(
@@ -57,20 +57,21 @@ class DashboardLocationTitle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 135,
+                width: 180,
                 child: Text(
                   global.currentLocation != null
                       ? global.currentLocation!
                       : '${AppLocalizations.of(context)!.txt_deliver} No Location',
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: textTheme.bodyLarge,
+                  maxLines: 1,
+                  style: textTheme.bodyLarge!.copyWith(color: Colors.white),
                 ),
               ),
               Transform.rotate(
                 angle: pi / 2,
                 child: Icon(
                   Icons.chevron_right,
+                  color: Colors.white,
                 ),
               )
             ],

@@ -37,8 +37,7 @@ class _RateWidgetState extends State<RateWidget> {
     return GestureDetector(
       onTap: widget.editable ? () => onRatingChangedInternal(index + 1) : null,
       child: Icon(iconData,
-          color: ColorConstants.getForegroundColor(context),
-          size: widget.size.toDouble()),
+          color: Color(0xff3b9d2f), size: widget.size.toDouble()),
     );
   }
 

@@ -67,7 +67,7 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
           builder: (value) => Card(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
-                    color: Colors.black,
+                    color: Color(0xff3b9d2f),
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
