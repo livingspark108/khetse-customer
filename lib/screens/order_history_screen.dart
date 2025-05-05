@@ -39,78 +39,86 @@ class _OrderHistoryScreenState extends BaseRouteState {
       },
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xff3b9d2f),
           automaticallyImplyLeading:
               !(widget as OrderHistoryScreen).disableWillpop,
-          toolbarHeight: 100,
+          toolbarHeight: 110,
           centerTitle: true,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              !(widget as OrderHistoryScreen).disableWillpop ? SizedBox() : AppBarTitleMessage(showMessage: false),
-              Text(
-                "${AppLocalizations.of(context)!.tle_order_history}",
-                style: textTheme.titleLarge,
-              ),
+              !(widget as OrderHistoryScreen).disableWillpop
+                  ? SizedBox()
+                  : AppBarTitleMessage(showMessage: true),
             ],
           ),
         ),
-        body: shouldNotShowData
-            ? Padding(
-                padding: EdgeInsets.only(top: 150),
-                child: Center(
-                  child:
-                      Text(AppLocalizations.of(context)!.txt_nothing_to_show),
-                ),
-              )
-            : orderController.completedOrderList.length == 0 &&
-                    (orderController.activeOrderList?.length ?? 0) == 0
-                ? _emptyOrderListWidget()
-                : DefaultTabController(
-                    length: 2,
-                    child: Column(children: [
-                      TabBar(
-                        tabs: [
-                          Tab(
-                              text:
-                                  AppLocalizations.of(context)!.lbl_all_orders),
-                          Tab(
-                              text:
-                                  AppLocalizations.of(context)!.lbl_past_orders)
-                        ],
-                        isScrollable: false,
-                        onTap: (int index) {
-                          orderController.page.value = index;
-                        },
+        body: Column(
+          children: [
+            SizedBox(height: 8,),
+            Text(
+              "${AppLocalizations.of(context)!.tle_order_history}",
+              style: textTheme.titleLarge,
+            ),
+            shouldNotShowData
+                ? Padding(
+                    padding: EdgeInsets.only(top: 150),
+                    child: Center(
+                      child:
+                          Text(AppLocalizations.of(context)!.txt_nothing_to_show),
+                    ),
+                  )
+                : orderController.completedOrderList.length == 0 &&
+                        (orderController.activeOrderList?.length ?? 0) == 0
+                    ? _emptyOrderListWidget()
+                    : DefaultTabController(
+                        length: 2,
+                        child: Column(children: [
+                          TabBar(
+                            tabs: [
+                              Tab(
+                                  text:
+                                      AppLocalizations.of(context)!.lbl_all_orders),
+                              Tab(
+                                  text:
+                                      AppLocalizations.of(context)!.lbl_past_orders)
+                            ],
+                            isScrollable: false,
+                            onTap: (int index) {
+                              orderController.page.value = index;
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: GetX<OrderController>(
+                              builder: (controller) {
+                                print(
+                                    "controller.isActiveOrderListLoaded.value = ${controller.isActiveOrderListLoaded.value}");
+                                print(
+                                    "controller.isCompletedOrderHistoryListLoaded = ${controller.isCompletedOrderHistoryListLoaded}");
+                                if (controller.isActiveOrderListLoaded.value ==
+                                        true &&
+                                    controller.isCompletedOrderHistoryListLoaded ==
+                                        true) {
+                                  return TabBarView(
+                                    children: [
+                                      AllOrderHistoryList(),
+                                      PastOrderHistoryList()
+                                    ],
+                                    physics: const NeverScrollableScrollPhysics(),
+                                  );
+                                } else {
+                                  return _shimmer();
+                                }
+                              },
+                            ),
+                          )
+                        ]),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                        child: GetX<OrderController>(
-                          builder: (controller) {
-                            print(
-                                "controller.isActiveOrderListLoaded.value = ${controller.isActiveOrderListLoaded.value}");
-                            print(
-                                "controller.isCompletedOrderHistoryListLoaded = ${controller.isCompletedOrderHistoryListLoaded}");
-                            if (controller.isActiveOrderListLoaded.value ==
-                                    true &&
-                                controller.isCompletedOrderHistoryListLoaded ==
-                                    true) {
-                              return TabBarView(
-                                children: [
-                                  AllOrderHistoryList(),
-                                  PastOrderHistoryList()
-                                ],
-                                physics: const NeverScrollableScrollPhysics(),
-                              );
-                            } else {
-                              return _shimmer();
-                            }
-                          },
-                        ),
-                      )
-                    ]),
-                  ),
+          ],
+        ),
       ),
     );
   }

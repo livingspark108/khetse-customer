@@ -13,7 +13,11 @@ class DashboardCategories extends StatefulWidget {
   final FirebaseAnalyticsObserver? observer;
   final List<CategoryList> topCategoryList;
 
-  DashboardCategories({super.key, this.analytics, this.observer, required this.topCategoryList});
+  DashboardCategories(
+      {super.key,
+      this.analytics,
+      this.observer,
+      required this.topCategoryList});
 
   _DashboardCategoriesState createState() {
     return _DashboardCategoriesState(topCategoryList: this.topCategoryList);
@@ -48,9 +52,9 @@ class _DashboardCategoriesState extends State<DashboardCategories> {
               InkWell(
                 onTap: () {
                   Get.to(() => AllCategoriesScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  ));
+                        analytics: widget.analytics,
+                        observer: widget.observer,
+                      ));
                 },
                 child: Text(
                   "${AppLocalizations.of(context)!.btn_view_all} ",
@@ -73,21 +77,18 @@ class _DashboardCategoriesState extends State<DashboardCategories> {
                   category: topCategoryList[index],
                   onPressed: () {
                     setState(() {
-                     topCategoryList
-                          .map((e) => e.isSelected = false)
-                          .toList();
+                      topCategoryList.map((e) => e.isSelected = false).toList();
                       _selectedIndex = index;
                       if (_selectedIndex == index) {
-                        topCategoryList[index]
-                            .isSelected = true;
+                        topCategoryList[index].isSelected = true;
                       }
                     });
                     Get.to(() => SubCategoriesScreen(
-                      analytics: widget.analytics,
-                      observer: widget.observer,
-                      screenHeading: topCategoryList[index].title,
-                      categoryId: topCategoryList[index].catId,
-                    ));
+                          analytics: widget.analytics,
+                          observer: widget.observer,
+                          screenHeading: topCategoryList[index].title,
+                          categoryId: topCategoryList[index].catId,
+                        ));
                   },
                   isSelected: topCategoryList[index].isSelected,
                 );

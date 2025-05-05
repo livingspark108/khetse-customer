@@ -22,7 +22,8 @@ class SubCategoriesScreen extends BaseRoute {
   });
 
   @override
-  _SubCategoriesScreenState createState() => _SubCategoriesScreenState(categoryId: categoryId, screenHeading: screenHeading);
+  _SubCategoriesScreenState createState() => _SubCategoriesScreenState(
+      categoryId: categoryId, screenHeading: screenHeading);
 }
 
 class _SubCategoriesScreenState extends BaseRouteState {
@@ -71,7 +72,7 @@ class _SubCategoriesScreenState extends BaseRouteState {
                         crossAxisCount: 3,
                         mainAxisSpacing: 24.0,
                         crossAxisSpacing: 16.0,
-                        childAspectRatio: 1/1,
+                        childAspectRatio: 1 / 1,
                       ),
                       itemBuilder: (context, index) => SelectCategoryCard(
                         key: UniqueKey(),
@@ -81,7 +82,9 @@ class _SubCategoriesScreenState extends BaseRouteState {
                         borderRadius: 0,
                         onPressed: () {
                           setState(() {
-                            _subCategoryList.map((e) => e.isSelected = false).toList();
+                            _subCategoryList
+                                .map((e) => e.isSelected = false)
+                                .toList();
                             _selectedIndex = index;
                             if (_selectedIndex == index) {
                               _subCategoryList[index].isSelected = true;
@@ -98,7 +101,8 @@ class _SubCategoriesScreenState extends BaseRouteState {
                       ),
                     )
                   : Center(
-                      child: Text('${AppLocalizations.of(context)!.txt_nothing_to_show}'),
+                      child: Text(
+                          '${AppLocalizations.of(context)!.txt_nothing_to_show}'),
                     )
               : _shimmer(),
         ),
@@ -149,7 +153,8 @@ class _SubCategoriesScreenState extends BaseRouteState {
         showNetworkErrorSnackBar(_scaffoldKey);
       }
     } catch (e) {
-      print("Exception - sub_categories_screen.dart - _getSubCategoryList():" + e.toString());
+      print("Exception - sub_categories_screen.dart - _getSubCategoryList():" +
+          e.toString());
     }
   }
 
@@ -157,7 +162,9 @@ class _SubCategoriesScreenState extends BaseRouteState {
     try {
       await _getSubCategoryList();
       _scrollController.addListener(() async {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isMoreDataLoaded) {
+        if (_scrollController.position.pixels ==
+                _scrollController.position.maxScrollExtent &&
+            !_isMoreDataLoaded) {
           setState(() {
             _isMoreDataLoaded = true;
           });
@@ -181,7 +188,8 @@ class _SubCategoriesScreenState extends BaseRouteState {
       setState(() {});
       await _init();
     } catch (e) {
-      print("Exception - sub_categories_screen.dart - _onRefresh():" + e.toString());
+      print("Exception - sub_categories_screen.dart - _onRefresh():" +
+          e.toString());
     }
   }
 
@@ -199,7 +207,8 @@ class _SubCategoriesScreenState extends BaseRouteState {
                 crossAxisSpacing: 12.0,
                 childAspectRatio: 0.7,
               ),
-              itemBuilder: (context, index) => SizedBox(height: 130, width: 90, child: Card()))),
+              itemBuilder: (context, index) =>
+                  SizedBox(height: 130, width: 90, child: Card()))),
     );
   }
 }

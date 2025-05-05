@@ -5,6 +5,7 @@ class Strings {
   static const String emailUs = "Email Us";
   static const String appName = "Khet Se";
   static const String appMessage = "Order by 11:59 PM for next day delivery";
+  static const String privacyPolicy = "Privacy & Policy";
 
   //URLs
   static const String mailToUrl = "mailto:gaurav.t@khetse.co";

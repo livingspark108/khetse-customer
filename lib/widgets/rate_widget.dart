@@ -6,13 +6,20 @@ class RateWidget extends StatefulWidget {
   int rating;
   int size;
   bool editable;
+  EdgeInsetsGeometry padding;
 
-  RateWidget({Key? key, this.onRatingChanged, this.rating = 0, this.size = 50, this.editable = true}) : super(key: key);
+  RateWidget(
+      {Key? key,
+      this.onRatingChanged,
+      this.rating = 0,
+      this.size = 50,
+      this.padding = const EdgeInsets.symmetric(horizontal: 20.0),
+      this.editable = true})
+      : super(key: key);
 
   @override
   State<RateWidget> createState() => _RateWidgetState();
 }
-
 
 class _RateWidgetState extends State<RateWidget> {
   void onRatingChangedInternal(int index) {
@@ -28,15 +35,17 @@ class _RateWidgetState extends State<RateWidget> {
     IconData iconData = index < widget.rating ? Icons.star : Icons.star_border;
 
     return GestureDetector(
-        onTap: widget.editable ? () => onRatingChangedInternal(index + 1) : null,
-      child: Icon(iconData, color: ColorConstants.getForegroundColor(context), size: widget.size.toDouble()),
+      onTap: widget.editable ? () => onRatingChangedInternal(index + 1) : null,
+      child: Icon(iconData,
+          color: ColorConstants.getForegroundColor(context),
+          size: widget.size.toDouble()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: widget.padding,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(5, (index) => buildStar(index, context)),

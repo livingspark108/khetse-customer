@@ -21,6 +21,7 @@ import 'package:user/models/categoryListModel.dart';
 import 'package:user/models/categoryProductModel.dart';
 import 'package:user/models/cityModel.dart';
 import 'package:user/models/couponsModel.dart';
+import 'package:user/models/faqModal.dart';
 import 'package:user/models/googleMapModel.dart';
 import 'package:user/models/homeScreenDataModel.dart';
 import 'package:user/models/mapBoxModel.dart';
@@ -31,7 +32,9 @@ import 'package:user/models/message_model.dart';
 import 'package:user/models/nearByStoreModel.dart';
 import 'package:user/models/notificationModel.dart';
 import 'package:user/models/orderModel.dart' as models;
+import 'package:user/models/orderReviewModal.dart';
 import 'package:user/models/paymentGatewayModel.dart';
+import 'package:user/models/privacyPolicyModal.dart';
 import 'package:user/models/productDetailModel.dart';
 import 'package:user/models/productFilterModel.dart';
 import 'package:user/models/rateModel.dart';
@@ -252,6 +255,28 @@ class APIHelper {
     }
   }
 
+  Future<dynamic> privacyPolicy() async {
+    try {
+      Response response;
+      var dio = Dio();
+
+      response = await dio.get('${global.baseUrl}privacy_policy',
+          options: Options(
+            headers: await global.getApiHeaders(false),
+          ));
+      dynamic recordList;
+      if (response.statusCode == 200) {
+        recordList = PrivacyPolicy.fromJson(response.data["data"]);
+      } else {
+        recordList = null;
+      }
+      return getDioResult(response, recordList);
+    } catch (e) {
+      //throw Exception(e.toString());
+      print("Exception - privacy_policy(): " + e.toString());
+    }
+  }
+
   Future<dynamic> applyCoupon({String? cartId, String? couponCode}) async {
     try {
       Response response;
@@ -298,6 +323,53 @@ class APIHelper {
     } catch (e) {
       //throw Exception(e.toString());
       print("Exception - appTermsOfService(): " + e.toString());
+    }
+  }
+
+  Future<List<FAQ>> faqList() async {
+    try {
+      var dio = Dio();
+      final response = await dio.get(
+        '${global.baseUrl}faq_list',
+        options: Options(
+          headers: await global.getApiHeaders(false),
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        return data.map((item) => FAQ.fromJson(item)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Exception - faqList(): $e");
+      return [];
+    }
+  }
+
+  Future<List<OrderReview>> getOrderReviews() async {
+    try {
+      var dio = Dio();
+      final response = await dio.get(
+        '${global.baseUrl}get_all_order_reviews',
+        options: Options(
+          headers: await global.getApiHeaders(true),
+        ),
+      );
+
+      print("STATUS = ${response.statusCode}");
+
+      if (response.statusCode == 200 && response.data['status'] == 1) {
+        final List<dynamic> data = response.data['data'];
+        return data.map((item) => OrderReview.fromJson(item)).toList();
+      } else {
+        print("Error: Response status is not 1 or status code is not 200");
+        return [];
+      }
+    } catch (e, stacktrace) {
+      print("Exception - getOrderReviews(): $stacktrace");
+      return [];
     }
   }
 
@@ -2678,7 +2750,7 @@ class APIHelper {
       ),
     );
 
-    if(response.statusCode == 200 && response.data['status'] == 1) {
+    if (response.statusCode == 200 && response.data['status'] == 1) {
       return ReviewModel.fromJson(response.data['data']);
     }
 
