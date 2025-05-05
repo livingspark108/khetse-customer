@@ -111,12 +111,15 @@ class _SearchScreenState extends BaseRouteState {
         //       ),
         appBar: AppBar(
           automaticallyImplyLeading: global.nearStoreModel == null,
-          toolbarHeight: 100,
+          toolbarHeight: 80,
+          backgroundColor: Color(0xff3b9d2f),
           centerTitle: true,
-          title: global.nearStoreModel == null ? Text(
-            '${AppLocalizations.of(context)!.hnt_search_product}',
-            style: textTheme.titleLarge,
-          ) : AppBarTitleMessage(showMessage: false),
+          title: global.nearStoreModel == null
+              ? Text(
+                  '${AppLocalizations.of(context)!.hnt_search_product}',
+                  style: textTheme.titleLarge,
+                )
+              : AppBarTitleMessage(showMessage: true),
         ),
         body: SafeArea(
           child: Padding(

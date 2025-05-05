@@ -213,29 +213,15 @@ class _UserProfileScreenState extends BaseRouteState {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color(0xff3b9d2f),
           automaticallyImplyLeading: false,
-          toolbarHeight: 100,
+          toolbarHeight: 110,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppBarTitleMessage(showMessage: false),
-              Text(
-                "${AppLocalizations.of(context)!.txt_user_profile}",
-                style: textTheme.titleLarge,
-              ),
+              AppBarTitleMessage(showMessage: true),
             ],
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(() => ProfileEditScreen(
-                        analytics: widget.analytics,
-                        observer: widget.observer,
-                      ));
-                },
-                icon: Icon(Icons.edit))
-          ],
         ),
         body: _isDataLoaded
             ? GetBuilder<UserProfileController>(
@@ -254,6 +240,25 @@ class _UserProfileScreenState extends BaseRouteState {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.txt_user_profile}",
+                                    style: textTheme.titleLarge,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      Get.to(() => ProfileEditScreen(
+                                            analytics: widget.analytics,
+                                            observer: widget.observer,
+                                          ));
+                                    },
+                                    icon: Icon(Icons.edit),
+                                  )
+                                ],
+                              ),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 32.0),

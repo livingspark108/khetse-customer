@@ -53,63 +53,66 @@ class _DashboardScreenState extends BaseRouteState {
             inviteFriendShareMessage: br.inviteFriendShareMessage),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(161), // increase height
-          child: SafeArea(
-            child: Column(
-              children: [
-                AppBarTitleMessage(),
-                AppBar(
-                  leadingWidth: 46,
-                  toolbarHeight: 80,
-                  surfaceTintColor: Colors.transparent,
-                  centerTitle: true,
-                  leading: IconButton(
-                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                    icon: Icon(Icons.dashboard_outlined),
-                    onPressed: onAppDrawerButtonPressed,
-                  ),
-                  title: DashboardLocationTitle(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    getCurrentPosition: getCurrentPosition,
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        if (global.currentUser!.id == null) {
-                          Get.to(() => LoginScreen(
-                              analytics: widget.analytics, observer: widget.observer));
-                        } else {
-                          Get.to(
-                            () => WalletScreen(
+          child: Container(
+            color: Color(0xff3b9d2f),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  AppBarTitleMessage(),
+                  AppBar(
+                    leadingWidth: 46,
+                    toolbarHeight: 80,
+                    surfaceTintColor: Colors.transparent,
+                    centerTitle: true,
+                    leading: IconButton(
+                      visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                      icon: Icon(Icons.dashboard_outlined),
+                      onPressed: onAppDrawerButtonPressed,
+                    ),
+                    title: DashboardLocationTitle(
+                      analytics: widget.analytics,
+                      observer: widget.observer,
+                      getCurrentPosition: getCurrentPosition,
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          if (global.currentUser!.id == null) {
+                            Get.to(() => LoginScreen(
+                                analytics: widget.analytics, observer: widget.observer));
+                          } else {
+                            Get.to(
+                              () => WalletScreen(
+                                analytics: widget.analytics,
+                                observer: widget.observer,
+                              ),
+                            );
+                          }
+                        },
+                        icon: Icon(Icons.account_balance_wallet_outlined),
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity(horizontal: -4),
+                        icon: Icon(Icons.search_outlined),
+                        onPressed: () => Get.to(() => SearchScreen(
                               analytics: widget.analytics,
                               observer: widget.observer,
-                            ),
-                          );
-                        }
-                      },
-                      icon: Icon(Icons.account_balance_wallet_outlined),
-                    ),
-                    IconButton(
-                      visualDensity: VisualDensity(horizontal: -4),
-                      icon: Icon(Icons.search_outlined),
-                      onPressed: () => Get.to(() => SearchScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer,
-                          )),
-                    ),
-                    global.currentUser?.id != null
-                        ? IconButton(
-                            visualDensity: VisualDensity(horizontal: -4),
-                            icon: Icon(Icons.notifications_none),
-                            onPressed: () => Get.to(() => NotificationScreen(
-                                  analytics: widget.analytics,
-                                  observer: widget.observer,
-                                )),
-                          )
-                        : SizedBox()
-                  ],
-                ),
-              ],
+                            )),
+                      ),
+                      global.currentUser?.id != null
+                          ? IconButton(
+                              visualDensity: VisualDensity(horizontal: -4),
+                              icon: Icon(Icons.notifications_none),
+                              onPressed: () => Get.to(() => NotificationScreen(
+                                    analytics: widget.analytics,
+                                    observer: widget.observer,
+                                  )),
+                            )
+                          : SizedBox()
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

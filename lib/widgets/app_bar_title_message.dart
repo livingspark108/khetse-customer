@@ -20,17 +20,17 @@ class AppBarTitleMessage extends StatelessWidget {
             SizedBox(width: 10),
             Text(
               Strings.appName,
-              style: TextStyle(
-                fontSize: 20
-              ),
+              style: TextStyle(fontSize: 20, color: Colors.white),
             ),
           ],
         ),
         SizedBox(height: showMessage ? 10 : 0),
-        showMessage ? Text(
-          Strings.appMessage,
-          style: TextStyle(fontSize: 15),
-        ) : SizedBox(),
+        showMessage
+            ? Text(
+                Strings.appMessage,
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              )
+            : SizedBox(),
         SizedBox(height: 10)
       ],
     );

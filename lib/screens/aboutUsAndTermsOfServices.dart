@@ -3,16 +3,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user/constants/strings.dart';
 import 'package:user/models/aboutUsModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
+import 'package:user/models/privacyPolicyModal.dart';
 import 'package:user/models/termsOfServicesModel.dart';
-import 'package:user/screens/data/settings_data.dart';
 
 class AboutUsAndTermsOfServiceScreen extends BaseRoute {
   final bool isAboutUs;
-  AboutUsAndTermsOfServiceScreen(this.isAboutUs, {super.analytics, super.observer, super.routeName = 'AboutUsAndTermsOfServiceScreen'});
+  final bool isPrivacy;
+  AboutUsAndTermsOfServiceScreen(
+      {this.isPrivacy = false,
+      this.isAboutUs = false,
+      super.analytics,
+      super.observer,
+      super.routeName = 'AboutUsAndTermsOfServiceScreen'});
   @override
-  _AboutUsAndTermsOfServiceScreenState createState() => new _AboutUsAndTermsOfServiceScreenState(this.isAboutUs);
+  _AboutUsAndTermsOfServiceScreenState createState() =>
+      new _AboutUsAndTermsOfServiceScreenState(this.isAboutUs, this.isPrivacy);
 }
 
 class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
@@ -20,10 +28,13 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
 
   GlobalKey<ScaffoldState>? _scaffoldKey;
   final bool isAboutUs;
+  final bool isPrivacy;
   String? text;
   AboutUs? _aboutUs = new AboutUs();
+  PrivacyPolicy? _privacyPolicy = new PrivacyPolicy();
   TermsOfService? _termsOfService = new TermsOfService();
-  _AboutUsAndTermsOfServiceScreenState(this.isAboutUs) : super();
+  _AboutUsAndTermsOfServiceScreenState(this.isAboutUs, this.isPrivacy)
+      : super();
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -31,7 +42,11 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          isAboutUs ? '${AppLocalizations.of(context)!.tle_about_us}' : '${AppLocalizations.of(context)!.tle_term_of_service}',
+          isPrivacy
+              ? Strings.privacyPolicy
+              : isAboutUs
+                  ? AppLocalizations.of(context)!.tle_about_us
+                  : AppLocalizations.of(context)!.tle_term_of_service,
           style: textTheme.titleLarge,
         ),
         leading: IconButton(
@@ -53,13 +68,15 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
                   height: MediaQuery.of(context).size.height - 120,
                   width: MediaQuery.of(context).size.width,
                   child: SingleChildScrollView(
-                    child: Text(SettingsData.termsAndConditions),
-                    // child: Html(
-                    //   data: text!.replaceFirst('Gogrocer', 'Khet se'),
-                    //   style: {
-                    //     "body": Style(color: Theme.of(context).textTheme.bodyLarge!.color),
-                    //   },
-                    // ),
+                    // child: Text(SettingsData.termsAndConditions),
+                    child: Html(
+                      data: text!.replaceFirst('Gogrocer', 'Khet se'),
+                      style: {
+                        "body": Style(
+                            color:
+                                Theme.of(context).textTheme.bodyLarge!.color),
+                      },
+                    ),
                   ),
                 )
               : _shimmerList(),
@@ -83,7 +100,17 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
-        if (isAboutUs) {
+        if (isPrivacy) {
+          await apiHelper.privacyPolicy().then((result) async {
+            print("resultttttt $result");
+            if (result != null) {
+              if (result.status == "1") {
+                _privacyPolicy = result.data;
+                text = _privacyPolicy!.description;
+              }
+            }
+          });
+        } else if (isAboutUs) {
           await apiHelper.appAboutUs().then((result) async {
             if (result != null) {
               if (result.status == "1") {
@@ -108,7 +135,8 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
       _isDataLoaded = true;
       setState(() {});
     } catch (e) {
-      print("Exception - aboutUsAndTermsOfServiceScreen.dart - _init():" + e.toString());
+      print("Exception - aboutUsAndTermsOfServiceScreen.dart - _init():" +
+          e.toString());
     }
   }
 
@@ -147,7 +175,9 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
         },
       );
     } catch (e) {
-      print("Exception - aboutUsAndTermsOfServiceScreen.dart - _shimmerList():" + e.toString());
+      print(
+          "Exception - aboutUsAndTermsOfServiceScreen.dart - _shimmerList():" +
+              e.toString());
       return SizedBox();
     }
   }

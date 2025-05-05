@@ -191,6 +191,27 @@ class _AppMenuScreenState extends BaseRouteState {
                       }
                     },
                   ),
+                  AppMenuListTile(
+                    label: "${AppLocalizations.of(context)!.btn_about_app}  ",
+                    icon: Icons.info_outline,
+                    onPressed: () {
+                      Get.to(() => AboutUsAndTermsOfServiceScreen(
+                          isAboutUs: true,
+                          analytics: widget.analytics,
+                          observer: widget.observer));
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  AppMenuListTile(
+                    label: "Privacy & Policy",
+                    icon: Icons.policy_outlined,
+                    onPressed: () {
+                      Get.to(() => AboutUsAndTermsOfServiceScreen(
+                          isPrivacy: true,
+                          analytics: widget.analytics,
+                          observer: widget.observer));
+                    },
+                  ),
                   SizedBox(height: 8.0),
                   AppMenuListTile(
                     label: "Ratings & Reviews",
@@ -242,7 +263,8 @@ class _AppMenuScreenState extends BaseRouteState {
                           "${AppLocalizations.of(context)!.tle_term_of_service}  ",
                       icon: Icons.design_services_outlined,
                       onPressed: () {
-                        Get.to(() => AboutUsAndTermsOfServiceScreen(false,
+                        Get.to(() => AboutUsAndTermsOfServiceScreen(
+                            isAboutUs: false,
                             analytics: widget.analytics,
                             observer: widget.observer));
                       }),
