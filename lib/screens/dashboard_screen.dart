@@ -52,7 +52,7 @@ class _DashboardScreenState extends BaseRouteState {
             callNumberStore: callNumberStore,
             inviteFriendShareMessage: br.inviteFriendShareMessage),
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(161), // increase height
+          preferredSize: Size.fromHeight(171),
           child: Container(
             color: Color(0xff3b9d2f),
             child: SafeArea(
@@ -61,12 +61,17 @@ class _DashboardScreenState extends BaseRouteState {
                   AppBarTitleMessage(),
                   AppBar(
                     leadingWidth: 46,
-                    toolbarHeight: 80,
+                    toolbarHeight: 90,
                     surfaceTintColor: Colors.transparent,
+                    backgroundColor: Color(0xff3b9d2f),
                     centerTitle: true,
                     leading: IconButton(
-                      visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                      icon: Icon(Icons.dashboard_outlined),
+                      visualDensity:
+                          VisualDensity(horizontal: -4, vertical: -4),
+                      icon: Icon(
+                        Icons.dashboard_outlined,
+                        color: Colors.white,
+                      ),
                       onPressed: onAppDrawerButtonPressed,
                     ),
                     title: DashboardLocationTitle(
@@ -75,25 +80,44 @@ class _DashboardScreenState extends BaseRouteState {
                       getCurrentPosition: getCurrentPosition,
                     ),
                     actions: [
-                      IconButton(
-                        onPressed: () {
-                          if (global.currentUser!.id == null) {
-                            Get.to(() => LoginScreen(
-                                analytics: widget.analytics, observer: widget.observer));
-                          } else {
-                            Get.to(
-                              () => WalletScreen(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                              ),
-                            );
-                          }
-                        },
-                        icon: Icon(Icons.account_balance_wallet_outlined),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (global.currentUser!.id == null) {
+                                Get.to(() => LoginScreen(
+                                    analytics: widget.analytics,
+                                    observer: widget.observer));
+                              } else {
+                                Get.to(
+                                  () => WalletScreen(
+                                    analytics: widget.analytics,
+                                    observer: widget.observer,
+                                  ),
+                                );
+                              }
+                            },
+                            child: Icon(
+                              Icons.account_balance_wallet_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            "${global.appInfo?.currencySign} ${global.userProfileController.currentUser?.wallet}",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
                       ),
                       IconButton(
                         visualDensity: VisualDensity(horizontal: -4),
-                        icon: Icon(Icons.search_outlined),
+                        icon: Icon(
+                          Icons.search_outlined,
+                          color: Colors.white,
+                        ),
                         onPressed: () => Get.to(() => SearchScreen(
                               analytics: widget.analytics,
                               observer: widget.observer,
@@ -102,7 +126,10 @@ class _DashboardScreenState extends BaseRouteState {
                       global.currentUser?.id != null
                           ? IconButton(
                               visualDensity: VisualDensity(horizontal: -4),
-                              icon: Icon(Icons.notifications_none),
+                              icon: Icon(
+                                Icons.notifications_none,
+                                color: Colors.white,
+                              ),
                               onPressed: () => Get.to(() => NotificationScreen(
                                     analytics: widget.analytics,
                                     observer: widget.observer,
