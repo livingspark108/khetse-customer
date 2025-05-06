@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user/constants/color_constants.dart';
 import 'package:user/constants/image_constants.dart';
 import 'package:user/controllers/user_profile_controller.dart';
 import 'package:user/models/addressModel.dart';
@@ -240,13 +241,51 @@ class _UserProfileScreenState extends BaseRouteState {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "${AppLocalizations.of(context)!.txt_user_profile}",
+                                style: textTheme.titleLarge,
+                              ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "${AppLocalizations.of(context)!.txt_user_profile}",
-                                    style: textTheme.titleLarge,
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 32.0),
+                                        child: Center(
+                                          child: ProfilePicture(
+                                            isShow: false,
+                                            radius: 30,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 30,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          global.userProfileController
+                                                          .currentUser?.name !=
+                                                      null &&
+                                                  (global
+                                                          .userProfileController
+                                                          .currentUser
+                                                          ?.name
+                                                          ?.isNotEmpty ??
+                                                      false)
+                                              ? global.userProfileController
+                                                      .currentUser?.name ??
+                                                  ''
+                                              : 'User',
+                                          style: textTheme.titleLarge,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -258,33 +297,6 @@ class _UserProfileScreenState extends BaseRouteState {
                                     icon: Icon(Icons.edit),
                                   )
                                 ],
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 32.0),
-                                child: Center(
-                                  child: ProfilePicture(
-                                    isShow: false,
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Text(
-                                  global.userProfileController.currentUser
-                                                  ?.name !=
-                                              null &&
-                                          (global
-                                                  .userProfileController
-                                                  .currentUser
-                                                  ?.name
-                                                  ?.isNotEmpty ??
-                                              false)
-                                      ? global.userProfileController.currentUser
-                                              ?.name ??
-                                          ''
-                                      : 'User',
-                                  style: textTheme.titleLarge,
-                                ),
                               ),
                               // Padding(
                               //   padding: const EdgeInsets.symmetric(vertical: 32.0),
@@ -437,7 +449,8 @@ class _UserProfileScreenState extends BaseRouteState {
                                 },
                                 leadingIcon: SvgPicture.asset(
                                   ImageConstants.LIVE_CHAT_LOGO_URL,
-                                  color: Colors.black,
+                                  color: ColorConstants.getForegroundColor(
+                                      context),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -456,7 +469,8 @@ class _UserProfileScreenState extends BaseRouteState {
                                 },
                                 leadingIcon: SvgPicture.asset(
                                   ImageConstants.LOGOUT_LOGO_URL,
-                                  color: Colors.black,
+                                  color: ColorConstants.getForegroundColor(
+                                      context),
                                 ),
                               ),
                               SizedBox(height: 16),
