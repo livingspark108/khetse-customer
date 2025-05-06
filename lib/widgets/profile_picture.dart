@@ -18,11 +18,23 @@ class ProfilePicture extends StatefulWidget {
   final File? tImage;
   @required
   final bool? isShow;
+  final double? radius;
 
-  ProfilePicture({this.profilePictureUrl, this.onPressed, this.tImage, this.isShow}) : super();
+  ProfilePicture(
+      {this.profilePictureUrl,
+      this.onPressed,
+      this.tImage,
+      this.isShow,
+      this.radius = 60})
+      : super();
 
   @override
-  _ProfilePictureState createState() => _ProfilePictureState(profilePictureUrl: profilePictureUrl, onPressed: onPressed, tImage: tImage, isShow: isShow);
+  _ProfilePictureState createState() => _ProfilePictureState(
+      profilePictureUrl: profilePictureUrl,
+      onPressed: onPressed,
+      tImage: tImage,
+      radius: radius,
+      isShow: isShow);
 }
 
 class _ProfilePictureState extends State<ProfilePicture> {
@@ -30,8 +42,14 @@ class _ProfilePictureState extends State<ProfilePicture> {
   Function? onPressed;
   File? tImage;
   bool? isShow;
+  double? radius;
 
-  _ProfilePictureState({this.profilePictureUrl, this.onPressed, this.tImage, this.isShow});
+  _ProfilePictureState(
+      {this.profilePictureUrl,
+      this.onPressed,
+      this.tImage,
+      this.isShow,
+      this.radius});
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +59,25 @@ class _ProfilePictureState extends State<ProfilePicture> {
         tImage != null
             ? CircleAvatar(
                 backgroundColor: Colors.white,
-                radius: 60,
+                radius: radius,
                 backgroundImage: FileImage(File(tImage!.path)),
               )
             : global.currentUser != null
                 ? CachedNetworkImage(
-                    imageUrl: global.appInfo!.imageUrl != null ? global.appInfo!.imageUrl! + global.currentUser!.userImage.toString() : "",
+                    imageUrl: global.appInfo!.imageUrl != null
+                        ? global.appInfo!.imageUrl! +
+                            global.currentUser!.userImage.toString()
+                        : "",
                     imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: 60,
+                      radius: radius,
                       backgroundImage: imageProvider,
                       backgroundColor: Colors.white,
                     ),
-                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
                     errorWidget: (context, url, error) => CircleAvatar(
                         backgroundColor: Colors.white,
-                        radius: 60,
+                        radius: radius,
                         child: Icon(
                           Icons.person,
                           size: 60,
@@ -64,7 +86,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                   )
                 : CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 60,
+                    radius: radius,
                     child: Icon(
                       Icons.person,
                       size: 60,
@@ -102,11 +124,13 @@ class _ProfilePictureState extends State<ProfilePicture> {
       if (permissionStatus.isLimited || permissionStatus.isDenied) {
         permissionStatus = await Permission.camera.request();
       }
-      XFile _selectedImage = await (ImagePicker().pickImage(source: ImageSource.camera) as FutureOr<XFile>);
+      XFile _selectedImage = await (ImagePicker()
+          .pickImage(source: ImageSource.camera) as FutureOr<XFile>);
       File imageFile = File(_selectedImage.path);
       File _finalImage = await (_cropImage(imageFile.path) as FutureOr<File>);
 
-      _finalImage = await (_imageCompress(_finalImage, imageFile.path) as FutureOr<File>);
+      _finalImage =
+          await (_imageCompress(_finalImage, imageFile.path) as FutureOr<File>);
 
       return _finalImage;
     } catch (e) {
@@ -122,13 +146,16 @@ class _ProfilePictureState extends State<ProfilePicture> {
         permissionStatus = await Permission.photos.request();
       }
       File imageFile;
-      XFile _selectedImage = await (ImagePicker().pickImage(source: ImageSource.gallery) as FutureOr<XFile>);
+      XFile _selectedImage = await (ImagePicker()
+          .pickImage(source: ImageSource.gallery) as FutureOr<XFile>);
       imageFile = File(_selectedImage.path);
       File _byteData = await (_cropImage(imageFile.path) as FutureOr<File>);
-      _byteData = await (_imageCompress(_byteData, imageFile.path) as FutureOr<File>);
+      _byteData =
+          await (_imageCompress(_byteData, imageFile.path) as FutureOr<File>);
       return _byteData;
     } catch (e) {
-      print("Exception - profile_picture.dart - selectImageFromGallery()" + e.toString());
+      print("Exception - profile_picture.dart - selectImageFromGallery()" +
+          e.toString());
     }
     return null;
   }
@@ -221,7 +248,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
             )
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: Text('${AppLocalizations.of(context)!.lbl_cancel}', style: TextStyle(color: Theme.of(context).primaryColor)),
+            child: Text('${AppLocalizations.of(context)!.lbl_cancel}',
+                style: TextStyle(color: Theme.of(context).primaryColor)),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -229,7 +257,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
         ),
       );
     } catch (e) {
-      print("Exception - profile_picture.dart - _showCupertinoModalSheet():" + e.toString());
+      print("Exception - profile_picture.dart - _showCupertinoModalSheet():" +
+          e.toString());
     }
   }
 }

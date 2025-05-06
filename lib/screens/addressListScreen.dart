@@ -1,19 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:user/controllers/user_profile_controller.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/screens/add_address_screen.dart';
-import 'package:user/screens/home_screen.dart';
 
 class AddressListScreen extends BaseRoute {
-  AddressListScreen({super.analytics, super.observer, super.routeName = 'AddressListScreen'});
+  AddressListScreen(
+      {super.analytics, super.observer, super.routeName = 'AddressListScreen'});
   @override
   _AddressListScreenState createState() => new _AddressListScreenState();
 }
@@ -29,13 +27,8 @@ class _AddressListScreenState extends BaseRouteState {
     TextTheme textTheme = Theme.of(context).textTheme;
     return WillPopScope(
         onWillPop: () async {
-          var value = await Get.to(() => HomeScreen(
-            analytics: widget.analytics,
-            observer: widget.observer,
-            screenId: 1,
-          ));
-
-          return value as bool;
+          Navigator.of(context).pop();
+          return false;
         },
         child: SafeArea(
           child: Scaffold(
@@ -46,11 +39,7 @@ class _AddressListScreenState extends BaseRouteState {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 onTap: () {
-                  Get.to(() => HomeScreen(
-                        analytics: widget.analytics,
-                        observer: widget.observer,
-                        screenId: 1,
-                      ));
+                  Navigator.of(context).pop();
                 },
                 child: Align(
                   alignment: Alignment.center,
@@ -65,12 +54,16 @@ class _AddressListScreenState extends BaseRouteState {
               actions: [
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
+                    Navigator.of(context)
+                        .push(
                       MaterialPageRoute(
-                        builder: (context) => AddAddressScreen(new Address(), analytics: widget.analytics, observer: widget.observer),
+                        builder: (context) => AddAddressScreen(new Address(),
+                            analytics: widget.analytics,
+                            observer: widget.observer),
                       ),
-                    ).then((value){
-                      setState(() { });
+                    )
+                        .then((value) {
+                      setState(() {});
                     });
                   },
                   child: Container(
@@ -101,50 +94,70 @@ class _AddressListScreenState extends BaseRouteState {
                         ? GetBuilder<UserProfileController>(
                             init: global.userProfileController,
                             builder: (value) => ListView.builder(
-                              itemCount: global.userProfileController.addressList.length,
+                              itemCount: global
+                                  .userProfileController.addressList.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return Card(
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(7),
                                     title: Text(
-                                      global.userProfileController.addressList[index].type!,
+                                      global.userProfileController
+                                          .addressList[index].type!,
                                       style: textTheme.bodyLarge!.copyWith(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     subtitle: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "${global.userProfileController.addressList[index].houseNo}, ${global.userProfileController.addressList[index].landmark}, ${global.userProfileController.addressList[index].society}",
-                                          style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                                          style: textTheme.bodyLarge!.copyWith(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
                                             IconButton(
                                                 onPressed: () {
-                                                  Navigator.of(context).push(
+                                                  Navigator.of(context)
+                                                      .push(
                                                     MaterialPageRoute(
-                                                      builder: (context) => AddAddressScreen(global.userProfileController.addressList[index], analytics: widget.analytics, observer: widget.observer),
+                                                      builder: (context) =>
+                                                          AddAddressScreen(
+                                                              global.userProfileController
+                                                                      .addressList[
+                                                                  index],
+                                                              analytics: widget
+                                                                  .analytics,
+                                                              observer: widget
+                                                                  .observer),
                                                     ),
-                                                  ).then((value){
-                                                    setState(() { });
+                                                  )
+                                                      .then((value) {
+                                                    setState(() {});
                                                   });
                                                 },
                                                 icon: Icon(Icons.edit)),
                                             IconButton(
                                                 onPressed: () async {
-                                                  await deleteConfirmationDialog(index);
+                                                  await deleteConfirmationDialog(
+                                                      index);
                                                 },
                                                 icon: Icon(
                                                   Icons.delete,
-                                                  color: Theme.of(context).colorScheme.primary,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                                 )),
                                           ],
                                         )
@@ -156,7 +169,8 @@ class _AddressListScreenState extends BaseRouteState {
                             ),
                           )
                         : Center(
-                            child: Text('${AppLocalizations.of(context)!.txt_no_address}'),
+                            child: Text(
+                                '${AppLocalizations.of(context)!.txt_no_address}'),
                           )
                     : _shimmerList(),
               ),
@@ -200,7 +214,8 @@ class _AddressListScreenState extends BaseRouteState {
         ),
       );
     } catch (e) {
-      print("Exception - addressListScreen.dart - deleteConfirmationDialog():" + e.toString());
+      print("Exception - addressListScreen.dart - deleteConfirmationDialog():" +
+          e.toString());
       return false;
     }
   }
@@ -228,7 +243,8 @@ class _AddressListScreenState extends BaseRouteState {
       }
       setState(() {});
     } catch (e) {
-      print("Exception - addressListScreen.dart - _getMyAddressList():" + e.toString());
+      print("Exception - addressListScreen.dart - _getMyAddressList():" +
+          e.toString());
     }
   }
 
@@ -243,7 +259,8 @@ class _AddressListScreenState extends BaseRouteState {
         showNetworkErrorSnackBar(_scaffoldKey);
       }
     } catch (e) {
-      print("Exception - addressListScreen.dart - _removeAddress():" + e.toString());
+      print("Exception - addressListScreen.dart - _removeAddress():" +
+          e.toString());
     }
   }
 
@@ -282,7 +299,8 @@ class _AddressListScreenState extends BaseRouteState {
         },
       );
     } catch (e) {
-      print("Exception - addressListScreen.dart - _shimmerList():" + e.toString());
+      print("Exception - addressListScreen.dart - _shimmerList():" +
+          e.toString());
       return SizedBox();
     }
   }

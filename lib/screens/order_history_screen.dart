@@ -41,7 +41,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
           automaticallyImplyLeading:
               !(widget as OrderHistoryScreen).disableWillpop,
           backgroundColor: Color(0xff3b9d2f),
-          toolbarHeight: 100,
+          toolbarHeight: 110,
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
           title: Column(
@@ -49,7 +49,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
             children: [
               !(widget as OrderHistoryScreen).disableWillpop
                   ? SizedBox()
-                  : AppBarTitleMessage(showMessage: false),
+                  : AppBarTitleMessage(showMessage: true),
               Text(
                 "${AppLocalizations.of(context)!.tle_order_history}",
                 style: textTheme.titleLarge!.copyWith(color: Colors.white),
