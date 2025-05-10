@@ -197,25 +197,29 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                       fontSize: 16),
                                 ),
                                 SizedBox(height: 5),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 3),
-                                  child: Text(
-                                    product!.type != null && product!.type != ''
-                                        ? product!.type!
-                                        : '',
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: normalCaptionStyle(context),
-                                  ),
-                                ),
-                                Text(
-                                  product!.description != null &&
-                                          product!.description != ''
-                                      ? product!.description!
-                                      : '',
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                  style: normalCaptionStyle(context),
+                                Text("${product!.quantity} ${product!.unit}"),
+                                SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    Text(
+                                      product!.type != null && product!.type != ''
+                                          ? product!.type!
+                                          : '',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: normalCaptionStyle(context),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      product!.description != null &&
+                                              product!.description != ''
+                                          ? product!.description!
+                                          : '',
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
+                                      style: normalCaptionStyle(context),
+                                    ),
+                                  ],
                                 ),
                                 product!.rating != null && product!.rating! > 0
                                     ? Padding(

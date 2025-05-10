@@ -255,6 +255,10 @@ class _LocationScreenState extends BaseRouteState {
       _isDataLoaded = true;
       await _updateMarker(_lat, _lng);
 
+      List<Placemark> placemarks = await placemarkFromCoordinates(_lat!, _lng!);
+      setPlace = placemarks[0]; // Initialize setPlace
+      _isShowConfirmLocationWidget = true;
+
       setState(() {});
     } catch (e) {
       print("Exception - location_screen.dart - _init():" + e.toString());

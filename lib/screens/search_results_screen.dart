@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,6 +34,20 @@ class _SearchResultsScreenState extends BaseRouteState {
   TextEditingController _cSearch = new TextEditingController();
   int page = 1;
   final CartController cartController = Get.put(CartController());
+  Timer? _debounce;
+
+  void _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (_cSearch.text.isNotEmpty && _cSearch.text != searchParams) {
+        searchParams = _cSearch.text;
+        _productSearchResult?.clear();
+        _isDataLoaded = false;
+        setState(() {});
+        await _init();
+      }
+    });
+  }
 
   _SearchResultsScreenState({this.searchParams});
 
@@ -192,6 +208,7 @@ class _SearchResultsScreenState extends BaseRouteState {
   void initState() {
     super.initState();
     _cSearch.text = searchParams!;
+    _cSearch.addListener(_onSearchChanged);
     _init();
   }
 

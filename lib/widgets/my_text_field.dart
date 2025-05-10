@@ -79,7 +79,7 @@ class _MyTextFieldState extends State<MyTextField> {
       autofocus: autofocus ?? false,
       readOnly: readOnly ?? false,
       maxLines: maxLines ?? 1,
-      initialValue: initialText,
+      initialValue: controller == null ? initialText : null,
       maxLength: maxlength,
       onTap: onTap as void Function()?,
       focusNode: focusNode,

@@ -25,7 +25,7 @@ String appName = 'Khet Se';
 String appShareMessage =
     "I'm inviting you to use $appName, a simple and easy app to find all required products near by your location. Here's my code [CODE] - just enter it while registration.";
 String appVersion = '1.0';
-String baseUrl = 'https://app.livingcart.in/api/';
+String baseUrl = 'https://app.khetse.co/api/';
 int cartCount = 0;
 List<Color> colorList = [
   Color(0xFF4DD0E1),

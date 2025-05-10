@@ -14,4 +14,6 @@ class ImageConstants {
   static const String EMAIL_LOGIN_LOGO = "assets/images/email_logo.png";
   static const String PHONE_IMG = "assets/images/phone_img.svg";
   static const String MEMBERSHIP_LOGO = "assets/images/membershipCard.svg";
+  static const String SPLASH = "assets/images/splash.png";
+  static const String SPLASH_LOGO = "assets/images/splash_logo.png";
 }

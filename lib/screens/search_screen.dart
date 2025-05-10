@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
@@ -38,6 +40,15 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
   dynamic observer;
   TextEditingController _cSearch = new TextEditingController();
 
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _cSearch.dispose();
+    super.dispose();
+  }
+
   _SearchScreenHeaderState({this.textTheme, this.analytics, this.observer});
 
   @override
@@ -48,9 +59,14 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
             key: Key('30'),
             autofocus: false,
             controller: _cSearch,
-            suffixIcon: Icon(
-              Icons.cancel,
-              color: Theme.of(context).colorScheme.primary,
+            suffixIcon: InkWell(
+              onTap: () {
+                _cSearch.clear();
+              },
+              child: Icon(
+                Icons.cancel,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             prefixIcon: Icon(
               Icons.search_outlined,
@@ -60,7 +76,18 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
             ),
             hintText: "${AppLocalizations.of(context)!.hnt_search_product}",
             textCapitalization: TextCapitalization.words,
-            onChanged: (value) {},
+            onChanged: (value) {
+              if (value.trim().isNotEmpty) {
+                _debounce?.cancel();
+                _debounce = Timer(Duration(milliseconds: 500), () {
+                  Get.to(() => SearchResultsScreen(
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                    searchParams: value.trim(),
+                  ));
+                });
+              }
+            },
             onEditingComplete: () {
               Get.to(() => SearchResultsScreen(
                     analytics: widget.analytics,

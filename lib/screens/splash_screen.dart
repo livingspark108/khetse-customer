@@ -7,12 +7,15 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user/constants/image_constants.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/models.dart';
 import 'package:user/screens/screens.dart';
+import 'package:user/widgets/loader.dart';
 
 class SplashScreen extends BaseRoute {
-  SplashScreen({super.analytics, super.observer, super.routeName = 'SplashScreen'});
+  SplashScreen(
+      {super.analytics, super.observer, super.routeName = 'SplashScreen'});
   @override
   _SplashScreenState createState() => new _SplashScreenState();
 }
@@ -25,18 +28,36 @@ class _SplashScreenState extends BaseRouteState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          alignment: Alignment.center,
-          // padding: EdgeInsets.all(32),
-          child: Image.asset(
-            'assets/images/icon.png',
-            fit: BoxFit.contain,
-            scale: 3,
-          ),
-        ));
+      key: _scaffoldKey,
+      backgroundColor: Color(0xfffffff1),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.20),
+            Image.asset(
+              ImageConstants.SPLASH_LOGO,
+              height: MediaQuery.of(context).size.height * 0.25,
+            ),
+            Expanded(child: SizedBox()),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.50,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage(ImageConstants.SPLASH),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Loader(color: Color(0xff537954)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void clearSp() async {
@@ -63,7 +84,8 @@ class _SplashScreenState extends BaseRouteState {
               global.appInfo = result.data;
             } else {
               hideLoader();
-              showSnackBar(key: _scaffoldKey, snackBarMessage: '${result.message}');
+              showSnackBar(
+                  key: _scaffoldKey, snackBarMessage: '${result.message}');
             }
           }
         });
@@ -112,7 +134,8 @@ class _SplashScreenState extends BaseRouteState {
         showNetworkErrorSnackBar(_scaffoldKey);
       }
     } catch (e) {
-      print("Exception - splash_screen.dart - _getGoogleMapApiKey():" + e.toString());
+      print("Exception - splash_screen.dart - _getGoogleMapApiKey():" +
+          e.toString());
     }
   }
 
@@ -133,7 +156,8 @@ class _SplashScreenState extends BaseRouteState {
         showNetworkErrorSnackBar(_scaffoldKey);
       }
     } catch (e) {
-      print("Exception - splash_screen.dart - _getMapBoxApiKey():" + e.toString());
+      print("Exception - splash_screen.dart - _getMapBoxApiKey():" +
+          e.toString());
     }
   }
 
@@ -182,7 +206,8 @@ class _SplashScreenState extends BaseRouteState {
 
     if (isConnected) {
       if (global.sp?.getString('currentUser') != null) {
-        global.currentUser = CurrentUser.fromJson(json.decode(global.sp!.getString("currentUser")!));
+        global.currentUser = CurrentUser.fromJson(
+            json.decode(global.sp!.getString("currentUser")!));
         if (global.sp?.getString('lastloc') != null) {
           List<String> _tlist = global.sp!.getString('lastloc')!.split("|");
           global.lat = double.parse(_tlist[0]);
@@ -194,21 +219,21 @@ class _SplashScreenState extends BaseRouteState {
 
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen(
-                analytics: widget.analytics,
-                observer: widget.observer,
-              )));
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  )));
         } else {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomeScreen(
-                analytics: widget.analytics,
-                observer: widget.observer,
-              )));
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  )));
         }
       } else {
         Get.to(() => IntroScreen(
-          analytics: widget.analytics,
-          observer: widget.observer,
-        ));
+              analytics: widget.analytics,
+              observer: widget.observer,
+            ));
       }
     } else {
       showNetworkErrorSnackBar(_scaffoldKey);

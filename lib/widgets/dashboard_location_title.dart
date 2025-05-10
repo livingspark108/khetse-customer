@@ -57,7 +57,7 @@ class DashboardLocationTitle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 180,
+                width: 160,
                 child: Text(
                   global.currentLocation != null
                       ? global.currentLocation!

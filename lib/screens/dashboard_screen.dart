@@ -107,7 +107,7 @@ class _DashboardScreenState extends BaseRouteState {
                             ),
                           ),
                           Text(
-                            "${global.appInfo?.currencySign} ${global.userProfileController.currentUser?.wallet}",
+                            "${global.appInfo?.currencySign} ${global.userProfileController.currentUser?.wallet ?? "0.0"}",
                             style: TextStyle(color: Colors.white),
                           ),
                         ],

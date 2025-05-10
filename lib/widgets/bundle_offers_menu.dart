@@ -150,30 +150,45 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                     fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                             ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    product!.type != null && product!.type != ''
+                                        ? product!.type!
+                                        : '',
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: normalCaptionStyle(context)
+                                        .copyWith(fontSize: 11),
+                                  ),
+                                ),
+                                SizedBox(width: 2),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    product!.description != null &&
+                                        product!.description != ''
+                                        ? product!.description!
+                                        : '',
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: normalCaptionStyle(context)
+                                        .copyWith(fontSize: 11),
+                                  ),
+                                ),
+                              ],
+                            ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 5),
+                              padding: const EdgeInsets.only(top: 5, bottom: 2),
                               child: Text(
-                                product!.type != null && product!.type != ''
-                                    ? product!.type!
-                                    : '',
+                                "${product!.quantity} ${product!.unit} ",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.ellipsis,
                                 style: normalCaptionStyle(context)
                                     .copyWith(fontSize: 11),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                product!.description != null &&
-                                        product!.description != ''
-                                    ? product!.description!
-                                    : '',
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: normalCaptionStyle(context)
-                                    .copyWith(fontSize: 12),
                               ),
                             ),
                             Row(

@@ -198,7 +198,6 @@ class _ProfileEditScreenState extends BaseRouteState {
                                 Key('2'),
                                 controller: _cPhone,
                                 focusNode: _fPhone,
-                                readOnly: true,
                                 hintText: '${global.appInfo!.countryCode} 0000000000',
                                 keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
                                 inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(global.appInfo!.phoneNumberLength)],
@@ -219,7 +218,6 @@ class _ProfileEditScreenState extends BaseRouteState {
                                 Key('3'),
                                 controller: _cEmail,
                                 focusNode: _fEmail,
-                                readOnly: true,
                                 hintText: 'user@gmail.com',
                                 onFieldSubmitted: (val) {
                                   FocusScope.of(context).requestFocus(_fCity);

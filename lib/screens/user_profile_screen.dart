@@ -20,6 +20,8 @@ import 'package:user/screens/membership_screen.dart';
 import 'package:user/screens/order_history_screen.dart';
 import 'package:user/screens/profile_edit_screen.dart';
 import 'package:user/screens/refer_and_earn_screen.dart';
+import 'package:user/screens/wallet_screen.dart';
+import 'package:user/screens/wishlist_screen.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/profile_picture.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -298,102 +300,27 @@ class _UserProfileScreenState extends BaseRouteState {
                                   )
                                 ],
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.symmetric(vertical: 32.0),
-                              //   child: Row(
-                              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: [
-                              //       UserOrdersDashboardBox(
-                              //         heading: "${AppLocalizations.of(context).lbl_order}",
-                              //         value: global.userProfileController.currentUser.totalOrders.toString(),
-                              //       ),
-                              //       UserOrdersDashboardBox(
-                              //         value: '${global.appInfo.currencySign} ${global.userProfileController.currentUser.totalSaved}',
-                              //         heading: "${AppLocalizations.of(context).lbl_saved}",
-                              //       ),
-                              //       UserOrdersDashboardBox(
-                              //         value: '${global.appInfo.currencySign} ${global.userProfileController.currentUser.totalSpend}',
-                              //         heading: "${AppLocalizations.of(context).lbl_spent}",
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              UserInfoTile(
-                                  heading:
-                                      "${AppLocalizations.of(context)!.lbl_phone_number}",
-                                  value: global.userProfileController
-                                      .currentUser?.userPhone),
-                              SizedBox(height: 8),
-                              UserInfoTile(
-                                key: UniqueKey(),
-                                heading:
-                                    "${AppLocalizations.of(context)!.txt_address}",
-                                onPressed: () {
-                                  global.userProfileController.addressList
-                                              .length >
-                                          0
-                                      ? Get.to(() => AddressListScreen(
-                                                analytics: widget.analytics,
-                                                observer: widget.observer,
-                                              ))!
-                                          .then((value) {
-                                          setState(() {});
-                                        })
-                                      : Get.to(() => AddAddressScreen(
-                                                new Address(),
-                                                analytics: widget.analytics,
-                                                observer: widget.observer,
-                                              ))!
-                                          .then((value) {
-                                          setState(() {});
-                                        });
-                                },
-                                value: global.userProfileController.addressList
-                                            .length >
-                                        0
-                                    ? global.userProfileController
-                                        .addressList[0].houseNo
-                                    : '${AppLocalizations.of(context)!.txt_nothing_to_show}',
-                              ),
-                              SizedBox(height: 8),
-                              UserInfoTile(
-                                heading:
-                                    "${AppLocalizations.of(context)!.lbl_email}",
-                                value: global
-                                    .userProfileController.currentUser?.email,
-                              ),
                               SizedBox(height: 16),
                               UserInfoTile(
                                 heading:
-                                    "${AppLocalizations.of(context)!.lbl_reset_password}",
+                                "My Wallet",
                                 onPressed: () {
-                                  Get.to(() => ChangePasswordScreen(
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
                                         analytics: widget.analytics,
-                                        observer: widget.observer,
-                                      ));
+                                        observer: widget.observer));
+                                  } else {
+                                    Get.to(() => WalletScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  }
                                 },
-                                leadingIcon: Icon(
-                                  Icons.lock_outline,
-                                ),
+                                leadingIcon: Icon(Icons.account_balance_wallet_outlined, color: ColorConstants.getForegroundColor(context),),
                               ),
                               SizedBox(height: 16),
                               UserInfoTile(
                                 heading:
-                                    "${AppLocalizations.of(context)!.btn_membership}",
-                                onPressed: () {
-                                  Get.to(() => MemberShipScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer));
-                                },
-                                leadingIcon: Icon(
-                                  Icons.card_membership_sharp,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                    "${AppLocalizations.of(context)!.lbl_order} ",
+                                "${AppLocalizations.of(context)!.lbl_order} ",
                                 onPressed: () {
                                   if (global.currentUser!.id == null) {
                                     Get.to(() => LoginScreen(
@@ -402,14 +329,82 @@ class _UserProfileScreenState extends BaseRouteState {
                                   } else {
                                     if (global.nearStoreModel != null) {
                                       Get.to(() => OrderHistoryScreen(
-                                            analytics: widget.analytics,
-                                            observer: widget.observer,
-                                            disableWillpop: false,
-                                          ));
+                                        analytics: widget.analytics,
+                                        observer: widget.observer,
+                                        disableWillpop: false,
+                                      ));
                                     }
                                   }
                                 },
                                 leadingIcon: Icon(Icons.history),
+                              ),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                  key: UniqueKey(),
+                                  leadingIcon: Icon(Icons.location_on_outlined),
+                                  heading:
+                                  "My Delivery Address",
+                                  onPressed: () {
+                                    global.userProfileController.addressList
+                                        .length >
+                                        0
+                                        ? Get.to(() => AddressListScreen(
+                                      analytics: widget.analytics,
+                                      observer: widget.observer,
+                                    ))!
+                                        .then((value) {
+                                      setState(() {});
+                                    })
+                                        : Get.to(() => AddAddressScreen(
+                                      new Address(),
+                                      analytics: widget.analytics,
+                                      observer: widget.observer,
+                                    ))!
+                                        .then((value) {
+                                      setState(() {});
+                                    });
+                                  }
+                              ),
+                              global.nearStoreModel != null ? SizedBox(height: 16) : SizedBox(),
+                              global.nearStoreModel != null ? UserInfoTile(
+                                heading:
+                                "Wishlist",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    Get.to(() => WishListScreen(
+                                      analytics: widget.analytics,
+                                      observer: widget.observer,
+                                    ));
+                                  }
+                                },
+                                leadingIcon: Icon(Icons.favorite_outline, color: ColorConstants.getForegroundColor(context),),
+                              ) : SizedBox(),
+                              SizedBox(height: 16),
+                              UserInfoTile(
+                                heading:
+                                "${AppLocalizations.of(context)!.txt_live_chat} ",
+                                onPressed: () {
+                                  if (global.currentUser!.id == null) {
+                                    Get.to(() => LoginScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer));
+                                  } else {
+                                    if (global.nearStoreModel != null) {
+                                      Get.to(() => ChatScreen(
+                                          analytics: widget.analytics,
+                                          observer: widget.observer));
+                                    }
+                                  }
+                                },
+                                leadingIcon: SvgPicture.asset(
+                                  ImageConstants.LIVE_CHAT_LOGO_URL,
+                                  color: ColorConstants.getForegroundColor(
+                                      context),
+                                ),
                               ),
                               SizedBox(height: 16),
                               UserInfoTile(
@@ -433,24 +428,14 @@ class _UserProfileScreenState extends BaseRouteState {
                               SizedBox(height: 16),
                               UserInfoTile(
                                 heading:
-                                    "${AppLocalizations.of(context)!.txt_live_chat} ",
+                                "${AppLocalizations.of(context)!.btn_membership}",
                                 onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    if (global.nearStoreModel != null) {
-                                      Get.to(() => ChatScreen(
-                                          analytics: widget.analytics,
-                                          observer: widget.observer));
-                                    }
-                                  }
+                                  Get.to(() => MemberShipScreen(
+                                      analytics: widget.analytics,
+                                      observer: widget.observer));
                                 },
-                                leadingIcon: SvgPicture.asset(
-                                  ImageConstants.LIVE_CHAT_LOGO_URL,
-                                  color: ColorConstants.getForegroundColor(
-                                      context),
+                                leadingIcon: Icon(
+                                  Icons.card_membership_sharp,
                                 ),
                               ),
                               SizedBox(height: 16),

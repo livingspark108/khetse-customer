@@ -132,26 +132,6 @@ class _AppMenuScreenState extends BaseRouteState {
                   global.nearStoreModel != null
                       ? AppMenuListTile(
                           label:
-                              "${AppLocalizations.of(context)!.btn_wishlist}  ",
-                          leadingIconUrl: ImageConstants.TRACK_ORDER_LOGO_URL,
-                          onPressed: () {
-                            if (global.currentUser!.id == null) {
-                              Get.to(() => LoginScreen(
-                                  analytics: widget.analytics,
-                                  observer: widget.observer));
-                            } else {
-                              Get.to(() => WishListScreen(
-                                    analytics: widget.analytics,
-                                    observer: widget.observer,
-                                  ));
-                            }
-                          },
-                        )
-                      : SizedBox(),
-                  SizedBox(height: 8.0),
-                  global.nearStoreModel != null
-                      ? AppMenuListTile(
-                          label:
                               "${AppLocalizations.of(context)!.lbl_coupons}  ",
                           leadingIconUrl: ImageConstants.COUPONS_LOGO_URL,
                           onPressed: () => Get.to(() => CouponsScreen(
@@ -175,22 +155,6 @@ class _AppMenuScreenState extends BaseRouteState {
                               observer: widget.observer));
                         }
                       }),
-                  SizedBox(height: 8.0),
-                  AppMenuListTile(
-                    label: "${AppLocalizations.of(context)!.btn_my_wallet}  ",
-                    icon: Icons.account_balance_wallet_outlined,
-                    onPressed: () {
-                      if (global.currentUser!.id == null) {
-                        Get.to(() => LoginScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer));
-                      } else {
-                        Get.to(() => WalletScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer));
-                      }
-                    },
-                  ),
                   AppMenuListTile(
                     label: "${AppLocalizations.of(context)!.btn_about_app}  ",
                     icon: Icons.info_outline,
