@@ -251,17 +251,17 @@ class _WishListScreenState extends BaseRouteState {
     try {
       if (global.nearStoreModel!.id != null) {
         await _getWishListProduct();
-        _scrollController.addListener(() async {
-          if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isMoreDataLoaded) {
-            setState(() {
-              _isMoreDataLoaded = true;
-            });
-            await _getWishListProduct();
-            setState(() {
-              _isMoreDataLoaded = false;
-            });
-          }
-        });
+        // _scrollController.addListener(() async {
+        //   if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isMoreDataLoaded) {
+        //     setState(() {
+        //       _isMoreDataLoaded = true;
+        //     });
+        //     await _getWishListProduct();
+        //     setState(() {
+        //       _isMoreDataLoaded = false;
+        //     });
+        //   }
+        // });
       }
 
       _isDataLoaded = true;

@@ -44,7 +44,7 @@ class _CartScreenState extends BaseRouteState {
                   ),
                   leading: IconButton(
                       onPressed: () {
-                        Get.back();
+                        Get.back(result: true);
                       },
                       icon: Icon(Icons.keyboard_arrow_left)),
                   actions: [

@@ -15,6 +15,7 @@ import 'package:user/screens/google_address_search_screen.dart';
 import 'package:user/screens/home_screen.dart';
 import 'package:mapbox_search/mapbox_search.dart' as mapSc;
 import 'package:uuid/uuid.dart';
+import "package:google_maps_webservice/places.dart" as placesPkg;
 
 class LocationScreen extends BaseRoute {
   final int? screenId;
@@ -33,6 +34,7 @@ class _LocationScreenState extends BaseRouteState {
   double? _lat;
   double? _lng;
   TextEditingController _cSearch = new TextEditingController();
+  final places = placesPkg.GoogleMapsPlaces(apiKey: global.placesApiKey);
 
   FocusNode _fSearch = new FocusNode();
   bool _isDataLoaded = false;
@@ -105,13 +107,11 @@ class _LocationScreenState extends BaseRouteState {
                       if (result != null) {
                         if (result.description != null) {
                           _cSearch.text = result.description ?? '';
-                          String latlng = await getLocationFromAddress(
-                              result.description!) ?? '';
-                          print('ℹ️ latlng: $latlng');
-                          List<String> _tList = latlng.split("|");
+                          final placesPkg.PlacesDetailsResponse placeDetails = await places.getDetailsByPlaceId(result.placeId!);
+                          final location = placeDetails.result.geometry!.location;
 
-                          _lat = double.parse(_tList[0]).toDouble();
-                          _lng = double.parse(_tList[1]).toDouble();
+                          _lat = location.lat;
+                          _lng = location.lng;
                           showOnlyLoaderDialog();
                           final GoogleMapController controller = await _controller
                               .future;
@@ -198,6 +198,9 @@ class _LocationScreenState extends BaseRouteState {
         apiKey: global.mapBox!.mapApiKey!,
         hint: '${AppLocalizations.of(context)!.txt_type_here} ',
         onSelect: (place) async {
+          print("PLACE matchingText = ${place.matchingText}");
+          print("PLACE placeName = ${place.placeName}");
+          print("PLACE matchingPlaceName = ${place.matchingPlaceName}");
           _cSearch.text = place.placeName!;
           Location location = await (_placesSearch(_cSearch.text) as FutureOr<Location>);
           _lat = location.latitude;
@@ -234,7 +237,10 @@ class _LocationScreenState extends BaseRouteState {
             if (global.currentUser!.id != null) {
               await global.userProfileController.getUserAddressList();
             }
-            Get.back();
+            Get.off(() => HomeScreen(
+              analytics: widget.analytics,
+              observer: widget.observer,
+            ));
           } else if ('${result.status}' == '0') {
             print('in');
             global.nearStoreModel = new NearStoreModel();

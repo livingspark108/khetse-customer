@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:user/constants/color_constants.dart';
+import 'package:user/constants/color_constants.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/screens/login_screen.dart';
 
@@ -15,6 +17,25 @@ class _IntroScreenState extends BaseRouteState {
   int _currentIndex = 0;
   PageController? _pageController;
 
+  List<Map<String, String>> data = [
+    {
+      "title": "From Farm to\nYour Doorstep",
+      "subtitle": "Experience the freshness of\nlocal produce delivered\nevery morning."
+    },
+    {
+      "title": "Your Choice,\nYour Schedule",
+      "subtitle": "Flexible subscriptions or\none-time purchases — just\nhow you want it."
+    },
+    {
+      "title": "Delivered Daily\nBefore You Wake Up",
+      "subtitle": "Early morning doorstep\ndeliveries across your\nneighborhood."
+    },
+    {
+      "title": "Fresh. Local.\nHonest.",
+      "subtitle": "We partner with local\nfarmers to bring you\npesticide-free freshness."
+    },
+  ];
+
   _IntroScreenState() : super();
 
   @override
@@ -24,6 +45,7 @@ class _IntroScreenState extends BaseRouteState {
         return false;
       },
       child: Scaffold(
+        backgroundColor: ColorConstants.beige,
           body: Stack(children: [
         Container(
           child: PageView(
@@ -34,12 +56,44 @@ class _IntroScreenState extends BaseRouteState {
             },
             children: [
               ...List.generate(
-                6,
-                (index) => Image.asset(
-                  'assets/images/intro_${index + 1}.png',
-                  fit: BoxFit.cover,
-                  // color: Colors.black.withOpacity(0.2),
-                  // colorBlendMode: BlendMode.darken,
+                4,
+                (index) => SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                      Text(
+                        data[index]['title']!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: ColorConstants.brown,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 40,
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Text(
+                        data[index]['subtitle']!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: ColorConstants.brown,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 22,
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                      Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.65
+                        ),
+                        child: Image.asset(
+                          width: double.infinity,
+                            'assets/images/intro_${index + 1}_overlay.png',
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -61,7 +115,7 @@ class _IntroScreenState extends BaseRouteState {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            for (int i = 0; i < 6; i++)
+                            for (int i = 0; i < 4; i++)
                               if (i == _currentIndex) ...[circleBar(true)] else
                                 circleBar(false),
                           ],
@@ -73,8 +127,9 @@ class _IntroScreenState extends BaseRouteState {
           ),
         ),
         Positioned(
-          right: MediaQuery.of(context).size.width / 3,
-          bottom: 15,
+          top: MediaQuery.of(context).size.height * 0.90,
+          right: 0,
+          left: 0,
           child: Align(
             alignment: Alignment.center,
             child: TextButton(
@@ -82,7 +137,7 @@ class _IntroScreenState extends BaseRouteState {
                   backgroundColor:
                       MaterialStateProperty.all(Colors.transparent)),
               onPressed: () {
-                if (_currentIndex < 5) {
+                if (_currentIndex < 3) {
                   _pageController!.animateToPage(_currentIndex + 1,
                       duration: Duration(seconds: 1),
                       curve: Curves.fastOutSlowIn);
@@ -99,27 +154,24 @@ class _IntroScreenState extends BaseRouteState {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Color(0xff073100).withOpacity(0.4),
+                      color: ColorConstants.brown,
                       borderRadius: BorderRadius.circular(10)
                     ),
                     alignment: Alignment.center,
+                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.80,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      _currentIndex < 5 ? 'Next' : 'Get Started',
+                      _currentIndex < 3 ? 'Next' : 'Get Started',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xffabff9d),
+                        color: Colors.white,
                         letterSpacing: 2.0,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_right_rounded,
-                    size: 30,
-                    color: Theme.of(context).colorScheme.primary,
-                  )
                 ],
               ),
             ),
@@ -137,8 +189,8 @@ class _IntroScreenState extends BaseRouteState {
       width: isActive ? 23 : 10,
       decoration: BoxDecoration(
           color: isActive
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.primary.withOpacity(0.5),
+              ? ColorConstants.brown
+              : ColorConstants.brown.withOpacity(0.5),
           borderRadius: BorderRadius.all(Radius.circular(12))),
     );
   }

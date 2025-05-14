@@ -210,14 +210,16 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                       style: normalCaptionStyle(context),
                                     ),
                                     SizedBox(width: 5),
-                                    Text(
-                                      product!.description != null &&
-                                              product!.description != ''
-                                          ? product!.description!
-                                          : '',
-                                      overflow: TextOverflow.clip,
-                                      maxLines: 1,
-                                      style: normalCaptionStyle(context),
+                                    Flexible(
+                                      child: Text(
+                                        product!.description != null &&
+                                                product!.description != ''
+                                            ? product!.description!
+                                            : '',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: normalCaptionStyle(context),
+                                      ),
                                     ),
                                   ],
                                 ),

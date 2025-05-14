@@ -152,31 +152,35 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                             ),
                             Row(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    product!.type != null && product!.type != ''
-                                        ? product!.type!
-                                        : '',
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: normalCaptionStyle(context)
-                                        .copyWith(fontSize: 11),
+                                Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      product!.type != null && product!.type != ''
+                                          ? product!.type!
+                                          : '',
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: normalCaptionStyle(context).copyWith(fontSize: 11),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 2),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    product!.description != null &&
-                                        product!.description != ''
-                                        ? product!.description!
-                                        : '',
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: normalCaptionStyle(context)
-                                        .copyWith(fontSize: 11),
+                                Flexible(
+                                  flex: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      product!.description != null && product!.description != ''
+                                          ? product!.description!
+                                          : '',
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: normalCaptionStyle(context).copyWith(fontSize: 11),
+                                    ),
                                   ),
                                 ),
                               ],
