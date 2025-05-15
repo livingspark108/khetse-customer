@@ -85,7 +85,10 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     );
     return WillPopScope(
       onWillPop: () async {
-        exitAppDialog();
+        Get.to(() => HomeScreen(
+          analytics: widget.analytics,
+          observer: widget.observer,
+        ));
         return false;
       },
       child: Scaffold(
