@@ -277,13 +277,12 @@ class APIHelper {
     }
   }
 
-  Future<dynamic> applyCoupon({String? cartId, String? couponCode}) async {
+  Future<dynamic> applyCoupon({String? cartId, String? couponCode, String? userID}) async {
     try {
       Response response;
       var dio = Dio();
       var formData =
-          FormData.fromMap({'cart_id': cartId, 'coupon_code': couponCode});
-
+          FormData.fromMap({'cart_id': cartId, 'coupon_code': couponCode,'user_id': userID});
       response = await dio.post('${global.baseUrl}apply_coupon',
           data: formData,
           options: Options(
@@ -1163,7 +1162,7 @@ class APIHelper {
       return getDioResult(response, recordList);
     } catch (e) {
       //throw Exception(e.toString());
-      print("Exception - getStoreCoupons(): " + e.toString());
+      print("Exception - getCoupons(): " + e.toString());
     }
   }
 
