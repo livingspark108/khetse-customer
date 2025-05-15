@@ -10,6 +10,7 @@ import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/couponsModel.dart';
+import 'package:user/models/models.dart';
 import 'package:user/models/orderModel.dart';
 import 'package:user/screens/cart_screen.dart';
 import 'package:user/screens/payment_screen.dart';
@@ -22,15 +23,14 @@ class CouponsScreen extends BaseRoute {
   final String? cartId;
   final CartController? cartController;
 
-  CouponsScreen({
-    super.analytics,
-    super.observer,
-    super.routeName = 'CouponsScreen',
-    this.screenId,
-    this.cartId,
-    this.cartController,
-    this.screenIdO
-  });
+  CouponsScreen(
+      {super.analytics,
+      super.observer,
+      super.routeName = 'CouponsScreen',
+      this.screenId,
+      this.cartId,
+      this.cartController,
+      this.screenIdO});
 
   @override
   _CouponsScreenState createState() => _CouponsScreenState(
@@ -88,8 +88,9 @@ class _CouponsScreenState extends BaseRouteState {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CartScreen(analytics: widget.analytics, observer: widget.observer),
+                        builder: (context) => CartScreen(
+                            analytics: widget.analytics,
+                            observer: widget.observer),
                       ),
                     );
                   },
@@ -102,7 +103,7 @@ class _CouponsScreenState extends BaseRouteState {
         // backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          "${AppLocalizations.of(context)!.lbl_my_coupons}  ",
+          "${AppLocalizations.of(context)!.lbl_my_coupons}",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -144,8 +145,8 @@ class _CouponsScreenState extends BaseRouteState {
                   ),
                 )
               : Center(
-                  child:
-                      Text('${AppLocalizations.of(context)!.txt_no_coupon_msg}'),
+                  child: Text(
+                      '${AppLocalizations.of(context)!.txt_no_coupon_msg}'),
                 )
           : _shimmer(),
     );
@@ -161,7 +162,8 @@ class _CouponsScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
-        await apiHelper.applyCoupon(cartId: cartId, couponCode: _selectedCouponCode)
+        await apiHelper
+            .applyCoupon(cartId: cartId, couponCode: _selectedCouponCode, userID: global.currentUser!.id.toString())
             .then((result) async {
           if (result != null) {
             if (result.status == "1") {
@@ -173,7 +175,7 @@ class _CouponsScreenState extends BaseRouteState {
                     cartController: cartController,
                     order: order,
                     screenId: screenIdO,
-                totalAmount: order!.remPrice,
+                    totalAmount: order!.remPrice,
                   ));
             } else {
               Navigator.of(context).pop();

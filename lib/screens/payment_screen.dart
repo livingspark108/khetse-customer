@@ -556,8 +556,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     var options;
 
     options = {
-      'key': "rzp_live_U6wvXUbUnHcYeY",
-      // 'key': "rzp_test_C9QHqLcVEr9gu1",
+      // 'key': "rzp_live_U6wvXUbUnHcYeY",
+      'key': "rzp_test_C9QHqLcVEr9gu1",
       'amount': _amountInPaise(totalAmount!),
       'name': "${global.currentUser!.name}",
       'prefill': {
@@ -651,7 +651,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
-        await apiHelper.getAppInfo(null).then((result) async {
+        await apiHelper.getAppInfo(global.currentUser!.id).then((result) async {
           if (result != null) {
             if (result.status == "1") {
               global.appInfo = result.data;
