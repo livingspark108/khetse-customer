@@ -134,15 +134,22 @@ class _ProductDescriptionScreenState extends BaseRouteState {
         actions: [
           AppBarActionButton(
             cartController,
-            onPressed: () => global.currentUser!.id == null
-                ? Get.to(LoginScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  ))
-                : Get.to(CartScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                  )),
+            onPressed: () async {
+              if (global.currentUser!.id == null) {
+                await Get.to(() => LoginScreen(
+                      analytics: widget.analytics,
+                      observer: widget.observer,
+                    ));
+              } else {
+                final result = await Get.to(() => CartScreen(
+                      analytics: widget.analytics,
+                      observer: widget.observer,
+                    ));
+                if (result == true) {
+                  _getProductDetail();
+                }
+              }
+            },
           ),
         ],
       ),
@@ -487,6 +494,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
               _productDetail = null;
             }
           }
+          setState(() {});
         });
       } else {
         showNetworkErrorSnackBar(_scaffoldKey);
