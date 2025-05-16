@@ -71,7 +71,7 @@ class OrderController extends GetxController {
             if (_tList.isEmpty) {
               isRecordPending1.value = false;
             }
-            activeOrderList!.addAll(_tList);
+            activeOrderList = _tList;
 
             isMoreDataLoaded1.value = false;
           } else {
@@ -109,7 +109,7 @@ class OrderController extends GetxController {
             if (_tList.isEmpty) {
               isRecordPending.value = false;
             }
-            completedOrderList.addAll(_tList);
+            completedOrderList = _tList;
 
             isMoreDataLoaded.value = false;
           } else {

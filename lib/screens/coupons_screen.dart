@@ -198,23 +198,13 @@ class _CouponsScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
-        if (screenId == 0) {
-          await apiHelper.getCoupons(cartId: cartId).then((result) async {
-            if (result != null) {
-              if (result.status == "1") {
-                _couponList = result.data;
-              }
+        await apiHelper.getCoupons(cartId: cartId).then((result) async {
+          if (result != null) {
+            if (result.status == "1") {
+              _couponList = result.data;
             }
-          });
-        } else {
-          await apiHelper.getStoreCoupons().then((result) async {
-            if (result != null) {
-              if (result.status == "1") {
-                _couponList = result.data;
-              }
-            }
-          });
-        }
+          }
+        });
       } else {
         showNetworkErrorSnackBar(_scaffoldKey);
       }

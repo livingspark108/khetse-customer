@@ -297,8 +297,8 @@ class APIHelper {
         recordList = null;
       }
       return getDioResult(response, recordList);
-    } catch (e) {
-      //throw Exception(e.toString());
+    } on DioError catch (e) {
+      showToast(e.response?.data['message']);
       print("Exception - applyCoupon(): " + e.toString());
     }
   }
@@ -802,13 +802,14 @@ class APIHelper {
 
   Future<dynamic> getActiveOrders(int page) async {
     try {
+      print("ORDER HISTORY REFRESHED>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       Response response;
       var dio = Dio();
       var formData = FormData.fromMap({
         'user_id': global.currentUser!.id,
       });
 
-      response = await dio.post('${global.baseUrl}my_orders?page=$page',
+      response = await dio.post('${global.baseUrl}my_orders',
           data: formData,
           options: Options(
             headers: await global.getApiHeaders(true),
@@ -1122,7 +1123,7 @@ class APIHelper {
         'user_id': global.currentUser!.id,
       });
 
-      response = await dio.post('${global.baseUrl}completed_orders?page=$page',
+      response = await dio.post('${global.baseUrl}completed_orders',
           data: formData,
           options: Options(
             headers: await global.getApiHeaders(true),
@@ -1146,14 +1147,15 @@ class APIHelper {
       Response response;
       var dio = Dio();
       var formData = FormData.fromMap(
-          {'user_id': global.currentUser!.id, 'cart_id': cartId});
+          {'user_id': global.currentUser!.id, 'cart_id': cartId, "store_id": global.nearStoreModel!.id});
       response = await dio.post('${global.baseUrl}couponlist',
           data: formData,
           options: Options(
             headers: await global.getApiHeaders(true),
           ));
+      print("Response = ${response.data}");
       dynamic recordList;
-      if (response.statusCode == 200 && response.data["status"] == '1') {
+      if (response.statusCode == 200 && response.data["status"] == 1) {
         recordList = List<Coupon>.from(
             response.data["data"].map((x) => Coupon.fromJson(x)));
       } else {

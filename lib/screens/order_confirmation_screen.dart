@@ -65,6 +65,7 @@ class _OrderConfirmationScreenState extends BaseRouteState {
                                 : "${AppLocalizations.of(context)!.tle_membership_bought_sucessfully} "
                             : "${AppLocalizations.of(context)!.txt_order_success_description}",
                 style: textTheme.titleLarge,
+                textAlign: TextAlign.center,
               ),
             ),
           ),

@@ -173,7 +173,7 @@ class _CancelOrderScreenState extends BaseRouteState {
                     Get.to(() => HomeScreen(
                           analytics: widget.analytics,
                           observer: widget.observer,
-                          screenId: 2,
+                          screenId: 0,
                         ));
                   },
                   child: Text('${AppLocalizations.of(context)!.btn_yes}')),
