@@ -19,9 +19,19 @@ import 'package:user/screens/image_view_screen.dart';
 import 'package:user/utils/size_config.dart';
 
 Future updateLastMessage(int? storeId, int? userId, String? lastMessage) async {
-  List<QueryDocumentSnapshot> storeData = (await FirebaseFirestore.instance.collectionGroup("store").where('storeId', isEqualTo: storeId).where('userId', isEqualTo: userId).get()).docs.toList();
+  List<QueryDocumentSnapshot> storeData = (await FirebaseFirestore.instance
+          .collectionGroup("store")
+          .where('storeId', isEqualTo: storeId)
+          .where('userId', isEqualTo: userId)
+          .get())
+      .docs
+      .toList();
   if (storeData.isNotEmpty) {
-    FirebaseFirestore.instance.collection("store").doc(storeData[0].id).update({"lastMessage": lastMessage, "lastMessageTime": DateTime.now().toUtc(), "updatedAt": DateTime.now().toUtc()});
+    FirebaseFirestore.instance.collection("store").doc(storeData[0].id).update({
+      "lastMessage": lastMessage,
+      "lastMessageTime": DateTime.now().toUtc(),
+      "updatedAt": DateTime.now().toUtc()
+    });
   }
 }
 
@@ -40,7 +50,8 @@ class _ChatScreenState extends BaseRouteState {
   List<MessagesModel>? messages = [];
   TextEditingController _message = new TextEditingController();
   bool isShowSticker = false;
-  DateTime _today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime _today =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   String? chatId;
   XFile? _tImage;
 
@@ -72,7 +83,9 @@ class _ChatScreenState extends BaseRouteState {
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(2),
                   labelText: "${AppLocalizations.of(context)!.txt_type_here} ",
-                  hintStyle: TextStyle(fontSize: 12, color: const Color(0xFF1F1F1F).withOpacity(0.4)),
+                  hintStyle: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFF1F1F1F).withOpacity(0.4)),
                   border: InputBorder.none,
                   suffixIcon: Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12.0),
@@ -100,8 +113,12 @@ class _ChatScreenState extends BaseRouteState {
 
     return WillPopScope(
       onWillPop: () async {
-        if (messages != null && messages!.length > 0 && messages!.first.message != null && messages!.first.message!.isNotEmpty) {
-          await updateLastMessage(global.nearStoreModel!.id, global.currentUser!.id, messages!.first.message);
+        if (messages != null &&
+            messages!.length > 0 &&
+            messages!.first.message != null &&
+            messages!.first.message!.isNotEmpty) {
+          await updateLastMessage(global.nearStoreModel!.id,
+              global.currentUser!.id, messages!.first.message);
         }
 
         Get.back();
@@ -119,12 +136,14 @@ class _ChatScreenState extends BaseRouteState {
                 ),
                 Expanded(
                   child: StreamBuilder<List<MessagesModel>>(
-                      stream: apiHelper.getChatMessages(chatId, global.currentUser!.id.toString()),
+                      stream: apiHelper.getChatMessages(
+                          chatId, global.currentUser!.id.toString()),
                       builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
                           default:
                             if (snapshot.hasError) {
-                              return buildText('${AppLocalizations.of(context)!.txt_something_went_wrong} ');
+                              return buildText(
+                                  '${AppLocalizations.of(context)!.txt_something_went_wrong} ');
                             } else {
                               messages = snapshot.data;
                               if (messages == null) {
@@ -132,24 +151,39 @@ class _ChatScreenState extends BaseRouteState {
                               }
 
                               return messages!.isEmpty
-                                  ? buildText('${AppLocalizations.of(context)!.txt_sayHI}')
+                                  ? buildText(
+                                      '${AppLocalizations.of(context)!.txt_sayHI}')
                                   : Padding(
-                                      padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 12),
+                                      padding: EdgeInsets.only(
+                                          bottom: SizeConfig.blockSizeVertical *
+                                              12),
                                       child: ListView.builder(
                                         reverse: true,
                                         physics: BouncingScrollPhysics(),
                                         itemCount: messages!.length,
                                         itemBuilder: (context, index) {
-                                          var groupDate = groupBy(messages!, (dynamic a) => a.createdAt.toString().substring(0, 10));
+                                          var groupDate = groupBy(
+                                              messages!,
+                                              (dynamic a) => a.createdAt
+                                                  .toString()
+                                                  .substring(0, 10));
                                           groupDate.forEach((key, value) {
-                                            MessagesModel m = value.lastWhere((e) => e.createdAt.toString().substring(0, 10) == key.toString());
-                                            messages![messages!.indexOf(m)].isShowDate = true;
+                                            MessagesModel m = value.lastWhere(
+                                                (e) =>
+                                                    e.createdAt
+                                                        .toString()
+                                                        .substring(0, 10) ==
+                                                    key.toString());
+                                            messages![messages!.indexOf(m)]
+                                                .isShowDate = true;
                                             isDone = true;
                                           });
                                           final message = messages![index];
                                           return _buildMessage(
                                             message,
-                                            message.userId1 == global.currentUser!.id.toString(),
+                                            message.userId1 ==
+                                                global.currentUser!.id
+                                                    .toString(),
                                           );
                                         },
                                       ),
@@ -180,13 +214,15 @@ class _ChatScreenState extends BaseRouteState {
   Future<void> checkChatStoreExist() async {
     try {
       var result;
-      result = await apiHelper.checkStoreExist(global.nearStoreModel!.id, global.currentUser!.id);
+      result = await apiHelper.checkStoreExist(
+          global.nearStoreModel!.id, global.currentUser!.id);
       String? token = await FirebaseMessaging.instance.getToken();
       await apiHelper.updateFirebaseUserFcmToken(global.currentUser!.id, token);
       chatId = result.id;
       setState(() {});
     } catch (e) {
-      print("Exception - ChatScreen.dart - checkChatStoreExist():" + e.toString());
+      print("Exception - ChatScreen.dart - checkChatStoreExist():" +
+          e.toString());
     }
   }
 
@@ -199,11 +235,14 @@ class _ChatScreenState extends BaseRouteState {
               children: [
                 InkWell(
                   onTap: () async {
-                    if (messages != null && messages!.length > 0 && messages!.first.message != null && messages!.first.message!.isNotEmpty) {
-                      await updateLastMessage(global.nearStoreModel!.id, global.currentUser!.id, messages!.first.message);
-                    }
-
                     Get.back();
+                    if (messages != null &&
+                        messages!.length > 0 &&
+                        messages!.first.message != null &&
+                        messages!.first.message!.isNotEmpty) {
+                      await updateLastMessage(global.nearStoreModel!.id,
+                          global.currentUser!.id, messages!.first.message);
+                    }
                   },
                   child: Icon(
                     Icons.keyboard_arrow_left,
@@ -272,15 +311,31 @@ class _ChatScreenState extends BaseRouteState {
           messageModel.userId2 = "${global.nearStoreModel!.id}";
           messageModel.url = "";
           _message.clear();
-          await apiHelper.uploadMessage(chatId, '${global.nearStoreModel!.id}', messageModel, isAlreadyChat, '');
+          await apiHelper.uploadMessage(chatId, '${global.nearStoreModel!.id}',
+              messageModel, isAlreadyChat, '');
 
           setState(() {
             isAlreadyChat = true;
           });
-          await apiHelper.callOnFcmApiSendPushNotifications(userToken: [global.nearStoreModel!.deviceId], title: "${AppLocalizations.of(context)!.txt_new_msg} ${global.currentUser!.name}", body: "${messageModel.message}", route: "chatlist_screen", chatId: chatId, firstName: global.currentUser!.name, lastName: global.currentUser!.name, userId: global.currentUser!.id.toString(), imageUrl: '', storeId: global.nearStoreModel!.id.toString(), globalUserToken: await FirebaseMessaging.instance.getToken());
+          await apiHelper.callOnFcmApiSendPushNotifications(
+              userToken: [global.nearStoreModel!.deviceId],
+              title:
+                  "${AppLocalizations.of(context)!.txt_new_msg} ${global.currentUser!.name}",
+              body: "${messageModel.message}",
+              route: "chatlist_screen",
+              chatId: chatId,
+              firstName: global.currentUser!.name,
+              lastName: global.currentUser!.name,
+              userId: global.currentUser!.id.toString(),
+              imageUrl: '',
+              storeId: global.nearStoreModel!.id.toString(),
+              globalUserToken: await FirebaseMessaging.instance.getToken());
         }
       } else {
-        showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_something_went_wrong} ');
+        showSnackBar(
+            key: _scaffoldKey,
+            snackBarMessage:
+                '${AppLocalizations.of(context)!.txt_something_went_wrong} ');
       }
     } catch (e) {
       print("Exception - ChatScreen.dart - sendMessage():" + e.toString());
@@ -289,8 +344,10 @@ class _ChatScreenState extends BaseRouteState {
 
   _buildMessage(MessagesModel message, bool isMe) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    TextStyle timeStampStyle = textTheme.bodySmall!.copyWith(color: Colors.grey[400], fontSize: 12);
-    DateTime _indexTime = DateTime(message.createdAt!.year, message.createdAt!.month, message.createdAt!.day);
+    TextStyle timeStampStyle =
+        textTheme.bodySmall!.copyWith(color: Colors.grey[400], fontSize: 12);
+    DateTime _indexTime = DateTime(message.createdAt!.year,
+        message.createdAt!.month, message.createdAt!.day);
     return Column(
       children: [
         message.isShowDate
@@ -328,97 +385,208 @@ class _ChatScreenState extends BaseRouteState {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Flexible(
-                        child: GestureDetector(
-                      onTap: () {
-                        if (message.url != '') {
-                          FocusScope.of(context).unfocus();
-                          Navigator.of(context).push(PageRouteBuilder(
-                              pageBuilder: (_, animation1, animation2) => ImageViewScreen(
-                                    url: message.url,
-                                    analytics: widget.analytics,
-                                    observer: widget.observer,
-                                  )));
-                        }
-                      },
-                      child: Container(
-                        height: message.message == global.imageUploadMessageKey ? 200 : null,
-                        width: message.message == global.imageUploadMessageKey ? 200 : null,
-                        margin: isMe ? EdgeInsets.only(top: 8.0, bottom: 8.0, left: 50.0) : EdgeInsets.only(top: 8.0, bottom: 8.0, right: 80.0),
-                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, image: message.url != "" ? DecorationImage(image: NetworkImage(message.url!), fit: BoxFit.cover) : null, border: message.message == global.imageUploadMessageKey ? Border.all(color: Colors.white, width: 2) : null, borderRadius: isMe ? BorderRadius.only(topLeft: Radius.circular(25.0), bottomLeft: Radius.circular(25.0), topRight: Radius.circular(15.0)) : BorderRadius.only(bottomRight: Radius.circular(15.0), topRight: Radius.circular(15.0), topLeft: Radius.circular(15.0))),
-                        child: message.message == global.imageUploadMessageKey && message.url == ""
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : (message.message != "" && message.message != global.imageUploadMessageKey)
-                                ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.all(3),
-                                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
-                                        padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
-                                        decoration: BoxDecoration(
-                                          // color: const Color(0xffF4F4F4),
-                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10), bottomLeft: Radius.circular(10)),
-                                        ),
-                                        child: Text(
-                                          message.message!,
-                                          style: textTheme.bodyLarge,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${DateFormat().add_jm().format(message.createdAt!)}',
-                                        style: timeStampStyle,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (message.url != '') {
+                            FocusScope.of(context).unfocus();
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                pageBuilder: (_, animation1, animation2) =>
+                                    ImageViewScreen(
+                                  url: message.url,
+                                  analytics: widget.analytics,
+                                  observer: widget.observer,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              height: message.message ==
+                                      global.imageUploadMessageKey
+                                  ? 200
+                                  : null,
+                              width: message.message ==
+                                      global.imageUploadMessageKey
+                                  ? 200
+                                  : null,
+                              margin: isMe
+                                  ? EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0, left: 50.0)
+                                  : EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0, right: 80.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
+                                image: message.url != ""
+                                    ? DecorationImage(
+                                        image: NetworkImage(message.url!),
+                                        fit: BoxFit.cover,
                                       )
-                                    ],
-                                  )
-                                : SizedBox(),
+                                    : null,
+                                border: message.message ==
+                                        global.imageUploadMessageKey
+                                    ? Border.all(color: Colors.white, width: 2)
+                                    : null,
+                                borderRadius: isMe
+                                    ? BorderRadius.only(
+                                        topLeft: Radius.circular(25.0),
+                                        bottomLeft: Radius.circular(25.0),
+                                        topRight: Radius.circular(15.0),
+                                      )
+                                    : BorderRadius.only(
+                                        bottomRight: Radius.circular(15.0),
+                                        topRight: Radius.circular(15.0),
+                                        topLeft: Radius.circular(15.0),
+                                      ),
+                              ),
+                              child: message.message ==
+                                          global.imageUploadMessageKey &&
+                                      message.url == ""
+                                  ? Center(child: CircularProgressIndicator())
+                                  : (message.message != "" &&
+                                          message.message !=
+                                              global.imageUploadMessageKey)
+                                      ? Container(
+                                          margin: EdgeInsets.all(3),
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .6,
+                                          ),
+                                          padding: const EdgeInsets.all(10),
+                                          child: Text(
+                                            message.message!,
+                                            style: textTheme.bodyLarge,
+                                          ),
+                                        )
+                                      : SizedBox(),
+                            ),
+                            if (message.message != "" &&
+                                message.message != global.imageUploadMessageKey)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 2.0, right: 8.0),
+                                child: Text(
+                                  '${DateFormat().add_jm().format(message.createdAt!)}',
+                                  style: timeStampStyle,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 ),
               )
             : Padding(
-                padding: const EdgeInsets.only(left: 10, top: 10),
+                padding: const EdgeInsets.only(left: 13, top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.person),
                     Flexible(
-                        child: Container(
-                      height: message.message == global.imageUploadMessageKey ? 200 : null,
-                      width: message.message == global.imageUploadMessageKey ? 200 : null,
-                      margin: isMe ? EdgeInsets.only(top: 8.0, bottom: 8.0, left: 50.0) : EdgeInsets.only(top: 8.0, bottom: 8.0, right: 80.0),
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer, image: message.url != "" ? DecorationImage(image: NetworkImage(message.url!), fit: BoxFit.cover) : null, border: message.message == global.imageUploadMessageKey ? Border.all(color: Colors.white, width: 2) : null, borderRadius: isMe ? BorderRadius.only(topLeft: Radius.circular(25.0), bottomLeft: Radius.circular(25.0), topRight: Radius.circular(15.0)) : BorderRadius.only(bottomRight: Radius.circular(15.0), topRight: Radius.circular(15.0), topLeft: Radius.circular(15.0))),
-                      child: message.message == global.imageUploadMessageKey && message.url == ""
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : (message.message != "" && message.message != global.imageUploadMessageKey)
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.all(3),
-                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
-                                      padding: const EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                        // color: const Color(0xffF4F4F4),
-                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
-                                      ),
-                                      child: Text(
-                                        message.message!,
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${DateFormat().add_jm().format(message.createdAt!)}',
-                                      style: timeStampStyle,
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height:
+                                message.message == global.imageUploadMessageKey
+                                    ? 200
+                                    : null,
+                            width:
+                                message.message == global.imageUploadMessageKey
+                                    ? 200
+                                    : null,
+                            margin: isMe
+                                ? EdgeInsets.only(
+                                    top: 8.0, bottom: 4.0, left: 20.0)
+                                : EdgeInsets.only(
+                                    top: 8.0, bottom: 4.0, right: 80.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
+                              image: message.url != ""
+                                  ? DecorationImage(
+                                      image: NetworkImage(message.url!),
+                                      fit: BoxFit.cover,
                                     )
-                                  ],
-                                )
-                              : SizedBox(),
-                    )),
+                                  : null,
+                              border: message.message ==
+                                      global.imageUploadMessageKey
+                                  ? Border.all(color: Colors.white, width: 2)
+                                  : null,
+                              borderRadius: isMe
+                                  ? BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                      topRight: Radius.circular(15.0))
+                                  : BorderRadius.only(
+                                      bottomRight: Radius.circular(15.0),
+                                      topRight: Radius.circular(15.0),
+                                      topLeft: Radius.circular(15.0)),
+                            ),
+                            child: message.message ==
+                                        global.imageUploadMessageKey &&
+                                    message.url == ""
+                                ? Center(child: CircularProgressIndicator())
+                                : (message.message != "" &&
+                                        message.message !=
+                                            global.imageUploadMessageKey)
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.all(3),
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .6,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(10),
+                                                  topRight: Radius.circular(10),
+                                                  bottomRight:
+                                                      Radius.circular(10),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                message.message!,
+                                                style: textTheme.bodyLarge,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : SizedBox(),
+                          ),
+
+                          if (message.message != "" &&
+                              message.message != global.imageUploadMessageKey)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2, left: 15),
+                              child: Text(
+                                '${DateFormat().add_jm().format(message.createdAt!)}',
+                                style: timeStampStyle,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -464,7 +632,8 @@ class _ChatScreenState extends BaseRouteState {
                   messageModel.userId1 = global.currentUser!.id.toString();
                   messageModel.userId2 = "${global.nearStoreModel!.id}";
                   messageModel.url = "";
-                  await apiHelper.uploadImageToStorage(_tImage!, chatId, global.nearStoreModel!.id.toString(), messageModel);
+                  await apiHelper.uploadImageToStorage(_tImage!, chatId,
+                      global.nearStoreModel!.id.toString(), messageModel);
 
                   setState(() {});
                 }
@@ -492,7 +661,8 @@ class _ChatScreenState extends BaseRouteState {
                   messageModel.userId1 = global.currentUser!.id.toString();
                   messageModel.userId2 = "${global.nearStoreModel!.id}";
                   messageModel.url = "";
-                  await apiHelper.uploadImageToStorage(_tImage!, chatId, global.nearStoreModel!.id.toString(), messageModel);
+                  await apiHelper.uploadImageToStorage(_tImage!, chatId,
+                      global.nearStoreModel!.id.toString(), messageModel);
 
                   setState(() {});
                 }
@@ -500,7 +670,8 @@ class _ChatScreenState extends BaseRouteState {
             )
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: Text('${AppLocalizations.of(context)!.lbl_cancel}', style: TextStyle(color: Theme.of(context).primaryColor)),
+            child: Text('${AppLocalizations.of(context)!.lbl_cancel}',
+                style: TextStyle(color: Theme.of(context).primaryColor)),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -508,7 +679,8 @@ class _ChatScreenState extends BaseRouteState {
         ),
       );
     } catch (e) {
-      print("Exception - chat_screen.dart - _showCupertinoModalSheet():" + e.toString());
+      print("Exception - chat_screen.dart - _showCupertinoModalSheet():" +
+          e.toString());
     }
   }
 }

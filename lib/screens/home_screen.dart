@@ -83,10 +83,7 @@ class _HomeScreenState extends BaseRouteState {
             //     ),
             //   ),
             // ),
-            body: IndexedStack(
-              index: controller.tabIndex,
-              children: _homeScreenItems,
-            ),
+            body: _homeScreenItems[controller.tabIndex],
 
             // body: Builder(
             //   builder: (context) {

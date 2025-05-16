@@ -63,7 +63,7 @@ class _OrderSummaryScreenState extends BaseRouteState {
                 order: order,
                 address: order!.deliveryAddress,
               ),
-              Padding(
+              ...[order!.orderStatus != "Cancelled" ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: BottomButton(
                   loadingState: false,
@@ -73,7 +73,8 @@ class _OrderSummaryScreenState extends BaseRouteState {
                   },
                   child: Text("${AppLocalizations.of(context)!.tle_track_order}"),
                 ),
-              ),
+              ) : SizedBox()],
+              
               order!.orderStatus == 'Pending' || order!.orderStatus == 'Completed' || order!.orderStatus == 'Confirmed'
                   ? Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),

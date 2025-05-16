@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user/constants/color_constants.dart';
 import 'package:user/controllers/order_controller.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -72,7 +73,7 @@ class _CancelOrderScreenState extends BaseRouteState {
           style: ElevatedButton.styleFrom(
             fixedSize: Size.fromWidth(350.0),
             minimumSize: Size.fromHeight(55),
-            foregroundColor: Color(0xffFF0000),
+            backgroundColor: _selectedReason != null ? Colors.red : null,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {
@@ -85,7 +86,7 @@ class _CancelOrderScreenState extends BaseRouteState {
           child: Text(
             "${AppLocalizations.of(context)!.tle_cancel_order}",
             style: TextStyle(
-              color: Colors.white,
+              color:  ColorConstants.getForegroundColor(context),
             ),
           ),
         ),

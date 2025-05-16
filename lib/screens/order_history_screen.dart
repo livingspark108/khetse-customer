@@ -7,6 +7,7 @@ import 'package:user/controllers/order_controller.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/orderModel.dart';
+import 'package:user/screens/home_screen.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/order_history_card.dart';
 import 'package:shimmer/shimmer.dart';
@@ -167,6 +168,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
                   ),
                   onPressed: () {
                     homeController.navigateToHome();
+                    Get.offAll(HomeScreen());
                   }
                   //   Get.to(() => HomeScreen(
                   //     a: widget.analytics,
