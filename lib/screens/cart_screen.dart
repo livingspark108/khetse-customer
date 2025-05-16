@@ -31,7 +31,7 @@ class _CartScreenState extends BaseRouteState {
     TextTheme textTheme = Theme.of(context).textTheme;
     return WillPopScope(
       onWillPop: () async {
-        Get.back();
+        Get.back(result: true);
         return false;
       },
       child: GetBuilder<CartController>(
