@@ -193,6 +193,9 @@ class APIHelper {
 
       dynamic recordList;
       if (response.statusCode == 200) {
+        if(response.data['status'] == '0') {
+          return Cart(status: response.data['status'], message: response.data['message']);
+        }
         recordList = Cart.fromJson(response.data["data"]);
       } else {
         recordList = null;
@@ -677,6 +680,13 @@ class APIHelper {
           ));
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
+        final LocalNotificationService _localNotification = LocalNotificationService();
+        _localNotification.init(); // initialize notifications
+
+        _localNotification.sendNotification(
+          title: "Order cancelled",
+          subtitle: "Your order has been cancelled",
+        );
         recordList = response;
       } else {
         recordList = null;
@@ -1334,7 +1344,6 @@ class APIHelper {
       }
       return getDioResult(response, recordList);
     } catch (e) {
-      //throw Exception(e.toString());
       print("Exception - getMembershipList(): " + e.toString());
     }
   }
@@ -1832,8 +1841,6 @@ class APIHelper {
         'delivery_date': selectedDate,
         'time_slot': selectedTime
       });
-      print("MAKING ORDER = ${formData.fields}");
-      print("MAKING ORDER URL = ${global.baseUrl}make_order");
 
       response = await dio.post('${global.baseUrl}make_order',
           data: formData,
@@ -1842,6 +1849,13 @@ class APIHelper {
           ));
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
+        final LocalNotificationService _localNotification = LocalNotificationService();
+        _localNotification.init(); // initialize notifications
+
+        _localNotification.sendNotification(
+          title: "Order confirmed",
+          subtitle: "Your order has been placed",
+        );
         recordList = models.Order.fromJson(response.data["data"]);
       } else {
         recordList = null;
@@ -2181,6 +2195,8 @@ class APIHelper {
                 headers: await global.getApiHeaders(true),
               ))
           .timeout(Duration(seconds: 60));
+
+      print("CART = ${response.data}");
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
         recordList = Cart.fromJson(response.data["data"]);
@@ -2491,10 +2507,11 @@ class APIHelper {
     try {
       Response response;
       var dio = Dio();
+
       var formData = FormData.fromMap({
         'user_name': user.name,
-        'user_email': global.currentUser!.email,
-        'user_phone': global.currentUser!.userPhone,
+        'user_email': user.email,
+        'user_phone': user.userPhone,
         'user_city': user.userCity,
         'user_area': user.userArea,
         'device_id': global.appDeviceId,
@@ -2516,6 +2533,9 @@ class APIHelper {
       dynamic recordList;
       print(response.data);
       if (response.statusCode == 200) {
+        if(response.data['status'] == '0') {
+          return DioResult(status: response.data['status'], message: response.data['message']);
+        }
         recordList = CurrentUser.fromJson(response.data['data']);
         recordList.token = response.data["token"];
       } else {

@@ -11,7 +11,7 @@ class Cart {
   double? discountonmrp;
   List<Product> cartList = [];
 
-  Cart();
+  Cart({this.status, this.message});
   Cart.fromJson(Map<String, dynamic> json) {
     try {
       totalPrice = json['total_price'] != null ? double.parse('${json['total_price']}') : null;

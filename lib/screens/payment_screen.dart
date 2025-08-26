@@ -26,6 +26,7 @@ import 'package:user/screens/coupons_screen.dart';
 import 'package:user/screens/home_screen.dart';
 import 'package:user/screens/order_confirmation_screen.dart';
 import 'package:user/screens/stripe_payment_screen.dart';
+import 'package:user/screens/wallet_screen.dart';
 import 'package:user/utils/local_notifications.dart';
 import 'package:user/utils/navigation_utils.dart';
 
@@ -150,6 +151,41 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                     // print(val);
                                     // print(order.remPrice);
                                     // _isWallet = val;
+                                    if(global.userProfileController.currentUser!.wallet! < totalAmount!) {
+                                      showDialog(context: context, builder: (context) {
+                                        return AlertDialog(
+                                          content: Text(
+                                            "Your wallet has insufficient balance\nWould you like to add money or choose a different payment method?",
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          actions: [
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Get.to(() => WalletScreen());
+                                                  },
+                                                  child: Text("Add Money"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  child: Text("Other Method"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Get.off(() => HomeScreen());
+                                                  },
+                                                  child: Text("Cancel"),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                    }
                                     if (val == null) {
                                       _isWallet = 0;
                                       totalAmount = order!.remPrice;
@@ -560,7 +596,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
 
     options = {
       // 'key': "rzp_live_U6wvXUbUnHcYeY",
-      'key': "rzp_test_C9QHqLcVEr9gu1",
+      'key': "rzp_test_WswwkR1HmzuuBQ",
       'amount': _amountInPaise(totalAmount!),
       'name': "${global.currentUser!.name}",
       'prefill': {

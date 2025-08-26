@@ -4,7 +4,7 @@ class DioResult<T> {
   String? message;
   T? data;
 
-  DioResult({this.statusCode, this.data, this.status});
+  DioResult({this.statusCode, this.data, this.status, this.message});
   DioResult.fromJson(dynamic response, T recordList) {
     try {
       status = response.data['status'].toString();

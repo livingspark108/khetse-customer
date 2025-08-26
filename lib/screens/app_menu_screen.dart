@@ -205,14 +205,7 @@ class _AppMenuScreenState extends BaseRouteState {
                           "${AppLocalizations.of(context)!.tle_contact_us}  ",
                       icon: Icons.contact_page_outlined,
                       onPressed: () {
-                        if (global.currentUser!.id == null) {
-                          Get.to(() => LoginScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer));
-                        } else {
-                          // Get.to(() => ContactUsScreen(analytics: widget.analytics, observer: widget.observer));
-                          Get.to(() => ContactUsScreen());
-                        }
+                        Get.to(() => ContactUsScreen());
                       }),
                   // SizedBox(height: 8.0),
                   // AppMenuListTile(

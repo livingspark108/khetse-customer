@@ -13,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user/dialog/openImageDialog.dart';
 import 'package:user/models/businessLayer/apiHelper.dart';
 import 'package:user/models/businessLayer/businessRule.dart';
@@ -351,10 +352,12 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+${global.appInfo!.countryCode}$phoneNumber',
-        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          final sp = await SharedPreferences.getInstance();
+          global.currentUser != null ? await sp.setString('currentUser', jsonEncode(global.currentUser!.toJson())) : null;
+        },
         verificationFailed: (FirebaseAuthException e) {
           print("FAILED TO SEND OTP = $e");
-          hideLoader();
           showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_please_try_again_after_sometime}');
         },
         codeSent: (String verificationId, int? resendToken) async {

@@ -35,6 +35,7 @@ class _SearchResultsScreenState extends BaseRouteState {
   int page = 1;
   final CartController cartController = Get.put(CartController());
   Timer? _debounce;
+  bool showClearButton = true;
 
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -102,6 +103,11 @@ class _SearchResultsScreenState extends BaseRouteState {
                                       obscureText: false,
                                       readOnly: false,
                                       maxLines: 1,
+                                      onChanged: (String value) {
+                                        setState(() {
+                                          showClearButton = value.length > 0;
+                                        });
+                                      },
                                       decoration: InputDecoration(
                                         filled: true,
                                         enabledBorder: OutlineInputBorder(
@@ -116,15 +122,18 @@ class _SearchResultsScreenState extends BaseRouteState {
                                           ),
                                           borderSide: BorderSide(width: 0, color: Theme.of(context).colorScheme.secondary, style: BorderStyle.none),
                                         ),
-                                        suffixIcon: InkWell(
+                                        suffixIcon: showClearButton ? InkWell(
                                           onTap: () {
                                             _cSearch.clear();
+                                            setState(() {
+                                              showClearButton = false;
+                                            });
                                           },
                                           child: Icon(
                                             Icons.cancel,
                                             color: Theme.of(context).colorScheme.primary,
                                           ),
-                                        ),
+                                        ) : SizedBox(),
                                         prefixIcon: Icon(
                                           Icons.search_outlined,
                                           color: Colors.grey[800],

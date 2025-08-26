@@ -16,8 +16,10 @@ import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/cityModel.dart';
 import 'package:user/models/societyModel.dart';
 import 'package:user/models/userModel.dart';
+import 'package:user/screens/home_screen.dart';
 import 'package:user/widgets/bottom_button.dart';
 import 'package:user/widgets/my_text_field.dart';
+import 'package:user/widgets/toastfile.dart';
 
 class ProfileEditScreen extends BaseRoute {
   ProfileEditScreen({super.analytics, super.observer, super.routeName = 'ProfileEditScreen'});
@@ -44,6 +46,8 @@ class _ProfileEditScreenState extends BaseRouteState {
   List<Society> _tSocietyList = [];
   City? _selectedCity = new City();
   Society? _selectedSociety = new Society();
+  String _oldCityName = "";
+  String _oldSocietyName = "";
   var _cCity = new TextEditingController();
   var _cSociety = new TextEditingController();
   XFile? _tImage;
@@ -293,7 +297,11 @@ class _ProfileEditScreenState extends BaseRouteState {
                     loadingState: false,
                     disabledState: false,
                     onPressed: () {
-                      _save();
+                      if(validateChanges()) {
+                        _save();
+                        return;
+                      }
+                      showToast("No changes to save");
                     }),
               ),
           )
@@ -373,6 +381,8 @@ class _ProfileEditScreenState extends BaseRouteState {
         _cCity.text = _selectedCity!.cityName!;
         _selectedSociety = _societyList!.firstWhere((e) => e.societyId == global.currentUser!.userArea);
         _cSociety.text = _selectedSociety!.societyName!;
+        _oldCityName = _selectedCity!.cityName ?? "";
+        _oldSocietyName = _selectedSociety!.societyName ?? "";
       } else {
         _cSociety.text = '';
       }
@@ -383,8 +393,19 @@ class _ProfileEditScreenState extends BaseRouteState {
       _isDataLoaded = true;
       setState(() {});
     } catch (e) {
+      hideLoader();
       print("Exception - profile_edit_screen.dart - _init(): " + e.toString());
     }
+  }
+
+  bool validateChanges() {
+    final CurrentUser currentUser = global.userProfileController.currentUser!;
+    return _cSociety.text != _oldSocietyName ||
+        _cCity.text != _oldCityName ||
+        _cName.text != currentUser.name ||
+        _cEmail.text != currentUser.email ||
+        _cPhone.text != currentUser.userPhone ||
+        _tImage != null;
   }
 
   _save() async {
@@ -400,6 +421,8 @@ class _ProfileEditScreenState extends BaseRouteState {
           }
           _user.userCity = _selectedCity!.cityId;
           _user.userArea = _selectedSociety!.societyId;
+          _user.email = _cEmail.text;
+          _user.userPhone = _cPhone.text;
           await apiHelper.updateProfile(_user).then((result) async {
             if (result != null) {
               if (result.status == "1") {
@@ -407,6 +430,7 @@ class _ProfileEditScreenState extends BaseRouteState {
                 global.currentUser = global.userProfileController.currentUser;
                 global.sp!.setString('currentUser', json.encode(global.currentUser!.toJson()));
                 hideLoader();
+                Get.off(() => HomeScreen());
                 _init();
                 showSnackBar(key: _scaffoldKey, snackBarMessage: "${AppLocalizations.of(context)!.txt_profile_updated_successfully}");
               } else {

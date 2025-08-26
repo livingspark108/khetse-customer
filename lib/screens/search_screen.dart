@@ -39,12 +39,10 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
   dynamic analytics;
   dynamic observer;
   TextEditingController _cSearch = new TextEditingController();
-
-  Timer? _debounce;
+  bool showClearButton = false;
 
   @override
   void dispose() {
-    _debounce?.cancel();
     _cSearch.dispose();
     super.dispose();
   }
@@ -59,15 +57,18 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
             key: Key('30'),
             autofocus: false,
             controller: _cSearch,
-            suffixIcon: InkWell(
+            suffixIcon: showClearButton ? InkWell(
               onTap: () {
                 _cSearch.clear();
+                setState(() {
+                  showClearButton = false;
+                });
               },
               child: Icon(
                 Icons.cancel,
                 color: Theme.of(context).colorScheme.primary,
               ),
-            ),
+            ) : SizedBox(),
             prefixIcon: Icon(
               Icons.search_outlined,
               color: Theme.of(context).brightness == Brightness.light
@@ -77,16 +78,10 @@ class _SearchScreenHeaderState extends State<SearchScreenHeader> {
             hintText: "${AppLocalizations.of(context)!.hnt_search_product}",
             textCapitalization: TextCapitalization.words,
             onChanged: (value) {
-              if (value.trim().isNotEmpty) {
-                _debounce?.cancel();
-                _debounce = Timer(Duration(milliseconds: 500), () {
-                  Get.to(() => SearchResultsScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    searchParams: value.trim(),
-                  ));
-                });
-              }
+              setState(() {
+                showClearButton = value.length > 0;
+              });
+              print("LENGTH OF VALUE = ${value.length} - $showClearButton");
             },
             onEditingComplete: () {
               Get.to(() => SearchResultsScreen(

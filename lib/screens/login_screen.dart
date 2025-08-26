@@ -30,6 +30,7 @@ import 'package:user/screens/home_screen.dart';
 import 'package:user/screens/otp_verification_screen.dart';
 import 'package:user/screens/signup_screen.dart';
 import 'package:user/theme/style.dart';
+import 'package:user/utils/validators.dart';
 import 'package:user/widgets/bottom_button.dart';
 import 'package:user/widgets/circular_image_cover.dart';
 import 'package:user/widgets/my_ink_well.dart';
@@ -209,6 +210,7 @@ class _LoginScreenState extends BaseRouteState {
                             controller: _countryCodeController,
                             inputTextFontWeight: FontWeight.bold,
                             keyboardType: TextInputType.number,
+                            readOnly: true,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
@@ -374,6 +376,15 @@ class _LoginScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
+        String? error = validatePhoneNumber(userPhone);
+        if(error != null) {
+          showSnackBar(
+              key: _scaffoldKey1,
+              snackBarMessage:
+              error,
+          );
+          return;
+        }
         if (_cPhone.text.trim().isNotEmpty &&
             _cPhone.text.trim().length == global.appInfo!.phoneNumberLength) {
           showOnlyLoaderDialog();
@@ -384,8 +395,6 @@ class _LoginScreenState extends BaseRouteState {
               CurrentUser _currentUser = new CurrentUser();
               _currentUser.userPhone = _cPhone.text.trim();
               global.currentUser = result.data;
-              final sp = await SharedPreferences.getInstance();
-              global.currentUser != null ? await sp.setString('currentUser', jsonEncode(global.currentUser!.toJson())) : null;
 
               print("MESSAGE = ${result.message}");
 

@@ -156,7 +156,7 @@ class _AddAddressScreenState extends BaseRouteState {
                               focusNode: _fPincode,
                               hintText: ' ${AppLocalizations.of(context)!.hnt_pincode}',
                               keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(global.appInfo!.phoneNumberLength)],
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
                               onFieldSubmitted: (val) {
                                 FocusScope.of(context).requestFocus(_fSociety);
                               },

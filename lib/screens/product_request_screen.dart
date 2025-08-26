@@ -11,6 +11,7 @@ import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/screens/add_address_screen.dart';
 import 'package:user/widgets/address_info_card.dart';
+import 'package:user/widgets/toastfile.dart';
 
 class ProductRequestScreen extends BaseRoute {
   ProductRequestScreen({super.analytics, super.observer, super.routeName = 'ProductRequestScreen'});
@@ -30,7 +31,11 @@ class _ProductRequestScreenState extends BaseRouteState {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = Theme.of(context).colorScheme.primaryContainer;
+    Color color = Theme.of(context).colorScheme.primaryContainer;
+    final bool valid = _selectedAddress != null && tImage != null;
+    if(valid) {
+      color = Theme.of(context).colorScheme.primary;
+    }
     TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
@@ -175,7 +180,11 @@ class _ProductRequestScreenState extends BaseRouteState {
           padding: EdgeInsets.all(8),
           child: InkWell(
             onTap: () async {
-              await _makeProductRequest();
+              if(valid) {
+                await _makeProductRequest();
+                return;
+              }
+              showToast("Upload image and select address before proceeding");
             },
             child: Container(
               height: height * 0.07,

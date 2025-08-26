@@ -458,8 +458,8 @@ class _SignUpScreenState extends BaseRouteState {
                   print("DATA = ${result.data}");
                   global.currentUser = result.data;
                   global.userProfileController.currentUser = global.currentUser;
-                  global.sp!.setString(
-                      'currentUser', json.encode(global.currentUser!.toJson()));
+                  // global.sp!.setString(
+                  //     'currentUser', json.encode(global.currentUser!.toJson()));
                   hideLoader();
                   // Get.offAll(() => HomeScreen(
                   //   analytics: widget.analytics,

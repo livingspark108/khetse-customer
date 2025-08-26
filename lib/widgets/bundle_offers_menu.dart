@@ -231,8 +231,23 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                                               observer: widget.observer,
                                             ));
                                           } else {
-                                            _showVarientModalBottomSheet(
-                                                textTheme, cartController);
+                                            if(product!.varient.length > 1) {
+                                              _showVarientModalBottomSheet(
+                                                textTheme, cartController,
+                                              );
+                                              return;
+                                            }
+                                            _qty = product!.varient[0].cartQty;
+                                            showOnlyLoaderDialog();
+                                            ATCMS? isSuccess;
+                                            isSuccess = await value.addToCart(
+                                                product, _qty, false,
+                                                varient: product!.varient[0]);
+                                            if (isSuccess!.isSuccess != null) {
+                                              Navigator.of(context).pop();
+                                            }
+                                            showToast(isSuccess.message!);
+                                            setState(() {});
                                           }
                                         },
                                         child: Container(

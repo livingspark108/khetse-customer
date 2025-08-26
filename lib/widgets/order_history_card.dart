@@ -84,7 +84,7 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "${global.appInfo!.currencySign} ${(order!.remPrice! + order!.paidByWallet!).toStringAsFixed(2)} >",
+                      "${global.appInfo!.currencySign} ${(order!.remPrice! + order!.paidByWallet!).toStringAsFixed(2)}",
                       style: textTheme.bodyLarge!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),

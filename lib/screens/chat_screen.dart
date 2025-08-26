@@ -10,6 +10,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:user/constants/strings.dart';
 import 'package:user/models/businessLayer/apiHelper.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -265,7 +266,7 @@ class _ChatScreenState extends BaseRouteState {
                 global.nearStoreModel!.phoneNumber != null
                     ? InkWell(
                         onTap: () {
-                          launchCaller(global.nearStoreModel!.phoneNumber);
+                          launchCaller();
                         },
                         child: Transform.scale(
                             scale: 1.3,
@@ -287,8 +288,8 @@ class _ChatScreenState extends BaseRouteState {
     _init();
   }
 
-  launchCaller(String? phone) async {
-    String url = "tel:$phone";
+  launchCaller() async {
+    String url = Strings.callUsUrl;
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     } else {
