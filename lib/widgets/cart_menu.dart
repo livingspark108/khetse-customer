@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/addtocartmessagestatus.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/categoryProductModel.dart';
+import 'package:user/models/productDetailModel.dart';
+import 'package:user/screens/product_description_screen.dart';
 import 'package:user/widgets/toastfile.dart';
 
 class CartMenu extends StatefulWidget {
@@ -35,179 +38,188 @@ class _CartMenuItemState extends State<CartMenuItem> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-        height: 100 * screenHeight / 830,
-        child: Card(
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: global.appInfo!.imageUrl! + product!.varientImage!,
-                      imageBuilder: (context, imageProvider) => Container(
-                        color: Color(0xffF7F7F7),
-                        padding: EdgeInsets.all(5),
-                        child: Container(
+    return GestureDetector(
+      onTap: () {
+        if(product != null) {
+          Get.to(() => ProductDescriptionScreen(
+            productId: product!.productId,
+          ));
+        }
+      },
+      child: Container(
+          height: 100 * screenHeight / 830,
+          child: Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Stack(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: global.appInfo!.imageUrl! + product!.varientImage!,
+                        imageBuilder: (context, imageProvider) => Container(
+                          color: Color(0xffF7F7F7),
+                          padding: EdgeInsets.all(5),
+                          child: Container(
+                            height: 80,
+                            width: 40,
+                            decoration: BoxDecoration(color: Color(0xffF7F7F7), image: DecorationImage(image: imageProvider, fit: BoxFit.contain)),
+                          ),
+                        ),
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Container(
                           height: 80,
                           width: 40,
-                          decoration: BoxDecoration(color: Color(0xffF7F7F7), image: DecorationImage(image: imageProvider, fit: BoxFit.contain)),
+                          child: Icon(
+                            Icons.image,
+                            color: Colors.grey[500],
+                          ),
                         ),
                       ),
-                      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Container(
-                        height: 80,
-                        width: 40,
-                        child: Icon(
-                          Icons.image,
-                          color: Colors.grey[500],
-                        ),
+                      SizedBox(width: 8.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              product!.productName!,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            product!.productName!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                      Spacer(),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${global.appInfo!.currencySign} ${product!.price}",
                             style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
-                        ),
-                      ],
-                    ),
-                    Spacer(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${global.appInfo!.currencySign} ${product!.price}",
-                          style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Positioned(
-                    right: global.isRTL ? null : 0,
-                    left: global.isRTL ? 0 : null,
-                    bottom: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              showOnlyLoaderDialog();
-                              if (product!.cartQty != null && product!.cartQty == 1) {
-                                _qty = 0;
-                              } else {
-                                _qty = product!.cartQty! - 1;
-                              }
-                              ATCMS? isSuccess;
-                              isSuccess = await cartController!.addToCart(product, _qty, true, varientId: product!.varientId, callId: 0);
-                              if (isSuccess!.isSuccess != null) {
-                                Navigator.of(context).pop();
-                              }
-                              showToast(isSuccess.message!);
-                              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              //   content: Text(
-                              //     isSuccess.message,
-                              //     textAlign: TextAlign.center,
-                              //   ),
-                              //   duration: Duration(seconds: 2),
-                              // ));
-                              setState(() {});
-                            },
-                            child: Container(
-                                height: 23,
-                                width: 23,
-                                alignment: Alignment.center,
-                                color: Theme.of(context).colorScheme.secondaryContainer,
-                                child: product!.cartQty != null && product!.cartQty == 1
-                                    ? Icon(
-                                        Icons.delete,
-                                        size: 17.0,
-                                        color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                      )
-                                    : Icon(
-                                        MdiIcons.minus,
-                                        size: 17.0,
-                                        color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                      )),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 23,
-                            width: 23,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
-                                  ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Positioned(
+                      right: global.isRTL ? null : 0,
+                      left: global.isRTL ? 0 : null,
+                      bottom: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5, bottom: 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                showOnlyLoaderDialog();
+                                if (product!.cartQty != null && product!.cartQty == 1) {
+                                  _qty = 0;
+                                } else {
+                                  _qty = product!.cartQty! - 1;
+                                }
+                                ATCMS? isSuccess;
+                                isSuccess = await cartController!.addToCart(product, _qty, true, varientId: product!.varientId, callId: 0);
+                                if (isSuccess!.isSuccess != null) {
+                                  Navigator.of(context).pop();
+                                }
+                                showToast(isSuccess.message!);
+                                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                //   content: Text(
+                                //     isSuccess.message,
+                                //     textAlign: TextAlign.center,
+                                //   ),
+                                //   duration: Duration(seconds: 2),
+                                // ));
+                                setState(() {});
+                              },
+                              child: Container(
+                                  height: 23,
+                                  width: 23,
+                                  alignment: Alignment.center,
+                                  color: Theme.of(context).colorScheme.secondaryContainer,
+                                  child: product!.cartQty != null && product!.cartQty == 1
+                                      ? Icon(
+                                          Icons.delete,
+                                          size: 17.0,
+                                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                        )
+                                      : Icon(
+                                          MdiIcons.minus,
+                                          size: 17.0,
+                                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                        )),
                             ),
-                            child: Center(
-                              child: Text(
-                                "${product!.cartQty}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              height: 23,
+                              width: 23,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
+                                    ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${product!.cartQty}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              showOnlyLoaderDialog();
-                              _qty = product!.cartQty! + 1;
-                              ATCMS? isSuccess;
-                              isSuccess = await cartController!.addToCart(product, _qty, false, varientId: product!.varientId, callId: 0);
-                              if (isSuccess!.isSuccess != null) {
-                                Navigator.of(context).pop();
-                              }
-                              showToast(isSuccess.message!);
-                              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              //   content: Text(
-                              //     isSuccess.message,
-                              //     textAlign: TextAlign.center,
-                              //   ),
-                              //   duration: Duration(seconds: 2),
-                              // ));
-                              setState(() {});
-                            },
-                            child: Container(
-                                height: 23,
-                                width: 23,
-                                alignment: Alignment.center,
-                                color: Theme.of(context).colorScheme.secondaryContainer,
-                                child: Icon(
-                                  MdiIcons.plus,
-                                  size: 17,
-                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                )),
-                          )
-                        ],
-                      ),
-                    )),
-              ],
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                showOnlyLoaderDialog();
+                                _qty = product!.cartQty! + 1;
+                                ATCMS? isSuccess;
+                                isSuccess = await cartController!.addToCart(product, _qty, false, varientId: product!.varientId, callId: 0);
+                                if (isSuccess!.isSuccess != null) {
+                                  Navigator.of(context).pop();
+                                }
+                                showToast(isSuccess.message!);
+                                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                //   content: Text(
+                                //     isSuccess.message,
+                                //     textAlign: TextAlign.center,
+                                //   ),
+                                //   duration: Duration(seconds: 2),
+                                // ));
+                                setState(() {});
+                              },
+                              child: Container(
+                                  height: 23,
+                                  width: 23,
+                                  alignment: Alignment.center,
+                                  color: Theme.of(context).colorScheme.secondaryContainer,
+                                  child: Icon(
+                                    MdiIcons.plus,
+                                    size: 17,
+                                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                  )),
+                            )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 
   showOnlyLoaderDialog() {

@@ -9,6 +9,7 @@ import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/cancelReasonModel.dart';
 import 'package:user/models/orderModel.dart';
 import 'package:user/screens/home_screen.dart';
+import 'package:user/utils/local_notifications.dart';
 
 class CancelOrderScreen extends BaseRoute {
   final Order? order;
@@ -170,10 +171,21 @@ class _CancelOrderScreenState extends BaseRouteState {
                       global.userProfileController.currentUser!.wallet = global.userProfileController.currentUser!.wallet! + order!.paidByWallet!;
                     }
 
+                    await orderController!.getActiveOrderList();
+                    await orderController!.getCompletedOrderHistoryList();
+
+                    final LocalNotificationService _localNotification = LocalNotificationService();
+                    _localNotification.init();
+
+                    _localNotification.sendNotification(
+                      title: "Order cancelled",
+                      subtitle: "Your order has been cancelled",
+                    );
+
                     Get.to(() => HomeScreen(
                           analytics: widget.analytics,
                           observer: widget.observer,
-                          screenId: 0,
+                          screenId: 2,
                         ));
                   },
                   child: Text('${AppLocalizations.of(context)!.btn_yes}')),

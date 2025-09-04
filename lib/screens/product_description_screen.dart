@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:user/constants/color_constants.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/addtocartmessagestatus.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
@@ -107,6 +108,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
   final CartController cartController = Get.put(CartController());
   int _qty = 0;
   int? _selectedIndex;
+  int currentImageIndex = 0;
 
   _ProductDescriptionScreenState(
       {this.productId, this.screenId, this.productDetail});
@@ -201,107 +203,111 @@ class _ProductDescriptionScreenState extends BaseRouteState {
                                   )),
                       ),
                     ),
-                    Container(
-                      width: screenWidth,
-                      height: 260,
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      decoration: BoxDecoration(
+                    InkWell(
+                      onTap: () {
+                        dialogToOpenImage(
+                          _productDetail!.productDetail!.productName,
+                          _productDetail!.productDetail!.images,
+                          0,
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth,
+                        height: 300,
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
-                      )),
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          _productDetail!.productDetail!.images.length > 0
-                              ? PhotoViewGallery.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  reverse: true,
-                                  loadingBuilder: (BuildContext context, _) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  },
-                                  itemCount: _productDetail!
-                                      .productDetail!.images.length,
-                                  builder: (BuildContext context, int index) {
-                                    return PhotoViewGalleryPageOptions(
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                          ),
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            StatefulBuilder(
+                              builder: (context, setState) {
+                                return Column(
+                                  children: [
+                                    Expanded(
+                                      child: _productDetail!.productDetail!.images.isNotEmpty
+                                          ? PhotoViewGallery.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        loadingBuilder: (BuildContext context, _) {
+                                          return const Center(
+                                              child: CircularProgressIndicator());
+                                        },
+                                        itemCount:
+                                        _productDetail!.productDetail!.images.length,
+                                        builder: (BuildContext context, int index) {
+                                          return PhotoViewGalleryPageOptions(
+                                            imageProvider: CachedNetworkImageProvider(
+                                              global.appInfo!.imageUrl! +
+                                                  _productDetail!.productDetail!
+                                                      .images[index].image!,
+                                            ),
+                                          );
+                                        },
+                                        backgroundDecoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(40),
+                                            bottomRight: Radius.circular(40),
+                                          ),
+                                        ),
+                                        onPageChanged: (index) {
+                                          setState(() {
+                                            currentImageIndex = index;
+                                          });
+                                        },
+                                      )
+                                          : PhotoView(
                                         imageProvider: _productDetail!
-                                                    .productDetail!
-                                                    .images
-                                                    .length >
-                                                0
+                                            .productDetail!.productImage !=
+                                            null
                                             ? CachedNetworkImageProvider(
-                                                global.appInfo!.imageUrl! +
-                                                    _productDetail!
-                                                        .productDetail!
-                                                        .images[index]
-                                                        .image!,
-                                              )
-                                            : _productDetail!.productDetail!
-                                                        .productImage !=
-                                                    null
-                                                ? CachedNetworkImageProvider(
-                                                    global.appInfo!.imageUrl! +
-                                                        _productDetail!
-                                                            .productDetail!
-                                                            .productImage!,
-                                                  )
-                                                : Container(
-                                                        width: screenWidth,
-                                                        height: 260,
-                                                        child: Image.asset(
-                                                            'assets/images/icon.png'))
-                                                    as ImageProvider<Object>?);
-                                  },
-                                  backgroundDecoration: BoxDecoration(
-                                      // color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40),
-                                  )),
-                                )
-                              : PhotoView(
-                                  imageProvider: _productDetail!
-                                              .productDetail!.productImage !=
-                                          null
-                                      ? CachedNetworkImageProvider(
                                           global.appInfo!.imageUrl! +
                                               _productDetail!
                                                   .productDetail!.productImage!,
                                         )
-                                      : Container(
-                                              width: screenWidth,
-                                              height: 260,
-                                              child: Image.asset(
-                                                  'assets/images/icon.png'))
-                                          as ImageProvider<Object>?,
-                                  backgroundDecoration: BoxDecoration(
-                                      // color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40),
-                                  )),
-                                  loadingBuilder: (BuildContext context, _) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  },
-                                ),
-                          _productDetail!.productDetail!.images.length > 0
-                              ? IconButton(
-                                  icon: Icon(
-                                    Icons.zoom_out_map,
-                                    color: textTheme.bodyLarge!.color,
-                                  ),
-                                  onPressed: () {
-                                    dialogToOpenImage(
-                                        _productDetail!
-                                            .productDetail!.productName,
-                                        _productDetail!.productDetail!.images,
-                                        0);
-                                  },
-                                )
-                              : SizedBox(),
-                        ],
+                                            : const AssetImage('assets/images/icon.png') as ImageProvider<Object>?,
+                                        backgroundDecoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(40),
+                                            bottomRight: Radius.circular(40),
+                                          ),
+                                        ),
+                                        loadingBuilder: (BuildContext context, _) {
+                                          return const Center(
+                                              child: CircularProgressIndicator());
+                                        },
+                                      ),
+                                    ),
+                                    if (_productDetail!.productDetail!.images.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: List.generate(
+                                            _productDetail!.productDetail!.images.length,
+                                                (index) => Container(
+                                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                              width: 7,
+                                              height: 7,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: currentImageIndex == index
+                                                    ? Colors.green
+                                                    : Colors.green.shade200,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     _productNameAndPrice(textTheme),
@@ -769,7 +775,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              return InkWell(
+              return GestureDetector(
                 onTap: () {
                   _isDataLoaded = false;
                   productId =
@@ -998,9 +1004,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
                                           child: Icon(
                                             Icons.add,
                                             size: 17.0,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
+                                            color: ColorConstants.getBackgroundColor(context),
                                           ),
                                         ),
                                       )

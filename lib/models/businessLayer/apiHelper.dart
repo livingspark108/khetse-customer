@@ -680,13 +680,6 @@ class APIHelper {
           ));
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
-        final LocalNotificationService _localNotification = LocalNotificationService();
-        _localNotification.init(); // initialize notifications
-
-        _localNotification.sendNotification(
-          title: "Order cancelled",
-          subtitle: "Your order has been cancelled",
-        );
         recordList = response;
       } else {
         recordList = null;
@@ -853,7 +846,7 @@ class APIHelper {
           options: Options(
             headers: await global.getApiHeaders(true),
           ));
-      print(response.data);
+      print("FETCHED ADDRESSES ARE = ${response.data}");
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
         recordList = List<Address>.from(
@@ -1849,13 +1842,6 @@ class APIHelper {
           ));
       dynamic recordList;
       if (response.statusCode == 200 && response.data["status"] == '1') {
-        final LocalNotificationService _localNotification = LocalNotificationService();
-        _localNotification.init(); // initialize notifications
-
-        _localNotification.sendNotification(
-          title: "Order confirmed",
-          subtitle: "Your order has been placed",
-        );
         recordList = models.Order.fromJson(response.data["data"]);
       } else {
         recordList = null;

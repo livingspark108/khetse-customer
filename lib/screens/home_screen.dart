@@ -174,7 +174,7 @@ class _HomeScreenState extends BaseRouteState {
     if (screenId == 1) {
       homeController.changeTabIndex(4);
     } else if (screenId == 2) {
-      homeController.changeTabIndex(3);
+      homeController.changeTabIndex(2);
     } else {
       homeController.changeTabIndex(0);
     }

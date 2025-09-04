@@ -7,6 +7,7 @@ import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/screens/checkout_screen.dart';
 import 'package:user/controllers/home_controller.dart';
+import 'package:user/screens/product_description_screen.dart';
 import 'package:user/utils/navigation_utils.dart';
 import 'package:user/widgets/cart_menu.dart';
 import 'package:user/widgets/cart_screen_bottom_sheet.dart';
