@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -70,7 +71,9 @@ class _CancelOrderScreenState extends BaseRouteState {
           : _shimmer(),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
+        child:
+
+        ElevatedButton(
           style: ElevatedButton.styleFrom(
             fixedSize: Size.fromWidth(350.0),
             minimumSize: Size.fromHeight(55),

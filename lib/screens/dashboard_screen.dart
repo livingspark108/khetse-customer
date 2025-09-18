@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -12,8 +13,10 @@ import 'package:user/screens/login_screen.dart';
 import 'package:user/screens/notification_screen.dart';
 import 'package:user/screens/product_description_screen.dart';
 import 'package:user/screens/productlist_screen.dart';
+import 'package:user/screens/search_results_screen.dart';
 import 'package:user/screens/search_screen.dart';
 import 'package:user/screens/wallet_screen.dart';
+import 'package:user/utils/navigation_utils.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/dashboard_widgets.dart';
 
@@ -118,10 +121,19 @@ class _DashboardScreenState extends BaseRouteState {
                           Icons.search_outlined,
                           color: Colors.white,
                         ),
-                        onPressed: () => Get.to(() => SearchScreen(
-                              analytics: widget.analytics,
-                              observer: widget.observer,
-                            )),
+                        onPressed: () =>  Navigator.of(context).push(
+                            NavigationUtils
+                                .createAnimatedRoute(
+                                1.0,
+                                SearchResultsScreen(
+                                  analytics:
+                                  widget.analytics,
+                                  observer:
+                                  widget.observer,
+                                  searchParams:
+                                 ""
+                                      ,
+                                ))),
                       ),
                       global.currentUser?.id != null
                           ? IconButton(

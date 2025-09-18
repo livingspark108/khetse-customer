@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -20,6 +21,7 @@ import 'package:user/screens/membership_screen.dart';
 import 'package:user/screens/order_history_screen.dart';
 import 'package:user/screens/profile_edit_screen.dart';
 import 'package:user/screens/refer_and_earn_screen.dart';
+import 'package:user/screens/uploadphoto.dart';
 import 'package:user/screens/wallet_screen.dart';
 import 'package:user/screens/wishlist_screen.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
@@ -363,6 +365,18 @@ class _UserProfileScreenState extends BaseRouteState {
                                         .then((value) {
                                       setState(() {});
                                     });
+                                  }
+                              ),
+                              UserInfoTile(
+                                  key: UniqueKey(),
+                                  leadingIcon: Icon(Icons.location_on_outlined),
+                                  heading:
+                                  "Order By Photo",
+                                  onPressed: () {
+                                    Get.to(() => ImageUploadPage(
+                                      analytics: widget.analytics,
+                                      observer: widget.observer,
+                                    ));
                                   }
                               ),
                               global.nearStoreModel != null ? SizedBox(height: 16) : SizedBox(),

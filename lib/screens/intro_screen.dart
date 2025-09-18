@@ -99,34 +99,20 @@ class _IntroScreenState extends BaseRouteState {
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(top: 25),
-          height: 50,
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  margin: EdgeInsets.only(right: 15, top: 20),
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            for (int i = 0; i < 4; i++)
-                              if (i == _currentIndex) ...[circleBar(true)] else
-                                circleBar(false),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ))
-            ],
-          ),
-        ),
-        Positioned(
+            Positioned(
+              bottom: MediaQuery.of(context).size.height * 0.12, // adjust spacing above button
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < 4; i++)
+                    if (i == _currentIndex) ...[circleBar(true)] else circleBar(false),
+                ],
+              ),
+            ),
+
+            Positioned(
           top: MediaQuery.of(context).size.height * 0.90,
           right: 0,
           left: 0,

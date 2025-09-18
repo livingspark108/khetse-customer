@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -16,6 +17,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/inputFormaters/cardMonthInputFormatter.dart';
 import 'package:user/inputFormaters/cardNumberInputFormatter.dart';
+
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/cardModel.dart';
@@ -29,21 +31,21 @@ import 'package:user/screens/wallet_screen.dart';
 import 'package:user/utils/local_notifications.dart';
 import 'package:user/utils/navigation_utils.dart';
 
-class PaymentGatewayScreen extends BaseRoute {
+class PaymentGatewayScreenn extends BaseRoute {
   final int? screenId;
   final double? totalAmount;
   final MembershipModel? membershipModel;
   final Order? order;
   final CartController? cartController;
-  PaymentGatewayScreen(
+  PaymentGatewayScreenn(
       {super.analytics,
-      super.observer,
-      super.routeName = 'PaymentGatewayScreen',
-      this.screenId,
-      this.totalAmount,
-      this.membershipModel,
-      this.order,
-      this.cartController});
+        super.observer,
+        super.routeName = 'PaymentGatewayScreen',
+        this.screenId,
+        this.totalAmount,
+        this.membershipModel,
+        this.order,
+        this.cartController});
   @override
   _PaymentGatewayScreenState createState() => new _PaymentGatewayScreenState(
       screenId, totalAmount, membershipModel, order, cartController);
@@ -103,9 +105,9 @@ class _PaymentGatewayScreenState extends BaseRouteState {
             InkWell(
                 onTap: () {
                   Get.to(() => HomeScreen(
-                        analytics: widget.analytics,
-                        observer: widget.observer,
-                      ));
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                  ));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(15),
@@ -118,405 +120,405 @@ class _PaymentGatewayScreenState extends BaseRouteState {
         ),
         body: _isDataLoaded
             ? SingleChildScrollView(
-                child: Column(
-                  children: global.userProfileController.currentUser != null
-                      ? [
-                          global.userProfileController.currentUser!.wallet! >
-                                      0 &&
-                                  screenId != 3
-                              ? RadioListTile(
-                                  controlAffinity:
-                                      ListTileControlAffinity.trailing,
-                                  value: 1,
-                                  groupValue: _isWallet,
-                                  title: Text(
-                                    AppLocalizations.of(context)!.lbl_wallet,
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  subtitle: Text(
-                                    '${global.appInfo!.currencySign} ${global.userProfileController.currentUser!.wallet}',
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  secondary: Icon(
-                                    MdiIcons.walletOutline,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    size: 25,
-                                  ),
-                                  toggleable: true,
-                                  onChanged: (dynamic val) async {
-                                    // print(val);
-                                    // print(order.remPrice);
-                                    // _isWallet = val;
-                                    if(global.userProfileController.currentUser!.wallet! < totalAmount!) {
-                                      showDialog(context: context, builder: (context) {
-                                        return AlertDialog(
-                                          content: Text(
-                                            "Your wallet has insufficient balance\nWould you like to add money or choose a different payment method?",
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                          actions: [
-                                            Row(
-                                              children: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Get.to(() => WalletScreen());
-                                                  },
-                                                  child: Text("Add Money"),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                  child: Text("Other Method"),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Get.off(() => HomeScreen());
-                                                  },
-                                                  child: Text("Cancel"),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                    }
-                                    if (val == null) {
-                                      _isWallet = 0;
-                                      totalAmount = order!.remPrice;
-                                    } else {
-                                      _isWallet = 1;
-                                      if (global.userProfileController
-                                              .currentUser!.wallet! >=
-                                          totalAmount!) {
-                                        if (screenId == 2 &&
-                                            membershipModel != null) {
-                                          showOnlyLoaderDialog();
-                                          await _buyMemberShip(
-                                              'wallet', 'wallet', null);
-                                        } else if (screenId == 1 &&
-                                            order != null) {
-                                          showOnlyLoaderDialog();
-                                          await _orderCheckOut(
-                                              'success', 'wallet', null, null);
-                                        }
-                                      } else {
-                                        totalAmount = totalAmount! -
-                                            global.userProfileController
-                                                .currentUser!.wallet!;
-                                      }
-                                    }
-                                    setState(() {});
-                                    // }
-                                  })
-                              : SizedBox(),
-                          screenId! > 1
-                              ? SizedBox()
-                              : ListTile(
-                                  contentPadding:
-                                      EdgeInsets.only(left: 10, right: 10),
-                                  title: Text(
-                                    AppLocalizations.of(context)!
-                                        .txt_pay_on_delivery,
-                                    style: subHeadingStyle,
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : ListTile(
-                                  onTap: () async {
-                                    if (screenId == 1 && order != null) {
-                                      showOnlyLoaderDialog();
-                                      await _orderCheckOut(
-                                          'success', 'COD', null, null);
-                                    }
-
-                                    setState(() {});
-                                  },
-                                  leading: Icon(
-                                    Icons.wallet,
-                                    size: 25,
-                                    color: Colors.green[500],
-                                  ),
-                                  title: Text(
-                                    AppLocalizations.of(context)!.lbl_cash,
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                  subtitle: Text(
-                                    AppLocalizations.of(context)!
-                                        .txt_pay_through_cash,
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : ListTile(
-                                  title: Text(
-                                    AppLocalizations.of(context)!
-                                        .lbl_other_methods,
-                                    style: subHeadingStyle,
-                                  ),
-                                ),
-                          global.paymentGateway!.razorpay!.razorpayStatus ==
-                                  'Yes'
-                              ? ListTile(
-                                  onTap: () {
-                                    showOnlyLoaderDialog();
-                                    createOrderId();
-                                  },
-                                  leading: Image.asset(
-                                    'assets/images/razorpay.png',
-                                    height: 25,
-                                  ),
-                                  title: Text(
-                                    '${AppLocalizations.of(context)!.lbl_rezorpay}',
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                )
-                              : SizedBox(),
-                          global.paymentGateway!.stripe!.stripeStatus == 'Yes'
-                              ? ListTile(
-                                  onTap: () {
-                                    _cardDialog();
-                                  },
-                                  leading: Image.asset(
-                                    'assets/images/stripe.png',
-                                    height: 20,
-                                  ),
-                                  title: Text(
-                                    '${AppLocalizations.of(context)!.lbl_stripe}',
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                )
-                              : SizedBox(),
-                          global.paymentGateway!.paystack!.paystackStatus ==
-                                  'Yes'
-                              ? ListTile(
-                                  onTap: () {
-                                    _cardDialog(paymentCallId: 1);
-                                  },
-                                  leading: Image.asset(
-                                    'assets/images/paystack.png',
-                                    height: 25,
-                                  ),
-                                  title: Text(
-                                    '${AppLocalizations.of(context)!.lbl_paystack}',
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                )
-                              : SizedBox(),
-                          Divider(),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: TextButton.icon(
-                                      onPressed: () =>
-                                          Navigator.of(context).push(
-                                        NavigationUtils.createAnimatedRoute(
-                                          1.0,
-                                          CouponsScreen(
-                                            analytics: widget.analytics,
-                                            observer: widget.observer,
-                                            screenId: 0,
-                                            screenIdO: screenId,
-                                            cartId: order!.cartid,
-                                            cartController: cartController,
-                                          ),
-                                        ),
-                                      ),
-                                      icon: Icon(
-                                        Icons.local_offer_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                      label: Text(
-                                        "${AppLocalizations.of(context)!.txt_apply_coupon_code}",
-                                        style: textTheme.titleMedium,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                          SizedBox(
-                            height: screenId! > 1 ? 0 : 50,
+          child: Column(
+            children: global.userProfileController.currentUser != null
+                ? [
+              global.userProfileController.currentUser!.wallet! >
+                  0 &&
+                  screenId != 3
+                  ? RadioListTile(
+                  controlAffinity:
+                  ListTileControlAffinity.trailing,
+                  value: 1,
+                  groupValue: _isWallet,
+                  title: Text(
+                    AppLocalizations.of(context)!.lbl_wallet,
+                    style:
+                    Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  subtitle: Text(
+                    '${global.appInfo!.currencySign} ${global.userProfileController.currentUser!.wallet}',
+                    style:
+                    Theme.of(context).textTheme.titleMedium,
+                  ),
+                  secondary: Icon(
+                    MdiIcons.walletOutline,
+                    color:
+                    Theme.of(context).colorScheme.primary,
+                    size: 25,
+                  ),
+                  toggleable: true,
+                  onChanged: (dynamic val) async {
+                    // print(val);
+                    // print(order.remPrice);
+                    // _isWallet = val;
+                    if(global.userProfileController.currentUser!.wallet! < totalAmount!) {
+                      showDialog(context: context, builder: (context) {
+                        return AlertDialog(
+                          content: Text(
+                            "Your wallet has insufficient balance\nWould you like to add money or choose a different payment method?",
+                            style: TextStyle(fontSize: 16),
                           ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_items_in_cart}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${cartController!.cartItemsList!.totalItems}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_total_price}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${global.appInfo!.currencySign} ${order!.totalProductsMrp!.toStringAsFixed(2)}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_discount_price}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${global.appInfo!.currencySign} ${order!.discountonmrp!.toStringAsFixed(2)}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Discounted Price",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${global.appInfo!.currencySign} ${order!.priceWithoutDelivery!.toStringAsFixed(2)}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_coupon_discount}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        order!.couponDiscount != null &&
-                                                order!.couponDiscount! > 0
-                                            ? "- ${global.appInfo!.currencySign} ${order!.couponDiscount!.toStringAsFixed(2)}"
-                                            : '- ${global.appInfo!.currencySign}0',
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_delivery_charges}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${global.appInfo!.currencySign} ${order!.deliveryCharge!.toStringAsFixed(2)}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          screenId! > 1
-                              ? SizedBox()
-                              : Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.txt_tax}",
-                                        style: textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        "${global.appInfo!.currencySign} ${order!.totalTaxPrice!.toStringAsFixed(2)}",
-                                        style: textTheme.titleSmall,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 15, right: 15, top: 8, bottom: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          actions: [
+                            Row(
                               children: [
-                                Text(
-                                  screenId == 3
-                                      ? '${AppLocalizations.of(context)!.lbl_wallet_recharge}'
-                                      : screenId == 2
-                                          ? '${AppLocalizations.of(context)!.tle_subscription}'
-                                          : "${AppLocalizations.of(context)!.lbl_total_amount}",
-                                  style: textTheme.bodyLarge,
+                                TextButton(
+                                  onPressed: () {
+                                    Get.to(() => WalletScreen());
+                                  },
+                                  child: Text("Add Money"),
                                 ),
-                                Text(
-                                  "${global.appInfo!.currencySign} $totalAmount",
-                                  style: textTheme.titleSmall,
-                                )
+                                TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text("Other Method"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Get.off(() => HomeScreen());
+                                  },
+                                  child: Text("Cancel"),
+                                ),
                               ],
                             ),
-                          ),
-                          SizedBox(height: 16.0),
-                        ]
-                      : [],
+                          ],
+                        );
+                      });
+                    }
+                    if (val == null) {
+                      _isWallet = 0;
+                      totalAmount = order!.remPrice;
+                    } else {
+                      _isWallet = 1;
+                      if (global.userProfileController
+                          .currentUser!.wallet! >=
+                          totalAmount!) {
+                        if (screenId == 2 &&
+                            membershipModel != null) {
+                          showOnlyLoaderDialog();
+                          await _buyMemberShip(
+                              'wallet', 'wallet', null);
+                        } else if (screenId == 1 &&
+                            order != null) {
+                          showOnlyLoaderDialog();
+                          await _orderCheckOut(
+                              'success', 'wallet', null, null);
+                        }
+                      } else {
+                        totalAmount = totalAmount! -
+                            global.userProfileController
+                                .currentUser!.wallet!;
+                      }
+                    }
+                    setState(() {});
+                    // }
+                  })
+                  : SizedBox(),
+              screenId! > 1
+                  ? SizedBox()
+                  : ListTile(
+                contentPadding:
+                EdgeInsets.only(left: 10, right: 10),
+                title: Text(
+                  AppLocalizations.of(context)!
+                      .txt_pay_on_delivery,
+                  style: subHeadingStyle,
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : ListTile(
+                onTap: () async {
+                  if (screenId == 1 && order != null) {
+                    showOnlyLoaderDialog();
+                    await _orderCheckOut(
+                        'success', 'COD', null, null);
+                  }
+
+                  setState(() {});
+                },
+                leading: Icon(
+                  Icons.wallet,
+                  size: 25,
+                  color: Colors.green[500],
+                ),
+                title: Text(
+                  AppLocalizations.of(context)!.lbl_cash,
+                  style: textTheme.bodyLarge,
+                ),
+                subtitle: Text(
+                  AppLocalizations.of(context)!
+                      .txt_pay_through_cash,
+                  style: textTheme.bodyLarge,
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : ListTile(
+                title: Text(
+                  AppLocalizations.of(context)!
+                      .lbl_other_methods,
+                  style: subHeadingStyle,
+                ),
+              ),
+              global.paymentGateway!.razorpay!.razorpayStatus ==
+                  'Yes'
+                  ? ListTile(
+                onTap: () {
+                  showOnlyLoaderDialog();
+                  createOrderId();
+                },
+                leading: Image.asset(
+                  'assets/images/razorpay.png',
+                  height: 25,
+                ),
+                title: Text(
+                  '${AppLocalizations.of(context)!.lbl_rezorpay}',
+                  style: textTheme.bodyLarge,
                 ),
               )
+                  : SizedBox(),
+              global.paymentGateway!.stripe!.stripeStatus == 'Yes'
+                  ? ListTile(
+                onTap: () {
+                  _cardDialog();
+                },
+                leading: Image.asset(
+                  'assets/images/stripe.png',
+                  height: 20,
+                ),
+                title: Text(
+                  '${AppLocalizations.of(context)!.lbl_stripe}',
+                  style: textTheme.bodyLarge,
+                ),
+              )
+                  : SizedBox(),
+              global.paymentGateway!.paystack!.paystackStatus ==
+                  'Yes'
+                  ? ListTile(
+                onTap: () {
+                  _cardDialog(paymentCallId: 1);
+                },
+                leading: Image.asset(
+                  'assets/images/paystack.png',
+                  height: 25,
+                ),
+                title: Text(
+                  '${AppLocalizations.of(context)!.lbl_paystack}',
+                  style: textTheme.bodyLarge,
+                ),
+              )
+                  : SizedBox(),
+              Divider(),
+              screenId! > 1
+                  ? SizedBox()
+                  : Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0),
+                  child: TextButton.icon(
+                    onPressed: () =>
+                        Navigator.of(context).push(
+                          NavigationUtils.createAnimatedRoute(
+                            1.0,
+                            CouponsScreen(
+                              analytics: widget.analytics,
+                              observer: widget.observer,
+                              screenId: 0,
+                              screenIdO: screenId,
+                              cartId: order!.cartid,
+                              cartController: cartController,
+                            ),
+                          ),
+                        ),
+                    icon: Icon(
+                      Icons.local_offer_outlined,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary,
+                    ),
+                    label: Text(
+                      "${AppLocalizations.of(context)!.txt_apply_coupon_code}",
+                      style: textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: screenId! > 1 ? 0 : 50,
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_items_in_cart}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${cartController!.cartItemsList!.totalItems}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_total_price}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} ${order!.totalProductsMrp!.toStringAsFixed(2)}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_discount_price}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} ${order!.discountonmrp!.toStringAsFixed(2)}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Discounted Price",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} ${order!.priceWithoutDelivery!.toStringAsFixed(2)}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_coupon_discount}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      order!.couponDiscount != null &&
+                          order!.couponDiscount! > 0
+                          ? "- ${global.appInfo!.currencySign} ${order!.couponDiscount!.toStringAsFixed(2)}"
+                          : '- ${global.appInfo!.currencySign}0',
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_delivery_charges}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} ${order!.deliveryCharge!.toStringAsFixed(2)}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              screenId! > 1
+                  ? SizedBox()
+                  : Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${AppLocalizations.of(context)!.txt_tax}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} ${order!.totalTaxPrice!.toStringAsFixed(2)}",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 8, bottom: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      screenId == 3
+                          ? '${AppLocalizations.of(context)!.lbl_wallet_recharge}'
+                          : screenId == 2
+                          ? '${AppLocalizations.of(context)!.tle_subscription}'
+                          : "${AppLocalizations.of(context)!.lbl_total_amount}",
+                      style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "${global.appInfo!.currencySign} $totalAmount",
+                      style: textTheme.titleSmall,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 16.0),
+            ]
+                : [],
+          ),
+        )
             : _productShimmer(),
         bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).colorScheme.primary,
@@ -594,8 +596,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     var options;
 
     options = {
-      'key': "rzp_live_U6wvXUbUnHcYeY",
-     //  'key': "rzp_test_WswwkR1HmzuuBQ",
+      // 'key': "rzp_live_U6wvXUbUnHcYeY",
+      'key': "rzp_test_WswwkR1HmzuuBQ",
       'amount': _amountInPaise(totalAmount!),
       'name': "${global.currentUser!.name}",
       'prefill': {
@@ -618,7 +620,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     try {
       payPlugin
           .initialize(
-              publicKey: global.paymentGateway!.paystack!.paystackPublicKey!)
+          publicKey: global.paymentGateway!.paystack!.paystackPublicKey!)
           .then((value) {
         _startAfreshCharge(totalAmount!.toInt() * 100);
       }).catchError((e) {
@@ -639,12 +641,12 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       if (isConnected) {
         await apiHelper
             .checkout(
-                cartId: order!.cartid,
-                paymentStatus: paymentStatus,
-                paymentMethod: paymentMethod,
-                wallet: _isWallet == 1 ? 'yes' : 'no',
-                paymentId: paymentId,
-                paymentGateway: paymentGateway)
+            cartId: order!.cartid,
+            paymentStatus: paymentStatus,
+            paymentMethod: paymentMethod,
+            wallet: _isWallet == 1 ? 'yes' : 'no',
+            paymentId: paymentId,
+            paymentGateway: paymentGateway)
             .then((result) async {
           if (result != null) {
             if (result.status == "1") {
@@ -673,7 +675,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
             showSnackBar(
                 key: _scaffoldKey,
                 snackBarMessage:
-                    'Something went wrong. Please try again later.');
+                'Something went wrong. Please try again later.');
           }
         });
       } else {
@@ -704,11 +706,11 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     } finally {
       hideLoader();
       Get.to(() => OrderConfirmationScreen(
-            analytics: widget.analytics,
-            observer: widget.observer,
-            order: order,
-            screenId: 1,
-          ));
+        analytics: widget.analytics,
+        observer: widget.observer,
+        order: order,
+        screenId: 1,
+      ));
     }
   }
 
@@ -716,7 +718,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     var customers;
     try {
       customers =
-          await StripeService.createCustomer(email: global.currentUser!.email);
+      await StripeService.createCustomer(email: global.currentUser!.email);
 
       var paymentMethodsObject = await StripeService.createPaymentMethod(card);
 
@@ -758,7 +760,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
           'Exception: paymentGatewaysScreen.dart -  stripe() : ${err.toString()}');
       return new StripeTransactionResponse(
           message:
-              '${AppLocalizations.of(context)!.lbl_transaction_failed}: ${err.toString()}',
+          '${AppLocalizations.of(context)!.lbl_transaction_failed}: ${err.toString()}',
           success: false);
     }
   }
@@ -781,7 +783,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       if (isConnected) {
         await apiHelper
             .buyMembership(buyStatus, paymentGateway, transactionId,
-                membershipModel!.planId)
+            membershipModel!.planId)
             .then((result) async {
           if (result != null) {
             if (result.status == "1") {
@@ -798,21 +800,21 @@ class _PaymentGatewayScreenState extends BaseRouteState {
               await global.userProfileController.getMyProfile();
               hideLoader();
               Get.to(() => OrderConfirmationScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    order: order,
-                    screenId: 2,
-                  ));
+                analytics: widget.analytics,
+                observer: widget.observer,
+                order: order,
+                screenId: 2,
+              ));
             } else if (result.status == '5') {
               await global.userProfileController.getMyProfile();
               hideLoader();
               Get.to(() => OrderConfirmationScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    order: order,
-                    screenId: 2,
-                    status: 5,
-                  ));
+                analytics: widget.analytics,
+                observer: widget.observer,
+                order: order,
+                screenId: 2,
+                status: 5,
+              ));
             } else {
               hideLoader();
               showSnackBar(
@@ -836,7 +838,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       if (isConnected) {
         await apiHelper
             .rechargeWallet(
-                rechargeStatus, totalAmount!, paymentId, paymentGateway)
+            rechargeStatus, totalAmount!, paymentId, paymentGateway)
             .then((result) async {
           if (result != null) {
             if (result.status == "1") {
@@ -845,11 +847,11 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                       totalAmount!;
               hideLoader();
               Get.to(() => OrderConfirmationScreen(
-                    analytics: widget.analytics,
-                    observer: widget.observer,
-                    order: order,
-                    screenId: 3,
-                  ));
+                analytics: widget.analytics,
+                observer: widget.observer,
+                order: order,
+                screenId: 3,
+              ));
             } else {
               hideLoader();
               showSnackBar(
@@ -874,7 +876,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
               builder: (BuildContext context, StateSetter setState) =>
                   AlertDialog(
                     backgroundColor:
-                        Theme.of(context).inputDecorationTheme.fillColor,
+                    Theme.of(context).inputDecorationTheme.fillColor,
                     contentPadding: EdgeInsets.all(0),
                     title: Text(
                       '${AppLocalizations.of(context)!.lbl_card_Details}',
@@ -912,7 +914,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                           : AutovalidateMode.disabled,
                       child: Padding(
                         padding:
-                            const EdgeInsets.only(left: 15, right: 15, top: 15),
+                        const EdgeInsets.only(left: 15, right: 15, top: 15),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -928,11 +930,11 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                               textInputAction: TextInputAction.next,
                               decoration: new InputDecoration(
                                 fillColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                Theme.of(context).scaffoldBackgroundColor,
                                 contentPadding:
-                                    EdgeInsets.only(top: 10, left: 5, right: 5),
+                                EdgeInsets.only(top: 10, left: 5, right: 5),
                                 hintText:
-                                    '${AppLocalizations.of(context)!.lbl_card_number}',
+                                '${AppLocalizations.of(context)!.lbl_card_number}',
                                 prefixIcon: Icon(
                                   Icons.credit_card,
                                 ),
@@ -982,7 +984,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                 Expanded(
                                   child: TextFormField(
                                     style:
-                                        Theme.of(context).textTheme.titleMedium,
+                                    Theme.of(context).textTheme.titleMedium,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.allow(
                                           RegExp(r'[0-9]')),
@@ -1000,20 +1002,20 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                         Icons.date_range,
                                       ),
                                       hintText:
-                                          '${AppLocalizations.of(context)!.hnt_valid_through}',
+                                      '${AppLocalizations.of(context)!.hnt_valid_through}',
                                     ),
                                     textCapitalization:
-                                        TextCapitalization.sentences,
+                                    TextCapitalization.sentences,
                                     keyboardType: TextInputType.number,
                                     onFieldSubmitted: (value) {
                                       List<int> expiryDate =
-                                          br.getExpiryDate(value);
+                                      br.getExpiryDate(value);
                                       _month = expiryDate[0];
                                       _year = expiryDate[1];
                                     },
                                     onEditingComplete: () {
                                       List<int> expiryDate =
-                                          br.getExpiryDate(_cExpiry.text);
+                                      br.getExpiryDate(_cExpiry.text);
                                       _month = expiryDate[0];
                                       _year = expiryDate[1];
                                     },
@@ -1028,7 +1030,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                       // entered.
                                       if (value.contains(new RegExp(r'(/)'))) {
                                         var split =
-                                            value.split(new RegExp(r'(/)'));
+                                        value.split(new RegExp(r'(/)'));
                                         // The value before the slash is the month while the value to right of
                                         // it is the year.
                                         month = int.parse(split[0]);
@@ -1038,7 +1040,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                         month = int.parse(
                                             value.substring(0, (value.length)));
                                         year =
-                                            -1; // Lets use an invalid year intentionally
+                                        -1; // Lets use an invalid year intentionally
                                       }
 
                                       if ((month < 1) || (month > 12)) {
@@ -1047,7 +1049,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                       }
 
                                       var fourDigitsYear =
-                                          br.convertYearTo4Digits(year);
+                                      br.convertYearTo4Digits(year);
                                       if ((fourDigitsYear < 1) ||
                                           (fourDigitsYear > 2099)) {
                                         // We are assuming a valid should be between 1 and 2099.
@@ -1073,7 +1075,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                 Expanded(
                                   child: TextFormField(
                                     style:
-                                        Theme.of(context).textTheme.titleMedium,
+                                    Theme.of(context).textTheme.titleMedium,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.allow(
                                           RegExp(r'[0-9]')),
@@ -1091,10 +1093,10 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                         MdiIcons.creditCard,
                                       ),
                                       hintText:
-                                          '${AppLocalizations.of(context)!.lbl_cvv}',
+                                      '${AppLocalizations.of(context)!.lbl_cvv}',
                                     ),
                                     textCapitalization:
-                                        TextCapitalization.sentences,
+                                    TextCapitalization.sentences,
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value!.isEmpty) {
@@ -1122,14 +1124,14 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                               ],
                               decoration: new InputDecoration(
                                 fillColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                Theme.of(context).scaffoldBackgroundColor,
                                 contentPadding:
-                                    EdgeInsets.only(top: 10, left: 5, right: 5),
+                                EdgeInsets.only(top: 10, left: 5, right: 5),
                                 prefixIcon: Icon(
                                   Icons.person,
                                 ),
                                 hintText:
-                                    '${AppLocalizations.of(context)!.txt_card_holder_name}',
+                                '${AppLocalizations.of(context)!.txt_card_holder_name}',
                               ),
                               textCapitalization: TextCapitalization.words,
                               keyboardType: TextInputType.text,
@@ -1272,7 +1274,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       showSnackBar(
           key: _scaffoldKey,
           snackBarMessage:
-              AppLocalizations.of(context)!.lbl_transaction_failed);
+          AppLocalizations.of(context)!.lbl_transaction_failed);
     } catch (e) {
       print("Exception - paymentGatewaysScreen.dart -  _handlePaymentError" +
           e.toString());

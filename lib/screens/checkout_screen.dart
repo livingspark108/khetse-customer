@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:user/constants/color_constants.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
@@ -432,7 +434,7 @@ class _CheckoutScreenState extends BaseRouteState {
                       ],
                     ),
                     SizedBox(height: 16.0),
-                    ConfirmationSlider(
+                   /* ConfirmationSlider(
                         width: MediaQuery.of(context).size.width - 32,
                         height: 60,
                         backgroundColor: Color(0xffFBE8E6),
@@ -443,7 +445,31 @@ class _CheckoutScreenState extends BaseRouteState {
                             "${AppLocalizations.of(context)!.txt_swipe_to_order}",
                         onConfirmation: () async {
                           await _makeOrder();
-                        })
+                        })*/
+
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:
+
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size.fromWidth(350.0),
+                          minimumSize: Size.fromHeight(55),
+                          backgroundColor:  Colors.green,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onPressed: () async {
+                         await _makeOrder();
+                        },
+                        child: Text(
+                          "Place Order",
+                          style: TextStyle(
+                            color:  Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

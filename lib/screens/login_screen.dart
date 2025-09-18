@@ -11,8 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_number/mobile_number.dart';
@@ -45,7 +45,7 @@ class LoginScreen extends BaseRoute {
 
 class _LoginScreenState extends BaseRouteState {
   // static final FacebookLogin facebookSignIn = new FacebookLogin();
-  final fb = FacebookLogin();
+  //final fb = FacebookLogin();
   APIHelper apiHelper = APIHelper();
   bool isLoginWithEmail = false;
   List<SimCard> _simCard = <SimCard>[];
@@ -664,7 +664,7 @@ class _LoginScreenState extends BaseRouteState {
     }
   }
 
-  void _loginS(
+  /*void _loginS(
       BuildContext contextt, GlobalKey<ScaffoldState>? scaffoldKey1) async {
     fb.logIn(permissions: [
       FacebookPermission.publicProfile,
@@ -744,7 +744,7 @@ class _LoginScreenState extends BaseRouteState {
     });
     // await facebookSignIn.logIn(['email'])
   }
-
+*/
 // void hitgraphResponse(FacebookAccessToken accessToken, BuildContext contextt,
 //     GlobalKey<ScaffoldState> scaffoldKey1) async {
 //   try {

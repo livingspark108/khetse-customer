@@ -6,8 +6,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -330,7 +330,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
     Navigator.pop(context);
   }
 
-  openBarcodeScanner(GlobalKey<ScaffoldState> scaffoldKey) async {
+/*  openBarcodeScanner(GlobalKey<ScaffoldState> scaffoldKey) async {
     try {
       String barcodeScanRes;
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -346,7 +346,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
       hideLoader();
       print("Exception - businessRule.dart - openBarcodeScanner():" + e.toString());
     }
-  }
+  }*/
 
   sendOTP(String phoneNumber, {int? screenId}) async {
     try {

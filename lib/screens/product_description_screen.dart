@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:user/constants/color_constants.dart';
 import 'package:user/controllers/cart_controller.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:user/models/addtocartmessagestatus.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -751,6 +753,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
                                 child: Icon(
                                   MdiIcons.plus,
                                   size: 17,
+                                  color:Colors.white,
                                 )),
                           )
                         ],
@@ -1175,6 +1178,7 @@ class _ProductDescriptionScreenState extends BaseRouteState {
                                                   child: Icon(
                                                     MdiIcons.plus,
                                                     size: 17,
+                                                    color: Colors.white,
                                                   )),
                                             )
                                           ],

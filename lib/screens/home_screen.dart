@@ -8,6 +8,7 @@ import 'package:user/screens/app_drawer_wrapper_screen.dart';
 import 'package:user/screens/cart_screen.dart';
 import 'package:user/screens/login_screen.dart';
 import 'package:user/screens/order_history_screen.dart';
+import 'package:user/screens/search_results_screen.dart';
 import 'package:user/screens/search_screen.dart';
 import 'package:user/screens/user_profile_screen.dart';
 import 'package:user/widgets/my_bottom_navigation_bar.dart';
@@ -106,7 +107,7 @@ class _HomeScreenState extends BaseRouteState {
             bottomNavigationBar: MyBottomNavigationBar(
               onTap: (value) {
                 if (value == 1)
-                  return Get.to(() => SearchScreen(
+                  return Get.to(() => SearchResultsScreen(
                       analytics: widget.analytics, observer: widget.observer));
                 if (value == 2) {
                   if (global.currentUser?.id == null) {

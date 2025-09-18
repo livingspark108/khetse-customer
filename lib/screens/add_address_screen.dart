@@ -1,11 +1,16 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/models/societyModel.dart';
+import 'package:user/screens/placesearch.dart';
 import 'package:user/widgets/bottom_button.dart';
 import 'package:user/widgets/my_text_field.dart';
 
@@ -18,6 +23,9 @@ class AddAddressScreen extends BaseRoute {
 }
 
 class _AddAddressScreenState extends BaseRouteState {
+  String? venueadd;
+  LatLng? _cityLatLng;
+  int _touchCount=0;
   var _cAddress = new TextEditingController();
   var _cLandmark = new TextEditingController();
   var _cPincode = new TextEditingController();
@@ -42,9 +50,13 @@ class _AddAddressScreenState extends BaseRouteState {
   Address? address;
   int? screenId;
   bool _isDataLoaded = false;
+  bool _mapDraggable = true;
+  LatLng? _selectedLatLng;
   List<Society>? _societyList = [];
   List<Society> _tSocietyList = [];
   var _fSearchSociety = new FocusNode();
+  double? latitude,longitute;
+  GoogleMapController? _controller;
   _AddAddressScreenState(this.address, this.screenId) : super();
   @override
   Widget build(BuildContext context) {
@@ -179,6 +191,102 @@ class _AddAddressScreenState extends BaseRouteState {
                               onTap: () {
                                 _showSocietySelectDialog();
                               },
+                            ),
+                          ),
+                          CustomPlaceAutocomplete(
+
+
+                            onPlaceSelected: (latLng, address) {
+                              setState(() {
+                                _selectedLatLng = latLng;
+                                _cityLatLng=latLng;
+                                venueadd=address;
+                                latitude = latLng.latitude;
+                                longitute = latLng.longitude;
+                              });
+                              _controller?.animateCamera(CameraUpdate.newLatLng(latLng));
+                            },
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: Listener(
+                              onPointerDown: (_) {
+                                _touchCount++;
+                                setState(() {}); // Track finger count
+                              },
+                              onPointerUp: (_) {
+                                _touchCount = (_touchCount - 1).clamp(0, 10);
+                                setState(() {});
+                              },
+                              child: GestureDetector(
+                                // Prevent parent (Form) scroll during gestures on the map
+                                onVerticalDragDown: (_) {},
+                                behavior: HitTestBehavior.opaque,
+
+                                child: SizedBox(
+                                  width:  MediaQuery.of(context).size.width * 2,
+                                  child: Stack(
+                                    children: [
+
+                                      _cityLatLng!=null?
+
+                                      GoogleMap(
+                                        initialCameraPosition: CameraPosition(
+                                          target: _cityLatLng!,
+                                          zoom: 12,
+                                        ),
+                                        onMapCreated: (controller) => _controller = controller,
+                                        markers: {
+                                          Marker(
+                                            markerId: const MarkerId("selectedLocation"),
+                                            position: _selectedLatLng ?? _cityLatLng!,
+                                            infoWindow: const InfoWindow(title: "Selected Location"),
+                                            draggable: true,
+                                            onDragEnd: (newPosition) {
+                                              setState(() {
+                                                _selectedLatLng = newPosition;
+                                                latitude = newPosition.latitude;
+                                                longitute = newPosition.longitude;
+                                              });
+                                            },
+                                          ),
+                                        },
+
+                                        zoomGesturesEnabled: true,
+                                        scrollGesturesEnabled: _mapDraggable,
+                                        zoomControlsEnabled: false,
+                                        gestureRecognizers: {
+                                          Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+                                        },
+                                        onTap: (latLng) {
+                                          setState(() {
+                                            _selectedLatLng = latLng;
+                                            latitude = latLng.latitude;
+                                            longitute = latLng.longitude;
+                                          });
+                                        },
+                                      )
+                                          :Container()
+                                      ,
+                                      // Lock/Unlock toggle button
+                                      Positioned(
+                                        left: 16,
+                                        top: 16,
+                                        child: FloatingActionButton.extended(
+                                          heroTag: "toggle_drag",
+                                          onPressed: () {
+                                            setState(() {
+                                              _mapDraggable = !_mapDraggable;
+                                            });
+                                          },
+                                          label: Text(_mapDraggable ? "Lock Map" : "Drag Map"),
+                                          icon: Icon(_mapDraggable ? Icons.lock_open : Icons.lock),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           Row(
@@ -431,8 +539,8 @@ class _AddAddressScreenState extends BaseRouteState {
           print(latlng);
           if(latlng!=null){
             List<String> _tList = latlng.split("|");
-            _tAddress.lat = _tList[0];
-            _tAddress.lng = _tList[1];
+            _tAddress.lat = _selectedLatLng!.latitude.toString();
+            _tAddress.lng = _selectedLatLng!.longitude.toString();;
             if(_tAddress.lat!=null && _tAddress.lat!=null){
               if (address!.addressId != null) {
                 _tAddress.addressId = address!.addressId;

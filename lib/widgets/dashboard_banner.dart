@@ -15,7 +15,6 @@ class DashboardBanner extends StatefulWidget {
 
 class _DashboardBannerState extends State<DashboardBanner> {
   int _currentIndex = 0;
-  CarouselController _carouselController = CarouselController();
   final EdgeInsetsGeometry? margin;
   final List<Widget> items;
 
@@ -31,7 +30,7 @@ class _DashboardBannerState extends State<DashboardBanner> {
           height: MediaQuery.of(context).size.height * 0.15,
           child: CarouselSlider(
               items: items,
-              carouselController: _carouselController,
+
               options: CarouselOptions(
                   viewportFraction: 0.95,
                   initialPage: _currentIndex,
@@ -58,10 +57,10 @@ class _DashboardBannerState extends State<DashboardBanner> {
             position: _currentIndex,
             onTap: (i) {
               _currentIndex = i.toInt();
-              _carouselController.animateToPage(
+           /*   _carouselController.animateToPage(
                   _currentIndex,
                   duration: Duration(microseconds: 1),
-                  curve: Curves.easeInOut);
+                  curve: Curves.easeInOut);*/
             },
             decorator: DotsDecorator(
               activeSize: const Size(6, 6),
