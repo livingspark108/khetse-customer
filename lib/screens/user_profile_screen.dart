@@ -347,38 +347,24 @@ class _UserProfileScreenState extends BaseRouteState {
                                   heading:
                                   "My Delivery Address",
                                   onPressed: () {
-                                    global.userProfileController.addressList
-                                        .length >
-                                        0
-                                        ? Get.to(() => AddressListScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                    ))!
-                                        .then((value) {
-                                      setState(() {});
-                                    })
-                                        : Get.to(() => AddAddressScreen(
-                                      new Address(),
+                                   Get.to(() => AddressListScreen(
                                       analytics: widget.analytics,
                                       observer: widget.observer,
                                     ))!
                                         .then((value) {
                                       setState(() {});
                                     });
-                                  }
-                              ),
-                              UserInfoTile(
-                                  key: UniqueKey(),
-                                  leadingIcon: Icon(Icons.location_on_outlined),
-                                  heading:
-                                  "Order By Photo",
-                                  onPressed: () {
-                                    Get.to(() => ImageUploadPage(
+                                       /* : Get.to(() => AddAddressScreen(
+                                      new Address(),
                                       analytics: widget.analytics,
                                       observer: widget.observer,
-                                    ));
+                                    ))!
+                                        .then((value) {
+                                      setState(() {});
+                                    });*/
                                   }
                               ),
+
                               global.nearStoreModel != null ? SizedBox(height: 16) : SizedBox(),
                               global.nearStoreModel != null ? UserInfoTile(
                                 heading:

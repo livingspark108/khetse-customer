@@ -48,6 +48,7 @@ class _DashboardScreenState extends BaseRouteState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: DashboardFloatingActionButton(
             analytics: widget.analytics,

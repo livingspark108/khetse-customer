@@ -128,7 +128,7 @@ class _CustomPlaceAutocompleteState extends State<CustomPlaceAutocomplete> {
             focusNode: _focusNode,
             decoration: InputDecoration(
 
-              labelText: "Venue",
+              labelText: "Select Address",
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               fillColor: Color(0xFFedf1f0),
               filled: true,

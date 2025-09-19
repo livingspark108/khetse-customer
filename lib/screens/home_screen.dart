@@ -108,7 +108,8 @@ class _HomeScreenState extends BaseRouteState {
               onTap: (value) {
                 if (value == 1)
                   return Get.to(() => SearchResultsScreen(
-                      analytics: widget.analytics, observer: widget.observer));
+                      analytics: widget.analytics, observer: widget.observer, searchParams:
+                  ""));
                 if (value == 2) {
                   if (global.currentUser?.id == null) {
                     return Get.to(() => LoginScreen(

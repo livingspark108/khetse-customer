@@ -51,50 +51,101 @@ class _AllCategoriesScreenState extends BaseRouteState {
             await _onRefresh();
           },
           child: global.nearStoreModel != null && global.nearStoreModel!.id != null
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: _isDataLoaded
-                      ? _categoryList.length > 0
-                          ? GridView.builder(
-                              controller: _scrollController,
-                              itemCount: _categoryList.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 16.0,
-                                crossAxisSpacing: 12.0,
-                                childAspectRatio: 1/1,
-                              ),
-                              itemBuilder: (context, index) => SelectCategoryCard(
-                                key: UniqueKey(),
-                                category: _categoryList[index],
-                                isSelected: _categoryList[index].isSelected,
-                                borderRadius: 0,
-                                onPressed: () {
-                                  setState(() {
-                                    _categoryList.map((e) => e.isSelected = false).toList();
-                                    _selectedIndex = index;
-                                    if (_selectedIndex == index) {
-                                      _categoryList[index].isSelected = true;
-                                    }
-                                  });
-                                  if (_categoryList[index].subcategory.isNotEmpty) {
-                                    Get.to(SubCategoriesScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                      screenHeading: _categoryList[index].title,
-                                      categoryId: _categoryList[index].catId,
-                                    ));
-                                  } else {
-                                    showSnackBar(key: _scaffoldKey, snackBarMessage: ' ${AppLocalizations.of(context)!.txt_nothing_to_show}');
-                                  }
-                                },
-                              ),
-                            )
-                          : Center(
-                              child: Text('${AppLocalizations.of(context)!.txt_nothing_to_show}'),
-                            )
-                      : _shimmer(),
-                )
+              ?
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _isDataLoaded
+                ? _categoryList.isNotEmpty
+                ? GridView.builder(
+              controller: _scrollController,
+              itemCount: _categoryList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 per row
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 12.0,
+                childAspectRatio: 1.3,
+              ),
+              itemBuilder: (context, index) {
+                // ✅ Special case for the last item (Flowers)
+                if (index == _categoryList.length - 1) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: AspectRatio(
+                          aspectRatio: 2.8, // wide, like screenshot
+                          child: SelectCategoryCard(
+                            key: UniqueKey(),
+                            category: _categoryList[index],
+                            isSelected: _categoryList[index].isSelected,
+                            borderRadius: 0,
+                            onPressed: () {
+                              setState(() {
+                                _categoryList.map((e) => e.isSelected = false).toList();
+                                _selectedIndex = index;
+                                _categoryList[index].isSelected = true;
+                              });
+
+                              if (_categoryList[index].subcategory.isNotEmpty) {
+                                Get.to(SubCategoriesScreen(
+                                  analytics: widget.analytics,
+                                  observer: widget.observer,
+                                  screenHeading: _categoryList[index].title,
+                                  categoryId: _categoryList[index].catId,
+                                ));
+                              } else {
+                                showSnackBar(
+                                  key: _scaffoldKey,
+                                  snackBarMessage:
+                                  ' ${AppLocalizations.of(context)!.txt_nothing_to_show}',
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                // ✅ Normal grid items (Vegetables, Exotic Vegetables, Fruits, Exotic Fruits)
+                return SelectCategoryCard(
+                  key: UniqueKey(),
+                  category: _categoryList[index],
+                  isSelected: _categoryList[index].isSelected,
+                  borderRadius: 0,
+                  onPressed: () {
+                    setState(() {
+                      _categoryList.map((e) => e.isSelected = false).toList();
+                      _selectedIndex = index;
+                      _categoryList[index].isSelected = true;
+                    });
+
+                    if (_categoryList[index].subcategory.isNotEmpty) {
+                      Get.to(SubCategoriesScreen(
+                        analytics: widget.analytics,
+                        observer: widget.observer,
+                        screenHeading: _categoryList[index].title,
+                        categoryId: _categoryList[index].catId,
+                      ));
+                    } else {
+                      showSnackBar(
+                        key: _scaffoldKey,
+                        snackBarMessage:
+                        ' ${AppLocalizations.of(context)!.txt_nothing_to_show}',
+                      );
+                    }
+                  },
+                );
+              },
+            )
+                : Center(
+              child: Text('${AppLocalizations.of(context)!.txt_nothing_to_show}'),
+            )
+                : _shimmer(),
+          )
+
+
               : Center(
                   child: Padding(
                     padding: const EdgeInsets.all(15),

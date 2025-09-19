@@ -31,69 +31,71 @@ class _SelectCategoryCardState extends State<SelectCategoryCard> {
 
   @override
   Widget build(BuildContext context) {
-    // return InkWell(
-    //   onTap: onPressed,
-    //   child: Container(
-    //     child: Column(),
-    //   ),
-    // );
     return SizedBox(
       width: 100,
       child: Card(
-        margin: EdgeInsets.only(top: 3, bottom: 3, right: 16),
+        margin: const EdgeInsets.only(top: 3, bottom: 3, right: 16),
         child: InkWell(
           onTap: onPressed,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Top image
               Expanded(
                 flex: 6,
                 child: Container(
-                  margin: EdgeInsets.only(top: 4),
+                  margin: const EdgeInsets.only(top: 4),
                   alignment: Alignment.center,
                   child: CachedNetworkImage(
-                    imageUrl: screenId == 1 ? global.appInfo!.imageUrl! + subCategory!.image! : global.appInfo!.imageUrl! + category!.image!,
+                    imageUrl: screenId == 1
+                        ? global.appInfo!.imageUrl! + subCategory!.image!
+                        : global.appInfo!.imageUrl! + category!.image!,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
-                      backgroundColor: isSelected! ? Colors.white : Color(0xffFFF5F4),
+                      backgroundColor: isSelected! ? Colors.white : const Color(0xffFFF5F4),
                       radius: 35,
                       backgroundImage: imageProvider,
                     ),
-
-                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                    placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
                     errorWidget: (context, url, error) => CircleAvatar(
-                      backgroundColor: isSelected! ? Colors.white : Color(0xffFFF5F4),
+                      backgroundColor: isSelected! ? Colors.white : const Color(0xffFFF5F4),
                       radius: 30,
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.grey[300],
-                      ),
+                      child: Icon(Icons.image, color: Colors.grey[300]),
                     ),
                   ),
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: Container(
-                  height: 42,
-                  alignment: Alignment.center,
-                  child: Text(
-                    screenId == 1 ? subCategory!.title! : category!.title!,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(
-                      // color: !isSelected! ? Theme.of(context).primaryTextTheme.labelSmall?.color : Theme.of(context).textSelectionTheme.selectionColor,
-                      fontWeight: isSelected! ? FontWeight.w700 : FontWeight.w400,
-                      fontSize: 12,
-                    ),
+
+              // ✅ Bottom green background with white text
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
                   ),
                 ),
-              )
+                alignment: Alignment.center,
+                child: Text(
+                  screenId == 1 ? subCategory!.title! : category!.title!,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: const TextStyle(
+                    color: Colors.white, // ✅ White text
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
 
   @override
   void initState() {
