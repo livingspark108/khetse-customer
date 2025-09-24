@@ -40,8 +40,10 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: Colors.white,
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           isPrivacy
               ? Strings.privacyPolicy
@@ -57,11 +59,14 @@ class _AboutUsAndTermsOfServiceScreenState extends BaseRouteState {
             icon: Icon(Icons.keyboard_arrow_left)),
       ),
       body: SafeArea(
+
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: _isDataLoaded
               ? Container(
+
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     borderRadius: BorderRadius.all(
                       Radius.circular(10),
                     ),

@@ -217,6 +217,7 @@ class _UserProfileScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Color(0xff3b9d2f),
           automaticallyImplyLeading: false,

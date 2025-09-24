@@ -11,6 +11,7 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(
@@ -31,10 +32,7 @@ class ContactUsScreen extends StatelessWidget {
               _contactUs();
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Divider(color: ColorConstants.getForegroundColor(context)),
-          ),
+
           _buildTile(
             context,
             title: Strings.emailUs,
@@ -47,22 +45,42 @@ class ContactUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTile(BuildContext context, {required String title, required Function()? onTap}) {
+  Widget _buildTile(
+      BuildContext context, {
+        required String title,
+        required VoidCallback? onTap,
+      }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: InkWell(
         onTap: onTap,
-        splashColor: ColorConstants.getForegroundColor(context).withOpacity(0.3),
-        child: SizedBox(
+        borderRadius: BorderRadius.circular(12),
+        splashColor:
+        Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        child: Container(
           height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade300), // light grey border
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
               ),
-              Icon(Icons.north_east)
+              const Icon(
+                Icons.north_east,
+                size: 20,
+                color: Colors.black87,
+              )
             ],
           ),
         ),

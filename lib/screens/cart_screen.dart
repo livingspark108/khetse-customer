@@ -39,6 +39,7 @@ class _CartScreenState extends BaseRouteState {
       child: GetBuilder<CartController>(
           init: cartController,
           builder: (value) => Scaffold(
+            backgroundColor: Colors.white,
                 appBar: AppBar(
                   title: Text(
                     "${AppLocalizations.of(context)!.txt_cart}",

@@ -40,10 +40,13 @@ class _WalletScreenState extends BaseRouteState {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: Text(
             "${AppLocalizations.of(context)!.btn_my_wallet}",
             style: textTheme.titleLarge,
+
           ),
           leading: IconButton(
               onPressed: () {
@@ -55,7 +58,9 @@ class _WalletScreenState extends BaseRouteState {
           child: _isDataLoaded
               ? Padding(
             padding: const EdgeInsets.only(top: 25),
-            child: Column(
+            child:
+
+         /*   Column(
               children: [
                 Text(
                   "${AppLocalizations.of(context)!.lbl_available_balance}",
@@ -135,6 +140,99 @@ class _WalletScreenState extends BaseRouteState {
                         _spentAnalysis(),
                       ],
                     ),
+                  ),
+                ),
+              ],
+            ),*/
+
+            Column(
+              children: [
+                // Wallet Balance Card
+                Container(
+                  width: double.infinity, // cover full screen width
+                  margin: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12),
+                    image: const DecorationImage(
+                      image: AssetImage("assets/images/backwallet.png"), // your image
+                      fit: BoxFit.cover, // cover whole container
+                    ),
+                  ),
+
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Available Balance",
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
+                      const SizedBox(height: 6),
+                   GetBuilder<UserProfileController>(init: global.userProfileController, builder: (value) => Text("${global.appInfo?.currencySign} ${global.userProfileController.currentUser?.wallet ?? '0.00'}", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, fontSize: 25,color: Colors.white))),
+
+
+                      const SizedBox(height: 6),
+                      const Text(
+                        "Happy Shopping!",
+                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // TabBar
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TabBar(
+
+                    indicator: const UnderlineTabIndicator(
+                      borderSide: BorderSide(width: 3, color: Colors.green),
+                      insets: EdgeInsets.symmetric(horizontal: 8.0),
+                    ),
+                    labelColor: Colors.green,
+                    unselectedLabelColor: Colors.black54,
+                    tabs: [
+                      Tab(
+                        icon: Icon(MdiIcons.wallet, size: 18),
+                        child: const Text("Recharge History",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12)),
+                      ),
+                      Tab(
+                        icon: Icon(MdiIcons.walletPlus, size: 18),
+                        child: const Text("Wallet Recharge",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12)),
+                      ),
+                      Tab(
+                        icon: Icon(MdiIcons.currencyInr, size: 18),
+                        child: const Text("Transaction History",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12)),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // TabBar Content
+                Expanded(
+                  child: TabBarView(
+
+                    children: [
+
+                      Padding(padding: EdgeInsets.all(10),child:
+
+                      _rechargeHistoryWidget(),),
+
+            Padding(padding: EdgeInsets.all(10),child:
+                      _rechargeWallet(),),
+            Padding(padding: EdgeInsets.all(10),child:
+                      _spentAnalysis(),),
+                    ],
                   ),
                 ),
               ],
@@ -297,18 +395,10 @@ class _WalletScreenState extends BaseRouteState {
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                      color: Color(0xFFFFBEBE),
-                                    ),
-                                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                    child: Text(
+                                Text(
                                       '${_walletRechargeHistoryList[index].paymentGateway}', style: TextStyle(color: Colors.black, fontSize: 16),
                                     ),
-                                  ),
+
                                   Expanded(child: SizedBox()),
                                   Icon(
                                     MdiIcons.checkDecagram,
@@ -366,57 +456,149 @@ class _WalletScreenState extends BaseRouteState {
 
   Widget _rechargeWallet() {
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Enter Amount Label
+          const Text(
+            "Enter Amount",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Amount Input Box
           Container(
-            margin: EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            child: TextFormField(
-              controller: _cAmount,
-              cursorColor: Theme.of(context).colorScheme.primary,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: '${AppLocalizations.of(context)!.hnt_enter_amount}',
-                fillColor: Theme.of(context).scaffoldBackgroundColor,
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    '${global.appInfo!.currencySign}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "₹",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                contentPadding: EdgeInsets.only(top: 10),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: TextField(
+                    controller: _cAmount,
+                    keyboardType: TextInputType.number,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "0",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Quick Select Buttons
+          Wrap(
+            spacing: 12,
+            children: [
+              _amountChip("+1200", "1200"),
+              _amountChip("+1000", "1000"),
+              _amountChip("+500", "500"),
+              _amountChip("+100", "100"),
+            ],
+          ),
+
+          const SizedBox(height: 32),
+
+          // Add Money Button
+          SizedBox(
+            width: double.infinity,
+            height: 55,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                if (_cAmount.text.trim().isNotEmpty) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PaymentGatewayScreen(
+                        screenId: 3,
+                        totalAmount: double.parse(_cAmount.text.trim()),
+                        analytics: widget.analytics,
+                        observer: widget.observer,
+                      ),
+                    ),
+                  );
+                } else {
+                  showSnackBar(
+                    key: _scaffoldKey,
+                    snackBarMessage:
+                    '${AppLocalizations.of(context)!.txt_enter_amount}',
+                  );
+                }
+              },
+              child: const Text(
+                "Add Money",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-          SizedBox(
-            height: 15,
-          ),
-          SizedBox(
-            height: 50,
-            width: MediaQuery.of(context).size.width,
-            child: FilledButton(
-                onPressed: () async {
-                  if (_cAmount.text.trim().isNotEmpty) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PaymentGatewayScreen(
-                          screenId: 3,
-                          totalAmount: double.parse(_cAmount.text.trim()),
-                          analytics: widget.analytics,
-                          observer: widget.observer,
-                        ),
-                      ),
-                    );
-                  } else
-                    showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_enter_amount}');
-                },
-                child: Text('${AppLocalizations.of(context)!.btn_make_payment}')),
-          )
         ],
       ),
     );
   }
+
+// Reusable Chip Widget (clickable)
+  Widget _amountChip(String label, String value) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _cAmount.text = value;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+// Reusable Chip Widget
+
+
 
   Widget _shimmerWidget() {
     try {

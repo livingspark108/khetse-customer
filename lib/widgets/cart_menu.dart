@@ -32,193 +32,189 @@ class _CartMenuItemState extends State<CartMenuItem> {
   Product? product;
   CartController? cartController;
   int? _qty;
+
   _CartMenuItemState({required this.product, this.cartController});
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double screenHeight = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () {
-        if(product != null) {
-          Get.to(() => ProductDescriptionScreen(
-            productId: product!.productId,
-          ));
-        }
-      },
-      child: Container(
-          height: 100 * screenHeight / 830,
-          child: Card(
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Stack(
+
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 6),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Product Image
+            /// Product Image inside a Card
+            /// Product Image inside a Card with light grey border
+            Card(
+              color: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color: Colors.grey.shade300, // ✅ Light grey border
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImage(
+                  imageUrl: global.appInfo!.imageUrl! + product!.varientImage!,
+                  height: 70,
+                  width: 70, // ✅ Square
+                  fit: BoxFit.contain, // ✅ Fits inside without cropping
+                  placeholder: (context, url) =>
+                      Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.image, color: Colors.grey[400], size: 30),
+                ),
+              ),
+            ),
+
+
+
+            SizedBox(width: 12),
+
+            /// Product Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    product!.productName ?? "",
+                    style: textTheme.bodyLarge!
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 2),
+
+                  SizedBox(height: 2),
+
+
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: global.appInfo!.imageUrl! + product!.varientImage!,
-                        imageBuilder: (context, imageProvider) => Container(
-                          color: Color(0xffF7F7F7),
-                          padding: EdgeInsets.all(5),
-                          child: Container(
-                            height: 80,
-                            width: 40,
-                            decoration: BoxDecoration(color: Color(0xffF7F7F7), image: DecorationImage(image: imageProvider, fit: BoxFit.contain)),
-                          ),
-                        ),
-                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => Container(
-                          height: 80,
-                          width: 40,
-                          child: Icon(
-                            Icons.image,
-                            color: Colors.grey[500],
-                          ),
+                      Text(
+                        "${global.appInfo!.currencySign}${product!.price}",
+                        style: textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                          fontSize: 14,
                         ),
                       ),
-                      SizedBox(width: 8.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 150,
-                            child: Text(
-                              product!.productName!,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                          ),
-                        ],
+                      SizedBox(width: 6),
+                      Text(
+                        "${global.appInfo!.currencySign}${product!.mrp ?? product!.price}",
+                        style: textTheme.bodyMedium!.copyWith(
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
                       ),
-                      Spacer(),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${global.appInfo!.currencySign} ${product!.price}",
-                            style: textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                        ],
-                      )
                     ],
                   ),
-                  Positioned(
-                      right: global.isRTL ? null : 0,
-                      left: global.isRTL ? 0 : null,
-                      bottom: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 5, bottom: 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                showOnlyLoaderDialog();
-                                if (product!.cartQty != null && product!.cartQty == 1) {
-                                  _qty = 0;
-                                } else {
-                                  _qty = product!.cartQty! - 1;
-                                }
-                                ATCMS? isSuccess;
-                                isSuccess = await cartController!.addToCart(product, _qty, true, varientId: product!.varientId, callId: 0);
-                                if (isSuccess!.isSuccess != null) {
-                                  Navigator.of(context).pop();
-                                }
-                                showToast(isSuccess.message!);
-                                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                //   content: Text(
-                                //     isSuccess.message,
-                                //     textAlign: TextAlign.center,
-                                //   ),
-                                //   duration: Duration(seconds: 2),
-                                // ));
-                                setState(() {});
-                              },
-                              child: Container(
-                                  height: 23,
-                                  width: 23,
-                                  alignment: Alignment.center,
-                                  color: Theme.of(context).colorScheme.secondaryContainer,
-                                  child: product!.cartQty != null && product!.cartQty == 1
-                                      ? Icon(
-                                          Icons.delete,
-                                          size: 17.0,
-                                          color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                        )
-                                      : Icon(
-                                          MdiIcons.minus,
-                                          size: 17.0,
-                                          color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                        )),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 23,
-                              width: 23,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1.0,
-                                  color: Theme.of(context).colorScheme.secondary,
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
-                                    ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "${product!.cartQty}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                showOnlyLoaderDialog();
-                                _qty = product!.cartQty! + 1;
-                                ATCMS? isSuccess;
-                                isSuccess = await cartController!.addToCart(product, _qty, false, varientId: product!.varientId, callId: 0);
-                                if (isSuccess!.isSuccess != null) {
-                                  Navigator.of(context).pop();
-                                }
-                                showToast(isSuccess.message!);
-                                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                //   content: Text(
-                                //     isSuccess.message,
-                                //     textAlign: TextAlign.center,
-                                //   ),
-                                //   duration: Duration(seconds: 2),
-                                // ));
-                                setState(() {});
-                              },
-                              child: Container(
-                                  height: 23,
-                                  width: 23,
-                                  alignment: Alignment.center,
-                                  color: Theme.of(context).colorScheme.secondaryContainer,
-                                  child: Icon(
-                                    MdiIcons.plus,
-                                    size: 17,
-                                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                  )),
-                            )
-                          ],
-                        ),
-                      )),
                 ],
               ),
             ),
-          )),
+
+            /// Actions (Delete + Quantity)
+            Column(
+              children: [
+                /// Delete button
+
+
+                /// Quantity controls
+                Row(
+                  children: [
+                    _qtyButton(
+                      icon: product!.cartQty != null && product!.cartQty == 1
+                          ? Icons.delete
+                          : MdiIcons.minus,
+                      onTap: () async {
+                        showOnlyLoaderDialog();
+                        if (product!.cartQty != null && product!.cartQty == 1) {
+                          _qty = 0;
+                        } else {
+                          _qty = product!.cartQty! - 1;
+                        }
+                        ATCMS? isSuccess = await cartController!.addToCart(
+                          product,
+                          _qty,
+                          true,
+                          varientId: product!.varientId,
+                          callId: 0,
+                        );
+                        if (isSuccess!.isSuccess != null) {
+                          Navigator.of(context).pop();
+                        }
+                        showToast(isSuccess.message!);
+                        setState(() {});
+                      },
+                    ),
+                    SizedBox(width: 6),
+                    Container(
+                      height: 28,
+                      width: 28,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        "${product!.cartQty}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    _qtyButton(
+                      icon: MdiIcons.plus,
+                      onTap: () async {
+                        showOnlyLoaderDialog();
+                        _qty = product!.cartQty! + 1;
+                        ATCMS? isSuccess = await cartController!.addToCart(
+                          product,
+                          _qty,
+                          false,
+                          varientId: product!.varientId,
+                          callId: 0,
+                        );
+                        if (isSuccess!.isSuccess != null) {
+                          Navigator.of(context).pop();
+                        }
+                        showToast(isSuccess.message!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _qtyButton({required IconData icon, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 28,
+        width: 28,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Icon(icon, size: 18, color: Colors.black87),
+      ),
     );
   }
 
@@ -230,12 +226,13 @@ class _CartMenuItemState extends State<CartMenuItem> {
         return Dialog(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          child: Center(child: new CircularProgressIndicator()),
+          child: Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
 }
+
 
 class _CartMenuState extends State<CartMenu> {
   CartController? cartController;

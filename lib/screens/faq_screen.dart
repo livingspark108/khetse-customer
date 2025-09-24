@@ -26,8 +26,9 @@ class _FAQScreenState extends State<FAQScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           iconTheme: IconThemeData(
             color: ColorConstants.getForegroundColor(context),
           ),
@@ -80,62 +81,72 @@ class _CustomExpansionPanelState extends State<CustomExpansionPanel>
     with SingleTickerProviderStateMixin {
   bool isCollapsed = true;
 
+
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            isCollapsed = !isCollapsed;
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: ColorConstants.getForegroundColor(context).withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  AnimatedRotation(
-                    duration: const Duration(milliseconds: 300),
-                    turns: isCollapsed ? 0 : 0.5, // Rotates 180 degrees
-                    child: const Icon(Icons.keyboard_arrow_down),
-                  ),
-                ],
-              ),
-              AnimatedSize(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                child: isCollapsed
-                    ? const SizedBox.shrink()
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Text(
-                          widget.subtitle,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  return Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  child: InkWell(
+  borderRadius: BorderRadius.circular(12),
+  onTap: () {
+  setState(() => isCollapsed = !isCollapsed);
+  },
+  child: Container(
+  decoration: BoxDecoration(
+  color: Colors.green.shade50, // light green background
+  borderRadius: BorderRadius.circular(12),
+  border: Border.all(color: Colors.green.shade200), // thin border
+  ),
+  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  /// Header Row
+  Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+  Expanded(
+  child: Text(
+  widget.title,
+  style: const TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w600,
+  ),
+  ),
+  ),
+  AnimatedRotation(
+  turns: isCollapsed ? 0 : 0.5,
+  duration: const Duration(milliseconds: 300),
+  child: const Icon(
+  Icons.keyboard_arrow_down,
+  size: 24,
+  ),
+  ),
+  ],
+  ),
+
+  /// Collapsible Content
+  AnimatedSize(
+  duration: const Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+  child: isCollapsed
+  ? const SizedBox.shrink()
+      : Padding(
+  padding: const EdgeInsets.only(top: 12),
+  child: Text(
+  widget.subtitle,
+  style: const TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+  ),
+  ),
+  ),
+  ),
+  ],
+  ),
+  ),
+  ),
+  );
   }
 }

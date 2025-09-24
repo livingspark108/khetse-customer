@@ -23,7 +23,7 @@ class _CartScreenBottomSheetState extends State<CartScreenBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.tertiaryContainer,
+          color: Colors.white,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(30),
             topLeft: Radius.circular(30),

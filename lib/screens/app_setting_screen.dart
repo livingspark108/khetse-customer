@@ -29,8 +29,10 @@ class _SettingScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: Colors.white,
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
           "${AppLocalizations.of(context)!.btn_app_setting} ",
@@ -50,18 +52,26 @@ class _SettingScreenState extends BaseRouteState {
             child: Column(
               children: [
                 Card(
+                  color: Colors.white,
+                  elevation: 0, // 👈 removes shadow
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Color(0xffe6e6e6), width: 1), // 👈 grey border
+                    borderRadius: BorderRadius.circular(8), // optional rounded corners
+                  ),
                   child: SwitchListTile(
                     value: _appSetting?.sms ?? false,
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    activeColor: Theme.of(context).colorScheme.primary, // 👈 active color
                     onChanged: (val) async {
                       _appSetting?.sms = val;
                       bool _isSuccessfull = await updateAppSetting();
                       hideLoader();
                       if (!_isSuccessfull) {
                         _appSetting?.sms = !(_appSetting?.sms ?? false);
-                        showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_something_went_wrong} ');
+                        showSnackBar(
+                          key: _scaffoldKey,
+                          snackBarMessage: '${AppLocalizations.of(context)!.txt_something_went_wrong} ',
+                        );
                       }
-
                       setState(() {});
                     },
                     title: Text(
@@ -70,10 +80,17 @@ class _SettingScreenState extends BaseRouteState {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: EdgeInsets.only(top: 8.0),
                   child: Card(
+                    color: Colors.white,
+                    elevation: 0,
                     child: SwitchListTile(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Color(0xffe6e6e6), width: 1), // 👈 grey border
+                        borderRadius: BorderRadius.circular(8), // optional rounded corners
+                      ),
                       value: _appSetting?.app ?? false,
                       activeColor: Theme.of(context).colorScheme.primary,
                       onChanged: (val) async {
@@ -97,6 +114,12 @@ class _SettingScreenState extends BaseRouteState {
                 Padding(
                   padding: EdgeInsets.only(top: 8.0),
                   child: Card(
+                    color: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xffe6e6e6), width: 1), // 👈 grey border
+                      borderRadius: BorderRadius.circular(8), // optional rounded corners
+                    ),
                     child: SwitchListTile(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: _appSetting?.email ?? false,

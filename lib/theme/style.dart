@@ -28,13 +28,13 @@ class ThemeUtils {
   static final ThemeData defaultAppThemeData = ThemeData(
       fontFamily: "Google-Sans",
       brightness: Brightness.light,
-      colorSchemeSeed: Color(0xff3b9d2f),
+      colorSchemeSeed: Color(0xff005832),
       useMaterial3: true
   );
   static final ThemeData darkAppThemData = ThemeData(
     fontFamily: "Google-Sans",
     brightness: Brightness.dark,
-    colorSchemeSeed: Color(0xff3b9d2f),
+    colorSchemeSeed: Color(0xff005832),
     useMaterial3: true
   );
 }

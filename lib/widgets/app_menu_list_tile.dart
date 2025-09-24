@@ -27,7 +27,7 @@ class _AppMenuListTileState extends State<AppMenuListTile> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(elevation: 0, backgroundColor: Theme.of(context).colorScheme.surfaceVariant),
+      style: ElevatedButton.styleFrom(elevation: 0, backgroundColor: Colors.white),
       onPressed: () => onPressed!(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
