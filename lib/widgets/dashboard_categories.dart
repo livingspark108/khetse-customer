@@ -34,6 +34,22 @@ class _DashboardCategoriesState extends State<DashboardCategories> {
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final List<String> categoryOrder = [
+      "Vegetables",
+      "Exotic vegetables",
+      "Fruits",
+      "Exotic fruits",
+      "Flowers"
+    ];
+    topCategoryList.sort((a, b) {
+      int indexA = categoryOrder.indexOf(a.title??"");
+      int indexB = categoryOrder.indexOf(b.title??"");
+
+      if (indexA == -1) indexA = categoryOrder.length; // if not found → push to end
+      if (indexB == -1) indexB = categoryOrder.length;
+
+      return indexA.compareTo(indexB);
+    });
     return Column(
       children: [
         Padding(
@@ -70,31 +86,31 @@ class _DashboardCategoriesState extends State<DashboardCategories> {
         Container(
           height: 120,
           child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: topCategoryList.length,
-              itemBuilder: (context, index) {
-                return SelectCategoryCard(
-                  key: UniqueKey(),
-                  category: topCategoryList[index],
-                  onPressed: () {
-                    setState(() {
-                      topCategoryList.map((e) => e.isSelected = false).toList();
-                      _selectedIndex = index;
-                      if (_selectedIndex == index) {
-                        topCategoryList[index].isSelected = true;
-                      }
-                    });
-                    Get.to(() => SubCategoriesScreen(
-                          analytics: widget.analytics,
-                          observer: widget.observer,
-                          screenHeading: topCategoryList[index].title,
-                          categoryId: topCategoryList[index].catId,
-                        ));
-                  },
-                  isSelected: topCategoryList[index].isSelected,
-                );
-              }),
+            scrollDirection: Axis.horizontal,
+            itemCount: topCategoryList.length,
+            itemBuilder: (context, index) {
+              return SelectCategoryCard(
+                key: UniqueKey(),
+                category: topCategoryList[index],
+                onPressed: () {
+                  setState(() {
+                    topCategoryList.map((e) => e.isSelected = false).toList();
+                    _selectedIndex = index;
+                    topCategoryList[index].isSelected = true;
+                  });
+                  Get.to(() => SubCategoriesScreen(
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                    screenHeading: topCategoryList[index].title,
+                    categoryId: topCategoryList[index].catId,
+                  ));
+                },
+                isSelected: topCategoryList[index].isSelected,
+              );
+            },
+          ),
         )
+
       ],
     );
   }

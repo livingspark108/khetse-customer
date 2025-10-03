@@ -20,6 +20,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
+      backgroundColor: Colors.white,
       selectedIndex: homeController.tabIndex,
       onDestinationSelected: (value) {
         setState(() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppMenuListTile extends StatefulWidget {
   @required
@@ -30,25 +31,29 @@ class _AppMenuListTileState extends State<AppMenuListTile> {
       style: ElevatedButton.styleFrom(elevation: 0, backgroundColor: Colors.white),
       onPressed: () => onPressed!(),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(5.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             icon != null
                 ? Icon(
                     icon,
-                    size: 28,
-                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                    color:Colors.green,
                   )
-                : SvgPicture.asset(
+                : Image.asset(
                     leadingIconUrl!,
-                    height: 24,
-                    color: Theme.of(context).colorScheme.primary,
+                    height: 20,
+                    color: Colors.green,
                   ),
             SizedBox(width: 16),
             Text(
               label!,
-              style: textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: Colors.black,
+                fontWeight: FontWeight.normal
+              ),
             )
           ],
         ),

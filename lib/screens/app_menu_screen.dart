@@ -112,7 +112,7 @@ class _AppMenuScreenState extends BaseRouteState {
                       ? AppMenuListTile(
                           label:
                               "${AppLocalizations.of(context)!.lbl_deal_products}  ",
-                          leadingIconUrl: ImageConstants.TOP_DEALS_LOGO_URL,
+                          icon: Icons.local_fire_department_outlined,
                           onPressed: () => Get.to(() => TopDealsScreen(
                               analytics: widget.analytics,
                               observer: widget.observer)),
@@ -136,7 +136,7 @@ class _AppMenuScreenState extends BaseRouteState {
                       ? AppMenuListTile(
                           label:
                               "${AppLocalizations.of(context)!.lbl_coupons}  ",
-                          leadingIconUrl: ImageConstants.COUPONS_LOGO_URL,
+                          icon: Icons.article,
                           onPressed: () => Get.to(() => CouponsScreen(
                               analytics: widget.analytics,
                               observer: widget.observer)),
@@ -146,7 +146,8 @@ class _AppMenuScreenState extends BaseRouteState {
                   SizedBox(height: 8.0),
                   AppMenuListTile(
                       label: "${AppLocalizations.of(context)!.lbl_reward}  ",
-                      icon: Icons.wallet_giftcard_sharp,
+                      leadingIconUrl:
+                      ImageConstants.REWARD,
                       onPressed: () {
                         if (global.currentUser!.id == null) {
                           Get.to(() => LoginScreen(
@@ -160,7 +161,8 @@ class _AppMenuScreenState extends BaseRouteState {
                       }),
                   AppMenuListTile(
                     label: "${AppLocalizations.of(context)!.btn_about_app}  ",
-                    icon: Icons.info_outline,
+                    leadingIconUrl:
+                    ImageConstants.ABOUT,
                     onPressed: () {
                       Get.to(() => AboutUsAndTermsOfServiceScreen(
                           isAboutUs: true,
@@ -171,7 +173,8 @@ class _AppMenuScreenState extends BaseRouteState {
                   SizedBox(height: 8.0),
                   AppMenuListTile(
                     label: "Privacy & Policy",
-                    icon: Icons.policy_outlined,
+                    leadingIconUrl:
+                    ImageConstants.PRIVACY,
                     onPressed: () {
                       Get.to(() => AboutUsAndTermsOfServiceScreen(
                           isPrivacy: true,
@@ -190,7 +193,8 @@ class _AppMenuScreenState extends BaseRouteState {
                   SizedBox(height: 8.0),
                   AppMenuListTile(
                     label: "${AppLocalizations.of(context)!.btn_app_setting}  ",
-                    icon: Icons.settings_outlined,
+                    leadingIconUrl:
+                    ImageConstants.SETTINGS,
                     onPressed: () => Get.to(() => SettingScreen(
                         analytics: widget.analytics,
                         observer: widget.observer)),
@@ -206,7 +210,8 @@ class _AppMenuScreenState extends BaseRouteState {
                   AppMenuListTile(
                       label:
                           "${AppLocalizations.of(context)!.tle_contact_us}  ",
-                      icon: Icons.contact_page_outlined,
+                      leadingIconUrl:
+                      ImageConstants.CONTACT,
                       onPressed: () {
                         Get.to(() => ContactUsScreen());
                       }),
@@ -221,7 +226,8 @@ class _AppMenuScreenState extends BaseRouteState {
                   AppMenuListTile(
                       label:
                           "${AppLocalizations.of(context)!.tle_term_of_service}  ",
-                      icon: Icons.design_services_outlined,
+                      leadingIconUrl:
+                      ImageConstants.TERMS,
                       onPressed: () {
                         Get.to(() => AboutUsAndTermsOfServiceScreen(
                             isAboutUs: false,

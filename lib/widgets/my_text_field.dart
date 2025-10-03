@@ -89,23 +89,44 @@ class _MyTextFieldState extends State<MyTextField> {
         suffix: suffix,
         prefixText: prefixText,
         prefixStyle: textFieldInputStyle(context, inputTextFontWeight),
-        focusedBorder: UnderlineInputBorder(
+
+        // 🔹 Replace underline border with OutlineInputBorder
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8), // rounded corners
           borderSide: BorderSide(
-            width: 2.0,
-            color: Colors.black,
+            width: 1.5,
+            color: Colors.green, // highlight color when focused
           ),
         ),
-        enabledBorder: UnderlineInputBorder(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            width: 0.7,
-            color: Colors.black,
+            width: 1,
+            color: Colors.grey.shade400, // default border color
           ),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            width: 1,
+            color: Colors.red, // border on error
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            width: 1.5,
+            color: Colors.red,
+          ),
+        ),
+
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         hintStyle: textFieldHintStyle(context),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14), // better padding
       ),
+
       onFieldSubmitted: onFieldSubmitted != null ? (val) => onFieldSubmitted!(val) : null,
       onChanged: onChanged != null ? (value) => onChanged!(value) : null,
       onSaved: (value) => onSaved!(value),

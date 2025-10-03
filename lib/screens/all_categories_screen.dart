@@ -34,6 +34,7 @@ class _AllCategoriesScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "${AppLocalizations.of(context)!.tle_all_category} ",

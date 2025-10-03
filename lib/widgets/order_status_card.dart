@@ -18,6 +18,14 @@ class _OrderStatusCardState extends State<OrderStatusCard> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Color(0xffF4F4F4),
+          width: 1.2,
+        ),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(8),

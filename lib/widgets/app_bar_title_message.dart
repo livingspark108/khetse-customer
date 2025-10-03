@@ -8,7 +8,8 @@ class AppBarTitleMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return
+      Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -20,18 +21,29 @@ class AppBarTitleMessage extends StatelessWidget {
             SizedBox(width: 10),
             Text(
               Strings.appName,
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ],
         ),
-        SizedBox(height: showMessage ? 10 : 0),
+
         showMessage
-            ? Text(
-                Strings.appMessage,
-                style: TextStyle(fontSize: 15, color: Colors.white),
-              )
+            ?  Container(
+    width: double.infinity,
+    color: const Color(0xFFFFF4D1),
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child:  Center(
+    child: Text(
+     Strings.appMessage,
+    style: TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+    ),
+    ),
+    ),)
+
             : SizedBox(),
-        SizedBox(height: 10)
+
       ],
     );
   }

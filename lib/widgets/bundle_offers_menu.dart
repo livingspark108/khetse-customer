@@ -100,27 +100,7 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                       ),
                     ),
 
-                    // Offer tag
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffd6f5d6),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          "", // static demo
-                          style: TextStyle(
-                            color: Color(0xff1f8a20),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
+
 
                     // Wishlist icon
 
@@ -197,7 +177,7 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                 Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
-                    color: Color(0xff1f8a20),
+                    color: Color(0xff005832),
                     borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(12)),
                   ),
@@ -527,6 +507,7 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       height:220,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -586,28 +567,31 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                     ),
                     Positioned(
                       right: 0,
-                      top: 0,
+                      top: 50,
                       child: IconButton(
                         icon: categoryProductList![index].isFavourite
-                            ? Icon(
-                                MdiIcons.heart,
-                                size: 20,
-                                color: Colors.red,
-                              )
-                            : Icon(
-                                MdiIcons.heartOutline,
-                                size: 20,
-                                color: Colors.red,
-                              ),
+                            ? Image.asset(
+                          color: Colors.red,
+                          "assets/images/heart.png",  // ✅ your asset
+                          width: 20,
+                          height: 20,
+                        )
+                            : Image.asset(
+                          color: Colors.white,
+                          "assets/images/heart.png",      // ✅ your asset
+                          width: 20,
+                          height: 20,
+                        ),
                         onPressed: () async {
                           if (global.currentUser!.id == null) {
                             Future.delayed(Duration.zero, () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen(
-                                          analytics: widget.analytics,
-                                          observer: widget.observer,
-                                        )),
+                                  builder: (context) => LoginScreen(
+                                    analytics: widget.analytics,
+                                    observer: widget.observer,
+                                  ),
+                                ),
                               );
                             });
                           } else {
@@ -616,14 +600,14 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                             );
                             if (_isAdded) {
                               categoryProductList![index].isFavourite =
-                                  !categoryProductList![index].isFavourite;
+                              !categoryProductList![index].isFavourite;
                             }
-
                             setState(() {});
                           }
                         },
                       ),
-                    ),
+                    )
+
                   ],
                 ),
               ),

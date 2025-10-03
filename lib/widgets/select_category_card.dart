@@ -71,7 +71,7 @@ class _SelectCategoryCardState extends State<SelectCategoryCard> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 decoration: const BoxDecoration(
-                  color: Color(0xffe6ffe6),
+                  color: Color(0xff005832),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(8),
                     bottomRight: Radius.circular(8),
@@ -83,7 +83,7 @@ class _SelectCategoryCardState extends State<SelectCategoryCard> {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   style: const TextStyle(
-                    color: Colors.green, // ✅ White text
+                    color: Colors.white, // ✅ White text
                     fontWeight: FontWeight.w600,
                     fontSize: 10,
                   ),

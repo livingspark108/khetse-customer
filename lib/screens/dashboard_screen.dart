@@ -55,107 +55,133 @@ class _DashboardScreenState extends BaseRouteState {
             observer: widget.observer,
             callNumberStore: callNumberStore,
             inviteFriendShareMessage: br.inviteFriendShareMessage),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(171),
-          child: Container(
-            color: Color(0xff3b9d2f),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  AppBarTitleMessage(),
-                  AppBar(
-                    leadingWidth: 46,
-                    toolbarHeight: 90,
-                    surfaceTintColor: Colors.transparent,
-                    backgroundColor: Color(0xff3b9d2f),
-                    centerTitle: true,
-                    leading: IconButton(
-                      visualDensity:
-                          VisualDensity(horizontal: -4, vertical: -4),
-                      icon: Icon(
-                        Icons.dashboard_outlined,
-                        color: Colors.white,
-                      ),
-                      onPressed: onAppDrawerButtonPressed,
-                    ),
-                    title: DashboardLocationTitle(
-                      analytics: widget.analytics,
-                      observer: widget.observer,
-                      getCurrentPosition: getCurrentPosition,
-                    ),
-                    actions: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              if (global.currentUser!.id == null) {
-                                Get.to(() => LoginScreen(
-                                    analytics: widget.analytics,
-                                    observer: widget.observer));
-                              } else {
-                                Get.to(
-                                  () => WalletScreen(
-                                    analytics: widget.analytics,
-                                    observer: widget.observer,
+        appBar:
+              PreferredSize(
+                preferredSize: const Size.fromHeight(140),
+                child: AppBar(
+
+                  automaticallyImplyLeading: false,
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  surfaceTintColor: Colors.transparent,
+                  flexibleSpace: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                     SizedBox(height: 40,),
+                     AppBarTitleMessage(),
+
+                      // ✅ White row content (your given logic plugged in)
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Left: Drawer + Location
+                            Row(
+                              children: [
+                                IconButton(
+                                  visualDensity:
+                                  const VisualDensity(horizontal: -4, vertical: -4),
+                                  icon: const Icon(
+                                    Icons.menu,
+                                    color: Colors.black,
                                   ),
-                                );
-                              }
-                            },
-                            child: Icon(
-                              Icons.account_balance_wallet_outlined,
-                              color: Colors.white,
+                                  onPressed: onAppDrawerButtonPressed,
+                                ),
+                                DashboardLocationTitle(
+                                  analytics: widget.analytics,
+                                  observer: widget.observer,
+                                  getCurrentPosition: getCurrentPosition,
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            "${global.appInfo?.currencySign} ${global.userProfileController.currentUser?.wallet ?? "0.0"}",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        visualDensity: VisualDensity(horizontal: -4),
-                        icon: Icon(
-                          Icons.search_outlined,
-                          color: Colors.white,
+
+                            // Right: Wallet + Search + Notifications
+                            Row(
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        if (global.currentUser!.id == null) {
+                                          Get.to(() => LoginScreen(
+                                              analytics: widget.analytics,
+                                              observer: widget.observer));
+                                        } else {
+                                          Get.to(
+                                                () => WalletScreen(
+                                              analytics: widget.analytics,
+                                              observer: widget.observer,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Icon(
+                                        Icons.account_balance_wallet_outlined,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                                IconButton(
+                                  visualDensity: const VisualDensity(horizontal: -4),
+                                  icon: const Icon(Icons.search_outlined,
+                                      color: Colors.black),
+                                  onPressed: () => Navigator.of(context).push(
+                                    NavigationUtils.createAnimatedRoute(
+                                      1.0,
+                                      SearchResultsScreen(
+                                        analytics: widget.analytics,
+                                        observer: widget.observer,
+                                        searchParams: "",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                global.currentUser?.id != null
+                                    ? Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    IconButton(
+                                      visualDensity:
+                                      const VisualDensity(horizontal: -4),
+                                      icon: const Icon(Icons.notifications_none,
+                                          color: Colors.black),
+                                      onPressed: () => Get.to(
+                                            () => NotificationScreen(
+                                          analytics: widget.analytics,
+                                          observer: widget.observer,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 10,
+                                      top: 12,
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ],
                         ),
-                        onPressed: () =>  Navigator.of(context).push(
-                            NavigationUtils
-                                .createAnimatedRoute(
-                                1.0,
-                                SearchResultsScreen(
-                                  analytics:
-                                  widget.analytics,
-                                  observer:
-                                  widget.observer,
-                                  searchParams:
-                                 ""
-                                      ,
-                                ))),
                       ),
-                      global.currentUser?.id != null
-                          ? IconButton(
-                              visualDensity: VisualDensity(horizontal: -4),
-                              icon: Icon(
-                                Icons.notifications_none,
-                                color: Colors.white,
-                              ),
-                              onPressed: () => Get.to(() => NotificationScreen(
-                                    analytics: widget.analytics,
-                                    observer: widget.observer,
-                                  )),
-                            )
-                          : SizedBox()
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
+
+
+
         body: RefreshIndicator(
           onRefresh: () async {
             await _onRefresh();

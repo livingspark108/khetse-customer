@@ -22,13 +22,26 @@ class _AppDrawerWrapperScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: SwiperDrawer(
+      backgroundColor: Colors.white,
+      body:
+
+        Container(
+        decoration: BoxDecoration(
+        color: Colors.white, // keep background same
+        border: Border.all(
+        color: Colors.grey.shade300, // 👈 border color
+        width: 2, // 👈 border thickness
+    ),
+    borderRadius: BorderRadius.circular(30), // 👈 rounded corners (same as radius)
+    ),
+    child:
+    SwiperDrawer(
         radius: 30,
         bodySize: 40,
         key: drawerKey,
         hasClone: false,
         bodyBackgroundPeekSize: 30,
-        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+        backgroundColor: Colors.white,
         // pass drawer widget
         drawer: AppMenuScreen(
           analytics: widget.analytics,
@@ -45,7 +58,10 @@ class _AppDrawerWrapperScreenState extends BaseRouteState {
           },
         ),
         // pass body widget
-        child: DashboardScreen(
+        child:
+
+
+    DashboardScreen(
           analytics: widget.analytics,
           observer: widget.observer,
           onAppDrawerButtonPressed: () {
@@ -57,6 +73,6 @@ class _AppDrawerWrapperScreenState extends BaseRouteState {
           },
         ),
       ),
-    );
+    ));
   }
 }

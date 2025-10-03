@@ -39,22 +39,21 @@ class _OrderHistoryScreenState extends BaseRouteState {
         return !(widget as OrderHistoryScreen).disableWillpop;
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading:
               !(widget as OrderHistoryScreen).disableWillpop,
-          backgroundColor: Color(0xff3b9d2f),
-          toolbarHeight: 110,
+          backgroundColor: Color(0xffffffff),
+          toolbarHeight: 50,
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              !(widget as OrderHistoryScreen).disableWillpop
-                  ? SizedBox()
-                  : AppBarTitleMessage(showMessage: true),
+
               Text(
                 "${AppLocalizations.of(context)!.tle_order_history}",
-                style: textTheme.titleLarge!.copyWith(color: Colors.white),
+                style: textTheme.titleLarge!.copyWith(color: Colors.black),
               ),
             ],
           ),
@@ -148,7 +147,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
         margin: EdgeInsets.only(top: 50),
         color: Color(0xfffdfdfd),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
               Image.asset(

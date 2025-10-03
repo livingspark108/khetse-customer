@@ -61,8 +61,10 @@ class _ProfileEditScreenState extends BaseRouteState {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.white,
       // backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
           "${AppLocalizations.of(context)!.tle_edit_profile}",
@@ -88,7 +90,8 @@ class _ProfileEditScreenState extends BaseRouteState {
             _isDataLoaded
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 32.0),
-                    child: Stack(
+                    child:
+                    Stack(
                       clipBehavior: Clip.none,
                       children: [
                         _tImage != null
@@ -166,125 +169,132 @@ class _ProfileEditScreenState extends BaseRouteState {
             Expanded(
               child: _isDataLoaded
                   ? SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16, right: 16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${AppLocalizations.of(context)!.lbl_name}",
-                              style: textTheme.bodySmall,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                              margin: EdgeInsets.only(top: 5, bottom: 15),
-                              padding: EdgeInsets.only(),
-                              child: MyTextField(
-                                Key('1'),
-                                controller: _cName,
-                                focusNode: _fName,
-                                hintText: '${AppLocalizations.of(context)!.lbl_name}',
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).requestFocus(_fPhone);
-                                },
-                              ),
-                            ),
-                            Text(
-                              "${AppLocalizations.of(context)!.lbl_phone_number}",
-                              style: textTheme.bodySmall,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                              margin: EdgeInsets.only(top: 5, bottom: 15),
-                              padding: EdgeInsets.only(),
-                              child: MyTextField(
-                                Key('2'),
-                                controller: _cPhone,
-                                focusNode: _fPhone,
-                                hintText: '${global.appInfo!.countryCode} 0000000000',
-                                keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(global.appInfo!.phoneNumberLength)],
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).requestFocus(_fEmail);
-                                },
-                              ),
-                            ),
-                            Text(
-                              "${AppLocalizations.of(context)!.lbl_email}",
-                              style: textTheme.bodySmall,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                              margin: EdgeInsets.only(top: 5, bottom: 15),
-                              padding: EdgeInsets.only(),
-                              child: MyTextField(
-                                Key('3'),
-                                controller: _cEmail,
-                                focusNode: _fEmail,
-                                hintText: 'user@gmail.com',
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).requestFocus(_fCity);
-                                },
-                              ),
-                            ),
-                            Text(
-                              "${AppLocalizations.of(context)!.lbl_city}",
-                              style: textTheme.bodySmall,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                              margin: EdgeInsets.only(top: 5, bottom: 15),
-                              padding: EdgeInsets.only(),
-                              child: MyTextField(
-                                Key('4'),
-                                controller: _cCity,
-                                focusNode: _fCity,
-                                readOnly: true,
-                                keyboardType: TextInputType.number,
-                                onTap: () {
-                                  _showCitySelectDialog();
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Profile Photo
 
-                                  setState(() {});
-                                },
-                                hintText: '${AppLocalizations.of(context)!.hnt_select_city}',
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).requestFocus(_fSociety);
-                                },
-                              ),
-                            ),
-                            Text(
-                              "${AppLocalizations.of(context)!.lbl_society}",
-                              style: textTheme.bodySmall,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                              margin: EdgeInsets.only(top: 5, bottom: 15),
-                              padding: EdgeInsets.only(),
-                              child: MyTextField(
-                                Key('5'),
-                                controller: _cSociety,
-                                focusNode: _fSociety,
-                                readOnly: true,
-                                keyboardType: TextInputType.number,
-                                onTap: () {
-                                  _showSocietySelectDialog();
 
-                                  setState(() {});
-                                },
-                                hintText: '${AppLocalizations.of(context)!.hnt_select_society}',
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).dispose();
-                                },
-                              ),
+
+                      // First & Last Name Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Name",
+                                    style: textTheme.bodySmall!
+                                        .copyWith(fontWeight: FontWeight.w600)),
+                                const SizedBox(height: 6),
+                                MyTextField(
+                                  Key('1'),
+                                  controller: _cName,
+                                  focusNode: _fName,
+                                  hintText: "Name",
+                                  onFieldSubmitted: (val) {
+                                    FocusScope.of(context).requestFocus(_fPhone);
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 12),
+
+                        ],
                       ),
-                    )
+                      const SizedBox(height: 16),
+
+                      // Phone
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Phone Number",
+                            style: textTheme.bodySmall!
+                                .copyWith(fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 6),
+                      MyTextField(
+                        Key('2'),
+                        controller: _cPhone,
+                        focusNode: _fPhone,
+                        hintText: "+91 0000000000",
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(
+                              global.appInfo!.phoneNumberLength),
+                        ],
+                        onFieldSubmitted: (val) {
+                          FocusScope.of(context).requestFocus(_fEmail);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Email
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Email",
+                            style: textTheme.bodySmall!
+                                .copyWith(fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 6),
+                      MyTextField(
+                        Key('3'),
+                        controller: _cEmail,
+                        focusNode: _fEmail,
+                        hintText: "user@gmail.com",
+                        onFieldSubmitted: (val) {
+                          FocusScope.of(context).requestFocus(_fCity);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // City
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("City",
+                            style: textTheme.bodySmall!
+                                .copyWith(fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 6),
+                      MyTextField(
+                        Key('4'),
+                        controller: _cCity,
+                        focusNode: _fCity,
+                        readOnly: true,
+                        onTap: _showCitySelectDialog,
+                        hintText: "Choose City",
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Society
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Society",
+                            style: textTheme.bodySmall!
+                                .copyWith(fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 6),
+                      MyTextField(
+                        Key('5'),
+                        controller: _cSociety,
+                        focusNode: _fSociety,
+                        readOnly: true,
+                        onTap: _showSocietySelectDialog,
+                        hintText: "Select Society",
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Save Button
+                    ],
+                  ),
+                ),
+              )
                   : _shimmerList(),
-            ),
+            )
+
           ],
         ),
       ),

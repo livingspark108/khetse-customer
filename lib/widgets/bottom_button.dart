@@ -27,18 +27,42 @@ class _BottomButtonState extends State<BottomButton> {
     return SizedBox(
       height: 50,
       width: double.infinity,
-      child: FilledButton(
-        child: !loadingState!
-            ? child
-            : SizedBox(
-                height: 20.0,
-                width: 20.0,
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
-                ),
-              ),
-        onPressed: loadingState! || disabledState! ? null : onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25), // shadow color
+              blurRadius: 12,  // how soft the shadow looks
+              spreadRadius: 2, // how far it spreads
+              offset: const Offset(0, 6), // x, y position of shadow
+            ),
+          ],
+        ),
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Color(0Xff005832),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: !loadingState!
+              ? child
+              : const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
+          onPressed: loadingState! || disabledState! ? null : onPressed,
+        ),
       ),
     );
   }
+
+
+
 }

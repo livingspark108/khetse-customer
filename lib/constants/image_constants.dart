@@ -1,11 +1,17 @@
 class ImageConstants {
   static const String FACEBOOK_LOGO_IMAGE_URL = "assets/images/facebook_logo.svg";
   static const String GOOGLE_LOGO_IMAGE_URL = "assets/images/google_logo.svg";
-  static const String ALL_CATEGORIES_LOGO_URL = "assets/images/all_categories_logo.svg";
+  static const String ALL_CATEGORIES_LOGO_URL = "assets/images/drcategory.png";
   static const String LIVE_CHAT_LOGO_URL = "assets/images/live_chat_logo.svg";
   static const String COUPONS_LOGO_URL = "assets/images/coupons_logo.svg";
   static const String LOGOUT_LOGO_URL = "assets/images/logout_logo.svg";
-  static const String FAQ_URL = "assets/images/faq_icon.png";
+  static const String REWARD = "assets/images/drreward.png";
+  static const String ABOUT = "assets/images/draboutus.png";
+  static const String PRIVACY = "assets/images/privacy.png";
+  static const String SETTINGS = "assets/images/rdsettings.png";
+  static const String CONTACT = "assets/images/contact.png";
+  static const String TERMS = "assets/images/drterms.png";
+  static const String FAQ_URL = "assets/images/faq.png";
   static const String TOP_DEALS_LOGO_URL = "assets/images/top_deals_logo.svg";
   static const String PRODUCT_REQUEST_LOGO_URL = "assets/images/product_request_logo.svg";
   static const String TRACK_ORDER_LOGO_URL = "assets/images/track_order_logo.svg";

@@ -43,7 +43,14 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Card(
-      elevation: 0,
+      elevation: 0,color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Color(0xffF4F4F4),
+          width: 1.2,
+        ),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -378,6 +385,7 @@ class _OrderedProductsMenuItemState extends State<OrderedProductsMenuItem> {
     return Container(
       height: 100 * screenHeight / 830,
       child: Card(
+        color: Colors.white,
         elevation: 0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -386,13 +394,13 @@ class _OrderedProductsMenuItemState extends State<OrderedProductsMenuItem> {
             CachedNetworkImage(
               imageUrl: global.appInfo!.imageUrl! + product.varientImage!,
               imageBuilder: (context, imageProvider) => Container(
-                color: Color(0xffF7F7F7),
+                color: Color(0xffffffff),
                 padding: EdgeInsets.all(5),
                 child: Container(
                   height: 80,
                   width: 40,
                   decoration: BoxDecoration(
-                      color: Color(0xffF7F7F7),
+                      color: Color(0xfffffffff),
                       image: DecorationImage(
                           image: imageProvider, fit: BoxFit.contain)),
                 ),

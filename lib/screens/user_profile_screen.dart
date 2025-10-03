@@ -193,7 +193,8 @@ _signOutDialog(BuildContext context) async {
                   child: Text('${AppLocalizations.of(context)!.btn_logout}',
                       style: TextStyle(color: Colors.red)),
                   onPressed: () async {
-                    global.sp!.remove("currentUser");
+                   //global.sp!.remove("currentUser");
+                    global.sp!.clear();
                     global.currentUser = CurrentUser();
                     Get.offAll(
                       () => LoginScreen(),
@@ -216,12 +217,14 @@ class _UserProfileScreenState extends BaseRouteState {
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final user = global.userProfileController.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Color(0xff3b9d2f),
+          backgroundColor: Color(0xfffffffff),
           automaticallyImplyLeading: false,
-          toolbarHeight: 110,
+          toolbarHeight: 80,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -240,233 +243,208 @@ class _UserProfileScreenState extends BaseRouteState {
                         setState(() {});
                         await _getMyProfile();
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "${AppLocalizations.of(context)!.txt_user_profile}",
-                                style: textTheme.titleLarge,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 32.0),
-                                        child: Center(
-                                          child: ProfilePicture(
-                                            isShow: false,
-                                            radius: 30,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 30,
-                                      ),
-                                      Center(
-                                        child: Text(
-                                          global.userProfileController
-                                                          .currentUser?.name !=
-                                                      null &&
-                                                  (global
-                                                          .userProfileController
-                                                          .currentUser
-                                                          ?.name
-                                                          ?.isNotEmpty ??
-                                                      false)
-                                              ? global.userProfileController
-                                                      .currentUser?.name ??
-                                                  ''
-                                              : 'User',
-                                          style: textTheme.titleLarge,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      Get.to(() => ProfileEditScreen(
-                                            analytics: widget.analytics,
-                                            observer: widget.observer,
-                                          ));
-                                    },
-                                    icon: Icon(Icons.edit),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                "My Wallet",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    Get.to(() => WalletScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  }
-                                },
-                                leadingIcon: Icon(Icons.account_balance_wallet_outlined, color: ColorConstants.getForegroundColor(context),),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                "${AppLocalizations.of(context)!.lbl_order} ",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    if (global.nearStoreModel != null) {
-                                      Get.to(() => OrderHistoryScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer,
-                                        disableWillpop: false,
-                                      ));
-                                    }
-                                  }
-                                },
-                                leadingIcon: Icon(Icons.history),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                  key: UniqueKey(),
-                                  leadingIcon: Icon(Icons.location_on_outlined),
-                                  heading:
-                                  "My Delivery Address",
-                                  onPressed: () {
-                                   Get.to(() => AddressListScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                    ))!
-                                        .then((value) {
-                                      setState(() {});
-                                    });
-                                       /* : Get.to(() => AddAddressScreen(
-                                      new Address(),
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                    ))!
-                                        .then((value) {
-                                      setState(() {});
-                                    });*/
-                                  }
-                              ),
+                      child:
 
-                              global.nearStoreModel != null ? SizedBox(height: 16) : SizedBox(),
-                              global.nearStoreModel != null ? UserInfoTile(
-                                heading:
-                                "Wishlist",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    Get.to(() => WishListScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer,
-                                    ));
-                                  }
-                                },
-                                leadingIcon: Icon(Icons.favorite_outline, color: ColorConstants.getForegroundColor(context),),
-                              ) : SizedBox(),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                "${AppLocalizations.of(context)!.txt_live_chat} ",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    if (global.nearStoreModel != null) {
-                                      Get.to(() => ChatScreen(
-                                          analytics: widget.analytics,
-                                          observer: widget.observer));
-                                    }
-                                  }
-                                },
-                                leadingIcon: SvgPicture.asset(
-                                  ImageConstants.LIVE_CHAT_LOGO_URL,
-                                  color: ColorConstants.getForegroundColor(
-                                      context),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                    "${AppLocalizations.of(context)!.btn_refer_earn}",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    Get.to(() => ReferAndEarnScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  }
-                                },
-                                leadingIcon: Icon(
-                                  MdiIcons.giftOutline,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading:
-                                "${AppLocalizations.of(context)!.btn_membership}",
-                                onPressed: () {
-                                  Get.to(() => MemberShipScreen(
-                                      analytics: widget.analytics,
-                                      observer: widget.observer));
-                                },
-                                leadingIcon: Icon(
-                                  Icons.card_membership_sharp,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              UserInfoTile(
-                                heading: global.currentUser?.id == null
-                                    ? '${AppLocalizations.of(context)!.btn_signup}  '
-                                    : "${AppLocalizations.of(context)!.btn_logout} ",
-                                onPressed: () {
-                                  if (global.currentUser!.id == null) {
-                                    Get.to(() => LoginScreen(
-                                        analytics: widget.analytics,
-                                        observer: widget.observer));
-                                  } else {
-                                    _signOutDialog(context);
-                                  }
-                                },
-                                leadingIcon: SvgPicture.asset(
-                                  ImageConstants.LOGOUT_LOGO_URL,
-                                  color: ColorConstants.getForegroundColor(
-                                      context),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                            ],
-                          ),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child:
+
+   // adjust according to your project
+
+ SingleChildScrollView(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    // Profile header
+    Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Center( child:
+      ProfilePicture( isShow: false, radius: 30, ), ),
+    const SizedBox(width: 12),
+    Expanded(
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Text(
+    (user?.name != null && user!.name!.isNotEmpty)
+    ? user.name!
+        : "User",
+    style: const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    ),
+    ),
+    const SizedBox(height: 4),
+    Text(
+    user?.userPhone ?? "",
+    style: const TextStyle(
+    color: Colors.grey,
+    fontSize: 14,
+    ),
+    ),
+    ],
+    ),
+    ),
+    IconButton(
+    onPressed: () {
+    Get.to(() => ProfileEditScreen(
+    analytics: null, observer: null)); // pass params
+    },
+    icon: const Icon(Icons.edit, size: 22),
+    ),
+    ],
+    ),
+    const SizedBox(height: 20),
+
+    // Menu list
+    _buildMenuTile(
+    Icons.account_balance_wallet,
+    "My Wallet",
+    onTap: () => Get.to(() => WalletScreen(
+      analytics: widget.analytics,
+      observer: widget.observer,
+    )),
+    ),
+    _divider(),
+    _buildMenuTile(
+    Icons.favorite,
+    "Wishlist",
+    iconColor: Colors.pink,
+    onTap: () => Get.to(() => WishListScreen(
+      analytics: widget.analytics,
+      observer: widget.observer,
+    )),
+    ),
+    _divider(),
+    _buildMenuTile(
+    Icons.history,
+    "Order History",
+    onTap: () => Get.to(() => OrderHistoryScreen(
+      analytics: widget.analytics,
+      observer: widget.observer,
+    disableWillpop: false,
+    )),
+    ),
+    _divider(),
+    _buildMenuTile(
+    Icons.chat,
+    "Live Chat",
+    onTap: () => Get.to(() => ChatScreen(
+    analytics: widget.analytics,
+    observer: widget.observer,
+    )),
+    ),
+      _divider(),
+      _buildMenuTile(
+        Icons.subscriptions,
+        "Membership",
+        onTap: () => Get.to(() => MemberShipScreen(
+          analytics: widget.analytics,
+          observer: widget.observer,
+        )),
+      ),
+    _divider(),
+    _buildMenuTile(
+    Icons.location_on_outlined,
+    "Address List",
+    onTap: () => Get.to(() => AddressListScreen(
+      analytics: widget.analytics,
+      observer: widget.observer,
+    )),
+    ),
+    const SizedBox(height: 60),
+
+    // Refer section
+    GestureDetector(
+    onTap: () => Get.to(() => ReferAndEarnScreen(
+      analytics: widget.analytics,
+      observer: widget.observer,
+    )),
+    child: Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+    color: Colors.green.shade50,
+    borderRadius: BorderRadius.circular(10),
+    ),
+    child: Row(
+    children: const [
+    Icon(Icons.group_outlined, color: Colors.black87),
+    SizedBox(width: 12),
+    Expanded(
+    child: Text(
+    "Refer and Earn",
+    style: TextStyle(
+    fontSize: 15, fontWeight: FontWeight.w500),
+    ),
+    ),
+    Icon(Icons.arrow_forward_ios,
+    size: 16, color: Colors.black54),
+    ],
+    ),
+    ),
+    ),
+    const SizedBox(height: 16),
+
+    // Logout button
+    GestureDetector(
+    onTap: () {
+    if (user?.id != null) {
+    _signOutDialog(context);
+    } else {
+    Get.to(() => LoginScreen(
+    analytics: null,
+    observer: null,
+    ));
+    }
+    },
+    child: Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(vertical: 14),
+    decoration: BoxDecoration(
+    color: Colors.red.shade50,
+    borderRadius: BorderRadius.circular(10),
+    ),
+    child: Center(
+    child: Text(
+    user?.id == null ? "Login / Signup" : "Logout",
+    style: const TextStyle(
+    color: Colors.red,
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+    ),
+    ),
+    ),
+    ),
+    ),
+    ],
+    ),
+    ),
                       ),
                     ))
             : _shimmer());
   }
+  Widget _divider() {
+    return const Divider(height: 1, thickness: 0.6);
+  }
+
+  Widget _buildMenuTile(IconData icon, String title,
+      {Color? iconColor, VoidCallback? onTap}) {
+    return ListTile(
+      dense: true,
+      leading: Icon(icon, color: iconColor ?? Colors.black87),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      contentPadding: EdgeInsets.zero,
+      onTap: onTap,
+    );
+  }
+
+
 
   @override
   void initState() {

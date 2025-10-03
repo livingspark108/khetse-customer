@@ -34,8 +34,10 @@ class _OrderSummaryScreenState extends BaseRouteState {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: Colors.white,
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           "${AppLocalizations.of(context)!.tle_order_summary}",
           style: textTheme.titleLarge,
