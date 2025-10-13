@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -349,7 +351,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
   }*/
 
   sendOTP(String phoneNumber, {int? screenId}) async {
-    try {
+   /* try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+${global.appInfo!.countryCode}$phoneNumber',
         verificationCompleted: (PhoneAuthCredential credential) async {
@@ -378,6 +380,74 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
     } catch (e) {
       hideLoader();
       print("Exception - base.dart - _sendOTP():" + e.toString());
+    }*/
+    await apiHelper.sendotp(phoneNumber).then((result) async {
+      if (result != null) {
+        if (result.status == "1") {
+showToast("OTP sent check Whatsapp No");
+          Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => OtpVerificationScreen(
+                    analytics: widget.analytics,
+                    observer: widget.observer,
+                    verificationCode: "",
+                    phoneNumber: phoneNumber,
+                    screenId: screenId,
+                  )));
+
+        }}});
+
+
+
+  }
+
+
+  Future<void> sendLoginMessage(BuildContext context, String number, String otp) async {
+    const String url = 'https://livingchat.in/api/send';
+
+    final Map<String, dynamic> body = {
+      "number": number,
+      "type": "text",
+      "message": "Your Khet se login code is : $otp",
+      "instance_id": "68E4AF68B7326",
+      "access_token": "68e4ac8b14d51"
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'stackpost_session=1f8i7jhmf2ajom3ipqfq9nncvj9u9s2m'
+        },
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('✅ Message sent successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Failed to send message (${response.statusCode})'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('⚠️ Error: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 

@@ -16,7 +16,7 @@ class DashboardBundleProducts extends StatelessWidget {
   final String categoryName;
   final List<Product> dealProducts;
   final int? screenId;
-
+  final bool showAddToCart;
   DashboardBundleProducts({
     super.key,
     this.analytics,
@@ -24,7 +24,8 @@ class DashboardBundleProducts extends StatelessWidget {
     required this.title,
     required this.categoryName,
     required this.dealProducts,
-    this.screenId
+    this.screenId, required this.showAddToCart
+ // default true
   });
 
   @override
@@ -67,6 +68,8 @@ class DashboardBundleProducts extends StatelessWidget {
           analytics: analytics,
           observer: observer,
           categoryProductList: dealProducts,
+          showAddToCart: showAddToCart,
+
         ),
       ],
     );

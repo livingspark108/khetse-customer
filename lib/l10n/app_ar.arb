@@ -1451,9 +1451,9 @@
     "@txt_connect": {
         "description": "Or connect with"
     },
-    "txt_get_otp": "Get OTP",
+    "txt_get_otp": "Send OTP to Whatsapp",
     "@txt_get_otp": {
-        "description": "Get OTP"
+        "description": "Send OTP to Whatsapp"
     },
     "txt_0XXXXXXXXX": "0XXXXXXXXX",
     "@txt_0XXXXXXXXX": {

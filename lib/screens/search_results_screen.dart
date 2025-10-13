@@ -36,7 +36,7 @@ class _SearchResultsScreenState extends BaseRouteState {
   int page = 1;
   final CartController cartController = Get.put(CartController());
   Timer? _debounce;
-  bool showClearButton = true;
+  bool showClearButton = false;
 
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -93,69 +93,73 @@ class _SearchResultsScreenState extends BaseRouteState {
                                     ),
                                   ),
                                   SizedBox(width: 8),
-                                  Expanded(
-                                    child: TextFormField(
-                                      cursorColor: Colors.grey[800],
-                                      autofocus: false,
-                                      controller: _cSearch,
-                                      style: textFieldHintStyle(context),
-                                      keyboardType: TextInputType.text,
-                                      textCapitalization: TextCapitalization.none,
-                                      obscureText: false,
-                                      readOnly: false,
-                                      maxLines: 1,
-                                      onChanged: (String value) {
-                                        setState(() {
-                                          showClearButton = value.length > 0;
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          borderSide: BorderSide(width: 0, color: Theme.of(context).colorScheme.secondary, style: BorderStyle.none),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          borderSide: BorderSide(width: 0, color: Theme.of(context).colorScheme.secondary, style: BorderStyle.none),
-                                        ),
-                                        suffixIcon: showClearButton ? InkWell(
-                                          onTap: () {
-                                            _cSearch.clear();
-                                            setState(() {
-                                              showClearButton = false;
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.cancel,
-                                            color: Theme.of(context).colorScheme.primary,
-                                          ),
-                                        ) : SizedBox(),
-                                        prefixIcon: Icon(
-                                          Icons.search_outlined,
-                                          color: Colors.grey[800],
-                                        ),
-                                        hintText: "${AppLocalizations.of(context)!.hnt_search_product}",
-                                        hintStyle: textFieldHintStyle(context),
-                                        contentPadding: EdgeInsets.only(bottom: 12.0),
-                                      ),
-                                      onFieldSubmitted: (val) async {
-                                        if (val != '') {
-                                          setState(() {
-                                            _productSearchResult!.clear();
-                                            _isDataLoaded = false;
-                                            searchParams = val;
-                                            _onRefresh();
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
+               // 👈 Add this in your State class
+
+                Expanded(
+                child: TextFormField(
+                controller: _cSearch,
+                  cursorColor: Colors.grey[800],
+                  style: textFieldHintStyle(context),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.none,
+                  autofocus: false,
+                  obscureText: false,
+                  readOnly: false,
+                  maxLines: 1,
+
+                  // 👇 Toggle cancel icon visibility when user types
+                  onChanged: (String value) {
+                    setState(() {
+                      showClearButton = value.isNotEmpty;
+                    });
+                  },
+
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide.none,
+                    ),
+
+                    // 👇 Cancel (clear) icon only visible when user types
+                    suffixIcon: showClearButton
+                        ? IconButton(
+                      icon: const Icon(Icons.cancel, color: Colors.grey),
+                      onPressed: () {
+                        _cSearch.clear();
+                        setState(() {
+                          showClearButton = false;
+                        });
+                      },
+                    )
+                        : const SizedBox.shrink(),
+
+                    prefixIcon: const Icon(Icons.search_outlined, color: Colors.black54),
+                    hintText: "${AppLocalizations.of(context)!.hnt_search_product}",
+                    hintStyle: textFieldHintStyle(context),
+                    contentPadding: const EdgeInsets.only(bottom: 12.0),
+                  ),
+
+                  onFieldSubmitted: (val) async {
+                    if (val.isNotEmpty) {
+                      setState(() {
+                        _productSearchResult?.clear();
+                        _isDataLoaded = false;
+                        searchParams = val;
+                      });
+                      _onRefresh();
+                    }
+                  },
+                ),
+      ),
+
+
+      SizedBox(width: 8),
                                   Center(
                                     child: InkWell(
                                       onTap: () async {

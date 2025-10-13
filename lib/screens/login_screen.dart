@@ -251,7 +251,7 @@ class _LoginScreenState extends BaseRouteState {
               child: BottomButton(
                 child: Text(isLoginWithEmail
                     ? "${AppLocalizations.of(context)!.btn_login}"
-                    : "${AppLocalizations.of(context)!.txt_get_otp}"),
+                    : "Send OTP to whatsapp"),
                 loadingState: false,
                 disabledState: false,
                 onPressed: () =>
@@ -413,17 +413,14 @@ class _LoginScreenState extends BaseRouteState {
               //   ));
               // }
               if (result.status == "1") {
-                if (global.appInfo!.firebase != 'off') {
+
                   // if firebase is enabled then only we need to send OTP through firebase.
                   await sendOTP(_cPhone.text.trim());
-                } else {
-                  hideLoader();
-                  Get.to(() => OtpVerificationScreen(
-                      phoneNumber: _cPhone.text.trim(),
-                      analytics: widget.analytics,
-                      observer: widget.observer));
-                }
-              } else {
+
+              }
+
+
+              else {
                 hideLoader();
                 CurrentUser _currentUser = new CurrentUser();
                 _currentUser.userPhone = _cPhone.text.trim();

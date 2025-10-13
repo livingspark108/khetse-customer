@@ -236,6 +236,33 @@ class APIHelper {
     }
   }
 
+  Future<dynamic> sendotp(String phone) async {
+    try {
+      // Add all the  product from wishlist to cart
+      Response response;
+      var dio = Dio();
+      var formData = FormData.fromMap({
+        'phone': phone,
+
+      });
+      response = await dio.post('${global.baseUrl}sendOtp',
+
+          data: formData,
+          options: Options(
+            headers: await global.getApiHeaders(true),
+          ));
+      dynamic recordList;
+      if (response.statusCode == 200 && response.data['status'] == '1') {
+        recordList = true;
+      } else {
+        recordList = null;
+      }
+      return getDioResult(response, recordList);
+    } catch (e) {
+      //throw Exception(e.toString());
+      print("Exception - addWishListToCart(): " + e.toString());
+    }
+  }
   Future<dynamic> appAboutUs() async {
     try {
       Response response;
@@ -1766,7 +1793,7 @@ class APIHelper {
       var dio = Dio();
       var formData = FormData.fromMap({'user_phone': userPhone});
       print("FORM DATA FIELDS LOGIN = ${formData.fields}");
-      response = await dio.post('${global.baseUrl}login',
+        response = await dio.post('${global.baseUrl}login',
           queryParameters: {
             'lang': global.languageCode,
           },
@@ -1780,11 +1807,7 @@ class APIHelper {
       } else {
         recordList = null;
       }
-      if (response.data['message'] == "Verify OTP for Login") {
-        final _verifyOtpResponse = await verifyOTP(userPhone, "8595");
-        print("RESPONSE VERIFY OTP API = $response");
-        return _verifyOtpResponse;
-      }
+
       print("RESPONSE LOGIN API = $response");
       return getDioResult(response, recordList);
     } catch (e) {
@@ -2283,7 +2306,7 @@ class APIHelper {
         return getDioResult(response, recordList);
       }
       print("RECORD LIST = $recordList");
-      return await verifyOTP(user.userPhone, "8595");
+      //return await verifyOTP(user.userPhone, "8595");
     } catch (e) {
       //throw Exception(e.toString());
       print("Exception - signUp(): " + e.toString());
@@ -2596,9 +2619,9 @@ class APIHelper {
       // OTP verification after forgot password
       Response response;
       var dio = Dio();
-      var formData = FormData.fromMap({'user_phone': phone, 'otp': otp});
+      var formData = FormData.fromMap({'phone': phone, 'otp': otp});
       print("HITTING Request ${formData.fields}");
-      response = await dio.post('${global.baseUrl}verify_otp',
+      response = await dio.post('${global.baseUrl}verifyOtpp',
           data: formData,
           options: Options(
             headers: await global.getApiHeaders(false),

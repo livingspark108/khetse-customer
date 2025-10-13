@@ -193,6 +193,9 @@ class _AddAddressScreenState extends BaseRouteState {
                               },
                             ),
                           ),
+
+                       Padding(padding: EdgeInsets.all(20),
+                       child:
                           CustomPlaceAutocomplete(
 
 
@@ -206,7 +209,7 @@ class _AddAddressScreenState extends BaseRouteState {
                               });
                               _controller?.animateCamera(CameraUpdate.newLatLng(latLng));
                             },
-                          ),
+                          ),),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: Listener(

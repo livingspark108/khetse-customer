@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:readmore/readmore.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/addtocartmessagestatus.dart';
@@ -20,12 +21,13 @@ class BundleOffersMenu extends StatefulWidget {
   final dynamic observer;
   final List<Product>? categoryProductList;
   final Function(int)? onSelected;
+  final bool showAddToCart;
 
   BundleOffersMenu(
       {this.onSelected,
       this.categoryProductList,
       this.analytics,
-      this.observer})
+      this.observer,this.showAddToCart = true,})
       : super();
 
   @override
@@ -33,7 +35,7 @@ class BundleOffersMenu extends StatefulWidget {
       onSelected: onSelected,
       categoryProductList: categoryProductList,
       analytics: analytics,
-      observer: observer);
+      observer: observer,);
 }
 
 class BundleOffersMenuItem extends StatefulWidget {
@@ -41,7 +43,8 @@ class BundleOffersMenuItem extends StatefulWidget {
 
   final dynamic analytics;
   final dynamic observer;
-  BundleOffersMenuItem({required this.product, this.analytics, this.observer})
+  final bool showAddToCart;
+  BundleOffersMenuItem({required this.product, this.analytics, this.observer,this.showAddToCart=true})
       : super();
 
   @override
@@ -62,7 +65,16 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double screenWidth = MediaQuery.of(context).size.width;
     final product = widget.product;
-
+    Future<void> _requestLocationPermission() async {
+      var status = await Permission.location.request();
+      if (status.isGranted) {
+        showToast("Permission granted!");
+      } else if (status.isDenied) {
+        showToast("Permission denied.");
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    }
     return SizedBox(
       width: screenWidth * 0.53,
       height: 330, // fixed height for equal grid
@@ -183,6 +195,8 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                   ),
                   child: TextButton(
                     onPressed: () async {
+if(widget.showAddToCart){
+
                       if (global.currentUser!.id == null) {
                         Get.to(LoginScreen(
                             analytics: widget.analytics,
@@ -207,7 +221,41 @@ class _BundleOffersMenuItemState extends State<BundleOffersMenuItem> {
                         showToast(isSuccess.message!);
                         setState(() {});
                       }
-                    },
+                    }
+else{
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      title: const Text(
+        "No Store Found",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: const Text(
+        "Please give location permission to explore more details about our services",
+        style: TextStyle(fontSize: 14),
+      ),
+      actions: [
+        TextButton(
+          onPressed: ()async { Navigator.pop(context);
+
+
+            await _requestLocationPermission();
+         },
+          child: const Text(
+            "OK",
+            style: TextStyle(color: Colors.green),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+}
+
+
+                    ,
                     child: const Text(
                       "Add to Cart",
                       style: TextStyle(
@@ -469,6 +517,7 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
   Function(int)? onSelected;
   dynamic analytics;
   dynamic observer;
+
   APIHelper apiHelper = APIHelper();
 
   _BundleOffersMenuState(
@@ -526,6 +575,7 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                       product: categoryProductList![index],
                       analytics: widget.analytics,
                       observer: widget.observer,
+                      showAddToCart: widget.showAddToCart,
                     ),
                     Positioned(
                       left: 0,
@@ -583,6 +633,8 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                           height: 20,
                         ),
                         onPressed: () async {
+                         if(widget.showAddToCart)
+{
                           if (global.currentUser!.id == null) {
                             Future.delayed(Duration.zero, () {
                               Navigator.of(context).push(
@@ -604,7 +656,16 @@ class _BundleOffersMenuState extends State<BundleOffersMenu> {
                             }
                             setState(() {});
                           }
-                        },
+                        }
+
+                         else{
+
+
+
+                         }
+
+
+                         },
                       ),
                     )
 

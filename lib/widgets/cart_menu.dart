@@ -128,72 +128,76 @@ class _CartMenuItemState extends State<CartMenuItem> {
 
 
                 /// Quantity controls
-                Row(
-                  children: [
-                    _qtyButton(
-                      icon: product!.cartQty != null && product!.cartQty == 1
-                          ? Icons.delete
-                          : MdiIcons.minus,
-                      onTap: () async {
-                        showOnlyLoaderDialog();
-                        if (product!.cartQty != null && product!.cartQty == 1) {
-                          _qty = 0;
-                        } else {
-                          _qty = product!.cartQty! - 1;
-                        }
-                        ATCMS? isSuccess = await cartController!.addToCart(
-                          product,
-                          _qty,
-                          true,
-                          varientId: product!.varientId,
-                          callId: 0,
-                        );
-                        if (isSuccess!.isSuccess != null) {
-                          Navigator.of(context).pop();
-                        }
-                        showToast(isSuccess.message!);
-                        setState(() {});
-                      },
-                    ),
-                    SizedBox(width: 6),
-                    Container(
-                      height: 28,
-                      width: 28,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(6),
+                  Row(
+                    children: [
+                      _qtyButton(
+                        icon: product!.cartQty != null && product!.cartQty == 1
+                            ? Icons.delete
+                            : MdiIcons.minus,
+                        onTap: () async {
+                          showOnlyLoaderDialog();
+                          if (product!.cartQty != null && product!.cartQty == 1) {
+                            _qty = 0;
+                          } else {
+                            _qty = product!.cartQty! - 1;
+                          }
+                          ATCMS? isSuccess = await cartController!.addToCart(
+                            product,
+                            _qty,
+                            true,
+                            varientId: product!.varientId,
+                            callId: 0,
+                          );
+
+                          Get.close(1);
+                          showToast(isSuccess?.message ?? "Something went wrong");
+
+
+                          setState(() {});
+                        },
                       ),
-                      child: Text(
-                        "${product!.cartQty}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
+                      SizedBox(width: 6),
+                      Container(
+                        height: 28,
+                        width: 28,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          "${product!.cartQty}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 6),
-                    _qtyButton(
-                      icon: MdiIcons.plus,
-                      onTap: () async {
-                        showOnlyLoaderDialog();
-                        _qty = product!.cartQty! + 1;
-                        ATCMS? isSuccess = await cartController!.addToCart(
-                          product,
-                          _qty,
-                          false,
-                          varientId: product!.varientId,
-                          callId: 0,
-                        );
-                        if (isSuccess!.isSuccess != null) {
-                          Navigator.of(context).pop();
-                        }
-                        showToast(isSuccess.message!);
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+                      SizedBox(width: 6),
+                      _qtyButton(
+                        icon: MdiIcons.plus,
+                        onTap: () async {
+                          showOnlyLoaderDialog();
+                          _qty = product!.cartQty! + 1;
+                          ATCMS? isSuccess = await cartController!.addToCart(
+                            product,
+                            _qty,
+                            false,
+                            varientId: product!.varientId,
+                            callId: 0,
+                          );
+
+
+                            Get.close(1); // ✅ closes only the loader dialog
+
+
+
+                          showToast(isSuccess?.message ?? "Something went wrong");
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
               ],
             ),
           ],

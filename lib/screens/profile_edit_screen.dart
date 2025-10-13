@@ -244,7 +244,7 @@ class _ProfileEditScreenState extends BaseRouteState {
                         Key('3'),
                         controller: _cEmail,
                         focusNode: _fEmail,
-                        hintText: "user@gmail.com",
+                        hintText: "",
                         onFieldSubmitted: (val) {
                           FocusScope.of(context).requestFocus(_fCity);
                         },
@@ -411,6 +411,20 @@ class _ProfileEditScreenState extends BaseRouteState {
 
   bool validateChanges() {
     final CurrentUser currentUser = global.userProfileController.currentUser!;
+
+     if (_cPhone.text.isEmpty) {
+    showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Phone No');
+    return false;
+    }
+    else if (_cEmail.text.isEmpty) {
+    showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Email Id');
+    return false;
+    }
+     else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_cEmail.text)) {
+       showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Valid Email Id');
+       return false;
+     }
+
     return _cSociety.text != _oldSocietyName ||
         _cCity.text != _oldCityName ||
         _cName.text != currentUser.name ||
@@ -453,7 +467,9 @@ class _ProfileEditScreenState extends BaseRouteState {
           await apiHelper.updateFirebaseUser(global.currentUser);
         } else if (_cName.text.isEmpty) {
           showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_please_enter_your_name}');
-        } else if (_selectedCity!.cityId == null) {
+        }
+
+        else if (_selectedCity!.cityId == null) {
           showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_select_city}');
         } else if (_selectedSociety!.societyId == null) {
           showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_select_society}');

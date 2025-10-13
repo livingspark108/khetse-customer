@@ -305,7 +305,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
                     style: textTheme.bodyLarge,
                   ),
                   Text(
-                    "${global.appInfo!.currencySign} ${order!.totalTaxPrice!.toStringAsFixed(2)}",
+                    "${global.appInfo!.currencySign} ${order!.totalTaxPrice??0.toStringAsFixed(2)}",
                     style: textTheme.titleSmall,
                   )
                 ],

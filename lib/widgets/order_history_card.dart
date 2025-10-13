@@ -251,7 +251,12 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                       children: [
                         OutlinedButton(
                           onPressed: () {
-                            /// handle order again
+                              Get.to(() => OrderSummaryScreen(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            order: order,
+                            orderController: orderController,
+                            ));
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Colors.green),

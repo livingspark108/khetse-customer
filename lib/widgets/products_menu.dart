@@ -76,6 +76,7 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
       key: key,
       height: 120,
       child: Card(
+          color: Colors.white,
           elevation: 0,
           child: Padding(
             padding:
@@ -87,6 +88,7 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    color: Colors.white,
                     width: MediaQuery.of(context).size.width - 56,
                     child: Row(
                       children: [
@@ -356,23 +358,29 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                                 setState(() {});
                                               }
                                             },
-                                            child: Container(
-                                              height: 23,
-                                              width: 23,
-                                              alignment: Alignment.center,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondaryContainer,
-                                              child: Icon(
-                                                Icons.add,
-                                                size: 15.0,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSecondaryContainer,
+                                            child:Material(
+                                              elevation: 3, // adds subtle shadow
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Container(
+                                                height: 22,
+                                                width: 120,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xff043100),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: const Text(
+                                                  "Add to Cart",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 9,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : Padding(
+                                            ),)
+
+                                : Padding(
                                             padding: const EdgeInsets.only(
                                                 top: 5, bottom: 5),
                                             child: Row(
@@ -529,9 +537,7 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                           child: Icon(
                                             Icons.add,
                                             size: 17.0,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSecondaryContainer,
+                                            color: Colors.white,
                                           ),
                                         ),
                                       )

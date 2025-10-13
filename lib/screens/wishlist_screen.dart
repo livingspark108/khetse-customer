@@ -40,8 +40,10 @@ class _WishListScreenState extends BaseRouteState {
     TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         key: _scaffoldKey,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: Text(
             "${AppLocalizations.of(context)!.btn_wishlist}",
             style: textTheme.titleLarge,

@@ -191,128 +191,173 @@ class _DashboardScreenState extends BaseRouteState {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const DashboardLoadingView();
-              } else if (snapshot.connectionState == ConnectionState.done) {
+              }
+              else if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(global.locationMessage ?? "Something went wrong"),
+                    ),
+                  );
+                }
+
                 if (global.nearStoreModel != null &&
                     global.nearStoreModel?.id != null &&
                     snapshot.hasData) {
+                  final data = snapshot.data!;
+                  final bool hasStore = global.nearStoreModel != null && global.nearStoreModel?.id != null;
+
                   return SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DashboardAppNotice(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16.0,
-                            horizontal: 16,
-                          ),
+                         Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
                           child: DashboardScreenHeading(),
                         ),
-                        (snapshot.data?.banner.isNotEmpty ?? false)
-                            ? DashboardBanner(
-                                items: _bannerItems(snapshot.data!))
-                            : SizedBox(),
-                        (snapshot.data?.topCat.isNotEmpty ?? false)
-                            ? DashboardCategories(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                topCategoryList: snapshot.data!.topCat,
-                              )
-                            : SizedBox(),
-                        (snapshot.data?.dealproduct.isNotEmpty ?? false)
-                            ? DashboardBundleProducts(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                title:
-                                    "${AppLocalizations.of(context)!.tle_bundle_offers}",
-                                categoryName:
-                                    '${AppLocalizations.of(context)!.tle_bundle_offers} ${AppLocalizations.of(context)!.tle_products}',
-                                dealProducts: snapshot.data!.dealproduct,
-                                screenId: 1,
-                              )
-                            : SizedBox(),
-                        (snapshot.data?.catProdList.isNotEmpty ?? false)
-                            ? DashboardProductListByCategory(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                productListByCategory:
-                                    snapshot.data!.catProdList,
-                              )
-                            : SizedBox.shrink(),
-                        (snapshot.data?.whatsnewProductList.isNotEmpty ?? false)
-                            ? DashboardBundleProducts(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                title:
-                                    "${AppLocalizations.of(context)!.lbl_whats_new}",
-                                categoryName:
-                                    '${AppLocalizations.of(context)!.lbl_whats_new} ${AppLocalizations.of(context)!.tle_products}',
-                                dealProducts:
-                                    snapshot.data!.whatsnewProductList,
-                                screenId: 3,
-                              )
-                            : SizedBox(),
-                        (snapshot.data?.secondBanner.isNotEmpty ?? false)
-                            ? DashboardBanner(
-                                margin: EdgeInsets.only(top: 20),
-                                items: _secondBannerItems(snapshot.data!))
-                            : SizedBox(),
-                        (snapshot.data?.spotLightProductList.isNotEmpty ??
-                                false)
-                            ? DashboardBundleProducts(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                title:
-                                    "${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}",
-                                categoryName:
-                                    '${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}',
-                                dealProducts:
-                                    snapshot.data!.spotLightProductList,
-                                screenId: 4,
-                              )
-                            : SizedBox(),
-                        (snapshot.data?.recentSellingProductList.isNotEmpty ??
-                                false)
-                            ? DashboardBundleProducts(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                title:
-                                    "${AppLocalizations.of(context)!.lbl_recent_selling} ${AppLocalizations.of(context)!.tle_products}",
-                                categoryName:
-                                    '${AppLocalizations.of(context)!.lbl_recent_selling} ${AppLocalizations.of(context)!.tle_products}',
-                                dealProducts:
-                                    snapshot.data!.recentSellingProductList,
-                                screenId: 5,
-                              )
-                            : SizedBox(),
-                        (snapshot.data?.topselling.isNotEmpty ?? false)
-                            ? DashboardTopSellingProductList(
-                                analytics: widget.analytics,
-                                observer: widget.observer,
-                                topSellingProducts: snapshot.data!.topselling,
-                              )
-                            : SizedBox(),
+
+                        if (data.banner.isNotEmpty)
+                          DashboardBanner(items: _bannerItems(data)),
+
+                        if (data.topCat.isNotEmpty)
+                          DashboardCategories(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            topCategoryList: data.topCat,
+                          ),
+
+                        if (data.dealproduct.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title:
+                            "${AppLocalizations.of(context)!.tle_bundle_offers}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.tle_bundle_offers} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.dealproduct,
+                            screenId: 1, showAddToCart: hasStore,
+                          ),
+
+                        if (data.catProdList.isNotEmpty)
+                          DashboardProductListByCategory(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            productListByCategory: data.catProdList,
+                          ),
+
+                        if (data.whatsnewProductList.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title:
+                            "${AppLocalizations.of(context)!.lbl_whats_new}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.lbl_whats_new} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.whatsnewProductList,
+                            screenId: 3,
+                            showAddToCart: hasStore,
+                          ),
+
+                        if (data.secondBanner.isNotEmpty)
+                          DashboardBanner(
+                            margin: const EdgeInsets.only(top: 20),
+                            items: _secondBannerItems(data),
+                          ),
+
+                        if (data.spotLightProductList.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title:
+                            "${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.spotLightProductList,
+                            screenId: 4,
+                            showAddToCart: hasStore,
+                          ),
+
+                        if (data.recentSellingProductList.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title:
+                            "${AppLocalizations.of(context)!.lbl_recent_selling} ${AppLocalizations.of(context)!.tle_products}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.lbl_recent_selling} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.recentSellingProductList,
+                            screenId: 5,
+                            showAddToCart: hasStore,
+                          ),
+
+                        if (data.topselling.isNotEmpty)
+                          DashboardTopSellingProductList(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            topSellingProducts: data.topselling,
+                          ),
                       ],
                     ),
                   );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Text(global.locationMessage!),
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Text(global.locationMessage!),
+                }
+
+                // ✅ If no store data but snapshot has some data
+                if (snapshot.hasData) {
+                  final data = snapshot.data!;
+
+                  final bool hasStore = global.nearStoreModel != null && global.nearStoreModel?.id != null;
+
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (data.whatsnewProductList.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title: "${AppLocalizations.of(context)!.lbl_whats_new}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.lbl_whats_new} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.whatsnewProductList,
+                            screenId: 3,
+                            showAddToCart: hasStore,
+                          ),
+                        if (data.secondBanner.isNotEmpty)
+                          DashboardBanner(
+                            margin: const EdgeInsets.only(top: 20),
+                            items: _secondBannerItems(data),
+                          ),
+                        if (data.spotLightProductList.isNotEmpty)
+                          DashboardBundleProducts(
+                            analytics: widget.analytics,
+                            observer: widget.observer,
+                            title:
+                            "${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}",
+                            categoryName:
+                            '${AppLocalizations.of(context)!.lbl_in_spotlight} ${AppLocalizations.of(context)!.tle_products}',
+                            dealProducts: data.spotLightProductList,
+                            screenId: 4,
+                            showAddToCart: hasStore,
+                          ),
+                      ],
                     ),
                   );
                 }
-              } else {
-                return Text("This shouldn't be seen ever");
+
+                // ✅ Fallback UI if everything else fails
+                return Center(
+                  child: Text(global.locationMessage ?? "No data available"),
+                );
+              }
+              else {
+                // Shouldn't normally happen
+                return const Center(child: Text("Unexpected state"));
               }
             },
+
+
           ),
         ));
   }

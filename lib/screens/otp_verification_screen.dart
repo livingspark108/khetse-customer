@@ -222,39 +222,14 @@ class _OtpVerificationScreenState extends BaseRouteState {
     try {
       bool isConnected = await br.checkConnectivity();
       if (isConnected) {
-        if (global.appInfo!.firebase != 'off') {
-          FirebaseAuth auth = FirebaseAuth.instance;
-          var _credential = PhoneAuthProvider.credential(verificationId: verificationCode!, smsCode: otp.trim());
-          showOnlyLoaderDialog();
-          await auth.signInWithCredential(_credential).then((result) {
-            status = 'success';
-            hideLoader();
-            if (screenId != null && screenId == 0) {
-//screenId ==0 -> Forgot Password
-              _firebaseOtpVerification(status);
-            } else {
-              _verifyViaFirebase(status);
-            }
-          }).catchError((e) {
-            status = 'failed';
-            hideLoader();
 
-            if (screenId != null && screenId == 0) {
-              //screenId ==0 -> Forgot Password
-              _firebaseOtpVerification(status);
-            } else {
-              _verifyViaFirebase(status);
-            }
-          }).onError((dynamic error, stackTrace) {
-            hideLoader();
-          });
-        } else {
-          if (screenId != null && screenId == 0) {
+
             showOnlyLoaderDialog();
+            dynamic recordList;
             await apiHelper.verifyOTP(phoneNumber, _cOtp.text).then((result) async {
               if (result != null) {
                 if (result.status == "1") {
-                  global.currentUser = result.recordList;
+                  global.currentUser = result.data;
                   global.userProfileController.currentUser = global.currentUser;
                   global.sp!.setString('currentUser', json.encode(global.currentUser!.toJson()));
 
@@ -273,7 +248,7 @@ class _OtpVerificationScreenState extends BaseRouteState {
                 showSnackBar(key: _scaffoldKey, snackBarMessage: '${AppLocalizations.of(context)!.txt_something_went_wrong}');
               }
             });
-          } else {
+          /*} else {
             showOnlyLoaderDialog();
             await apiHelper.verifyPhone(phoneNumber, _cOtp.text, referalCode).then((result) async {
               if (result != null) {
@@ -296,7 +271,7 @@ class _OtpVerificationScreenState extends BaseRouteState {
               }
             });
           }
-        }
+*/
       } else {
         showNetworkErrorSnackBar(_scaffoldKey);
       }

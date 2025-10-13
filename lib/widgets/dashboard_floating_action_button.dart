@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
 import 'package:user/screens/chat_screen.dart';
 import 'package:user/screens/login_screen.dart';
 import 'package:user/screens/product_request_screen.dart';
+
+import '../constants/strings.dart';
 
 class DashboardFloatingActionButton extends StatefulWidget {
   final FirebaseAnalytics? analytics;
@@ -54,7 +57,7 @@ class _DashboardFloatingActionButtonState extends State<DashboardFloatingActionB
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
               onTap: () {
-                widget.callNumberStore(global.nearStoreModel!.phoneNumber);
+          _contactUs();
               }),
           SpeedDialChild(
               child: Icon(MdiIcons.chatOutline),
@@ -89,5 +92,13 @@ class _DashboardFloatingActionButtonState extends State<DashboardFloatingActionB
       );
     return SizedBox();
   }
-
+  void _contactUs({String uri = Strings.callUsUrl}) async {
+    final Uri url = Uri.parse(uri);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw "Could not launch $url";
+    }
+  }
 }
+

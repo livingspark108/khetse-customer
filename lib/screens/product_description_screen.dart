@@ -123,7 +123,9 @@ class _ProductDescriptionScreenState extends BaseRouteState {
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           _isDataLoaded
               ? _productDetail!.productDetail!.productName!
@@ -325,7 +327,23 @@ class _ProductDescriptionScreenState extends BaseRouteState {
                         );
                       },
                     ),
-                    _subHeading(textTheme, "Description"),
+
+
+
+                    /// 🔘 Image Indicator
+                    const SizedBox(height: 8),
+
+
+                    /// 🏷️ Product Name + Discount
+
+
+                    /// 🧾 Variant List
+
+
+                    /// 🧾 Product Description
+
+
+                    _subHeading(textTheme, "Product Description"),
                     _productDescription(textTheme),
                     _productDetail!.productDetail!.rating != null &&
                             _productDetail!.productDetail!.rating! > 0
@@ -549,224 +567,256 @@ class _ProductDescriptionScreenState extends BaseRouteState {
   Widget _productNameAndPrice(TextTheme textTheme) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width - 150,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
               _productDetail!.productDetail!.productName!,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
-              style: textTheme.titleLarge,
+              style: textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
             ),
-            _productDetail!.productDetail!.discount != null &&
-                    _productDetail!.productDetail!.discount! > 0
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      "${_productDetail!.productDetail!.discount}% OFF",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall,
+          ),
+          if (_productDetail!.productDetail!.discount != null &&
+              _productDetail!.productDetail!.discount! > 0)
+            Container(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6FBE6), // light green background
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                "${_productDetail!.productDetail!.discount}% OFF",
+                style: const TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _productWeightAndQuantity(TextTheme textTheme, CartController value, int i) {
+    final varient = _productDetail!.productDetail!.varient[i];
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
+      child: Container(
+
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color:Colors.white,
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.08),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            /// 🧾 Product variant info
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${varient.quantity} ${varient.unit}-',
+                    style: textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
-                  )
-                : SizedBox(),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${global.appInfo!.currencySign} ${varient.price}',
+                        style: textTheme.bodyMedium!.copyWith(
+                          color: Color(0xff017f01),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${global.appInfo!.currencySign} ${varient.mrp}',
+                        style: textTheme.bodySmall!.copyWith(
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            /// 🛒 Stock & Cart Actions
+            varient.stock! > 0
+                ? (varient.cartQty == null || varient.cartQty == 0)
+                ? _addButton(theme, value, i)
+                : _qtyControls(theme, value, i)
+                : Text(
+              AppLocalizations.of(context)!.txt_out_of_stock,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _productWeightAndQuantity(
-      TextTheme textTheme, CartController value, int i) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  /// ➕ Add Button
+  Widget _addButton(ThemeData theme, CartController value, int i) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () async {
+        if (global.currentUser!.id == null) {
+          Get.to(LoginScreen(
+            analytics: widget.analytics,
+            observer: widget.observer,
+          ));
+        } else {
+          _qty = 1;
+          showOnlyLoaderDialog();
+          ATCMS? isSuccess = await value.addToCart(
+            _productDetail?.productDetail,
+            _qty,
+            false,
+            varient: _productDetail?.productDetail?.varient[i],
+          );
+          if (isSuccess?.isSuccess != null) Navigator.of(context).pop();
+          showToast(isSuccess?.message ?? 'Error adding to cart');
+          setState(() {});
+        }
+      },
+      child: Container(
+        height: 35,
+        width: 35,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(Icons.add, color: Colors.white, size: 20),
+      ),
+    );
+  }
+
+  /// 🔄 Quantity Controls
+  Widget _qtyControls(ThemeData theme, CartController value, int i) {
+    final varient = _productDetail!.productDetail!.varient[i];
+
+    return Container(
+      height: 35,
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            '${_productDetail!.productDetail!.varient[i].quantity} ${_productDetail!.productDetail!.varient[i].unit} / ${global.appInfo!.currencySign} ${_productDetail!.productDetail!.varient[i].price}',
-            style: textTheme.bodySmall!.copyWith(fontSize: 16),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              '${global.appInfo!.currencySign} ${_productDetail!.productDetail!.varient[i].mrp}',
-              style: textTheme.bodySmall!
-                  .copyWith(decoration: TextDecoration.lineThrough),
+          /// ➖ Minus Button
+          InkWell(
+            borderRadius: BorderRadius.circular(6),
+            onTap: () async {
+              if (varient.cartQty != null && varient.cartQty == 1) {
+                _qty = 0;
+              } else {
+                _qty = varient.cartQty! - 1;
+              }
+
+              showOnlyLoaderDialog();
+              ATCMS? isSuccess = await value.addToCart(
+                _productDetail?.productDetail,
+                _qty,
+                true,
+                varient: varient,
+              );
+              if (isSuccess?.isSuccess != null) Navigator.of(context).pop();
+              showToast(isSuccess?.message ??
+                  'Something went wrong trying to remove the product.');
+              setState(() {});
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Color(0XFFF1F1F1)  ,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(
+                varient.cartQty == 1 ? Icons.delete : Icons.remove,
+                color:Colors.black,
+                size: 18,
+              ),
             ),
           ),
-          Spacer(),
-          _productDetail!.productDetail!.varient[i].stock! > 0
-              ? _productDetail!.productDetail!.varient[i].cartQty == null ||
-                      _productDetail!.productDetail!.varient[i].cartQty == 0
-                  ? InkWell(
-                      onTap: () async {
-                        if (global.currentUser!.id == null) {
-                          Get.to(LoginScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer,
-                          ));
-                        } else {
-                          _qty = 1;
-                          showOnlyLoaderDialog();
-                          ATCMS? isSuccess = await value.addToCart(
-                              _productDetail?.productDetail, _qty, false,
-                              varient:
-                                  _productDetail?.productDetail?.varient[i]);
-                          if (isSuccess?.isSuccess != null) {
-                            Navigator.of(context).pop();
-                          }
-                          showToast(isSuccess?.message ??
-                              'Something went wrong adding product to cart');
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                        height: 23,
-                        width: 23,
-                        alignment: Alignment.center,
-                        color: Theme.of(context).colorScheme.primary,
-                        child: Icon(
-                          Icons.add,
-                          size: 17.0,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 5),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              if (_productDetail!
-                                          .productDetail!.varient[i].cartQty !=
-                                      null &&
-                                  _productDetail!
-                                          .productDetail!.varient[i].cartQty ==
-                                      1) {
-                                _qty = 0;
-                              } else {
-                                _qty = _productDetail!
-                                        .productDetail!.varient[i].cartQty! -
-                                    1;
-                              }
 
-                              showOnlyLoaderDialog();
-                              ATCMS? isSuccess = await value.addToCart(
-                                  _productDetail?.productDetail, _qty, true,
-                                  varient: _productDetail
-                                      ?.productDetail?.varient[i]);
-                              if (isSuccess?.isSuccess != null) {
-                                Navigator.of(context).pop();
-                              }
-                              showToast(isSuccess?.message ??
-                                  'Something went wrong trying to remove the product to the cart. Please try again later');
-                              setState(() {});
-                            },
-                            child: Container(
-                                height: 23,
-                                width: 23,
-                                alignment: Alignment.center,
-                                color: Theme.of(context).colorScheme.primary,
-                                child: _productDetail!.productDetail!.varient[i]
-                                            .cartQty ==
-                                        1
-                                    ? Icon(
-                                        Icons.delete,
-                                        size: 17.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                      )
-                                    : Icon(
-                                        MdiIcons.minus,
-                                        size: 17.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                      )),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 23,
-                            width: 23,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                      5.0) //                 <--- border radius here
-                                  ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "${_productDetail!.productDetail!.varient[i].cartQty}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (_productDetail!
-                                      .productDetail!.varient[i].stock! >
-                                  _productDetail!
-                                      .productDetail!.varient[i].cartQty!) {
-                                _qty = _productDetail!
-                                        .productDetail!.varient[i].cartQty! +
-                                    1;
+          /// 🧾 Qty Count
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              '${varient.cartQty}',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
 
-                                showOnlyLoaderDialog();
-                                ATCMS? isSuccess = await value.addToCart(
-                                    _productDetail?.productDetail, _qty, false,
-                                    varient: _productDetail
-                                        ?.productDetail?.varient[i]);
-                                if (isSuccess?.isSuccess != null) {
-                                  Navigator.of(context).pop();
-                                }
-                                showToast(isSuccess?.message ??
-                                    'Something went wrong add product to your cart. Please try again later.');
-                              } else {
-                                showToast("No more stock available.");
-                              }
+          /// ➕ Plus Button
+          InkWell(
+            borderRadius: BorderRadius.circular(6),
+            onTap: () async {
+              if (varient.stock! > varient.cartQty!) {
+                _qty = varient.cartQty! + 1;
 
-                              setState(() {});
-                            },
-                            child: Container(
-                                height: 23,
-                                width: 23,
-                                alignment: Alignment.center,
-                                color: Theme.of(context).colorScheme.secondary,
-                                child: Icon(
-                                  MdiIcons.plus,
-                                  size: 17,
-                                  color:Colors.white,
-                                )),
-                          )
-                        ],
-                      ),
-                    )
-              : Text(
-                  '${AppLocalizations.of(context)!.txt_out_of_stock}',
-                  style: TextStyle(color: Colors.red, fontSize: 12),
-                )
+                showOnlyLoaderDialog();
+                ATCMS? isSuccess = await value.addToCart(
+                  _productDetail?.productDetail,
+                  _qty,
+                  false,
+                  varient: varient,
+                );
+                if (isSuccess?.isSuccess != null) Navigator.of(context).pop();
+                showToast(isSuccess?.message ?? 'Error adding more items.');
+              } else {
+                showToast("No more stock available.");
+              }
+
+              setState(() {});
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Color(0xfff1f1f1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(Icons.add, color: Colors.black, size: 18),
+            ),
+          ),
         ],
       ),
     );
   }
+
 
   Widget _relatedProducts(TextTheme textTheme) {
     return Padding(
