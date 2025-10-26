@@ -55,37 +55,64 @@ class OrderController extends GetxController {
     try {
       isActiveOrderListLoaded.value = false;
 
-      if (isRecordPending1.value == true) {
-        isMoreDataLoaded1.value = true;
-
-        if (activeOrderList!.isEmpty) {
-          page1.value = 1;
-        } else {
-          page1.value++;
-        }
-
-        final result = await apiHelper.getActiveOrders(page1.value);
-        if (result != null) {
-          if (result.status == "1") {
-            List<Order> _tList = result.data;
-            if (_tList.isEmpty) {
-              isRecordPending1.value = false;
-            }
-            activeOrderList = _tList;
-
-            isMoreDataLoaded1.value = false;
-          } else {
-            activeOrderList = null;
-          }
-        }
+      // Reset for fresh load
+      if (activeOrderList == null || activeOrderList!.isEmpty) {
+        page1.value = 1;
+      } else {
+        page1.value++;
       }
 
+      isMoreDataLoaded1.value = true;
+
+      /// 🟢 1. Get normal active orders
+      final normalResult = await apiHelper.getActiveOrders(page1.value);
+
+      /// 🟢 2. Get photo orders
+      final photoResult = await apiHelper.getActiveOrdersphoto(page1.value);
+
+      List<Order> tempList = [];
+
+      /// Merge both results
+      if (normalResult != null && normalResult.status == "1") {
+        tempList.addAll(normalResult.data);
+      }
+
+      if (photoResult != null && photoResult.status == "1") {
+        tempList.addAll(photoResult.data);
+      }
+
+      if (tempList.isEmpty) {
+        isRecordPending1.value = false;
+      }
+
+      /// 🟢 Sort by date (latest first)
+      tempList.sort((a, b) {
+        DateTime dateA = _safeDate(a.orderDate);
+        DateTime dateB = _safeDate(b.orderDate);
+        return dateB.compareTo(dateA);
+      });
+
+      activeOrderList = tempList;
+
+      isMoreDataLoaded1.value = false;
       isActiveOrderListLoaded.value = true;
       update();
     } catch (e) {
       isActiveOrderListLoaded.value = true;
       update();
-      print("Exception -  order_controller.dart - getActiveOrderList():" + e.toString());
+      print("Exception - order_controller.dart - getActiveOrderList(): $e");
+    }
+  }
+
+  /// 🧩 Small helper for safe date parsing
+  DateTime _safeDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty || dateStr == "0000-00-00") {
+      return DateTime(1970); // fallback old date
+    }
+    try {
+      return DateTime.parse(dateStr);
+    } catch (e) {
+      return DateTime(1970);
     }
   }
 

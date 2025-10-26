@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -232,6 +233,11 @@ class _OtpVerificationScreenState extends BaseRouteState {
                   global.currentUser = result.data;
                   global.userProfileController.currentUser = global.currentUser;
                   global.sp!.setString('currentUser', json.encode(global.currentUser!.toJson()));
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                  await prefs.setString('lastUserId', global.currentUser!.id.toString());
+                  await prefs.setBool('allNotificationsRead', true);
+
 
                   hideLoader();
 
@@ -341,10 +347,7 @@ class _OtpVerificationScreenState extends BaseRouteState {
 
   _resendOTP() async {
     try {
-      if (global.appInfo!.firebase != 'off') {
-        // firebase resend OTP
-        await _getOTP(phoneNumber);
-      } else {
+
 // resend API
         showOnlyLoaderDialog();
         await apiHelper.resendOTP(phoneNumber).then((result) async {
@@ -360,7 +363,7 @@ class _OtpVerificationScreenState extends BaseRouteState {
             }
           }
         });
-      }
+
     } catch (e) {
       print("Exception - otp_verification_screen.dart - _resendOTP():" + e.toString());
     }

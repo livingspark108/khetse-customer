@@ -124,7 +124,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                           global.userProfileController.currentUser!.wallet! >
                                       0 &&
                                   screenId != 3
-                              ? RadioListTile(
+                              ?
+                          RadioListTile(
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,
                                   value: 1,
@@ -228,31 +229,67 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                           screenId! > 1
                               ? SizedBox()
                               : ListTile(
-                                  onTap: () async {
-                                    if (screenId == 1 && order != null) {
-                                      showOnlyLoaderDialog();
-                                      await _orderCheckOut(
-                                          'success', 'COD', null, null);
-                                    }
+                            onTap: () async {
+                              if (screenId == 1 && order != null) {
+                                // 🟢 Show confirmation dialog before checkout
+                                final bool? confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text(
+                                      "Confirm Payment",
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    content: const Text("Are you sure you want to place this order with Cash on Delivery?"),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context, false), // ❌ No
+                                        child: const Text(
+                                          "No",
+                                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                        ),
+                                        onPressed: () => Navigator.pop(context, true), // ✅ Yes
+                                        child: const Text("Yes"),
+                                      ),
+                                    ],
+                                  ),
+                                );
 
-                                    setState(() {});
-                                  },
-                                  leading: Icon(
-                                    Icons.wallet,
-                                    size: 25,
-                                    color: Colors.green[500],
-                                  ),
-                                  title: Text(
-                                    AppLocalizations.of(context)!.lbl_cash,
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                  subtitle: Text(
-                                    AppLocalizations.of(context)!
-                                        .txt_pay_through_cash,
-                                    style: textTheme.bodyLarge,
-                                  ),
-                                ),
-                          screenId! > 1
+                                // 🟢 Proceed only if user pressed "Yes"
+                                if (confirm == true) {
+                                  showOnlyLoaderDialog();
+                                  await _orderCheckOut('success', 'COD', null, null);
+                                }
+                              }
+
+                              setState(() {});
+                            },
+                            leading: Icon(
+                              Icons.wallet,
+                              size: 25,
+                              color: Colors.green[500],
+                            ),
+                            title: Text(
+                              AppLocalizations.of(context)!.lbl_cash,
+                              style: textTheme.bodyLarge,
+                            ),
+                            subtitle: Text(
+                              AppLocalizations.of(context)!.txt_pay_through_cash,
+                              style: textTheme.bodyLarge,
+                            ),
+                          ),
+
+                    screenId! > 1
                               ? SizedBox()
                               : ListTile(
                                   title: Text(
@@ -264,20 +301,67 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                           global.paymentGateway!.razorpay!.razorpayStatus ==
                                   'Yes'
                               ? ListTile(
-                                  onTap: () {
-                                    showOnlyLoaderDialog();
-                                    createOrderId();
-                                  },
-                                  leading: Image.asset(
-                                    'assets/images/razorpay.png',
-                                    height: 25,
+                            onTap: () async {
+                              // 🟢 Show confirmation dialog
+                              final bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Row(
+                                    children: const [
+                                      Icon(Icons.payment_rounded, color: Colors.blueAccent, size: 28),
+                                      SizedBox(width: 8),
+                                      Text("Confirm Payment"),
+                                    ],
                                   ),
-                                  title: Text(
-                                    '${AppLocalizations.of(context)!.lbl_rezorpay}',
-                                    style: textTheme.bodyLarge,
+                                  content: const Text(
+                                    "Are you sure you want to continue with Razorpay payment?",
+                                    style: TextStyle(fontSize: 15),
                                   ),
-                                )
-                              : SizedBox(),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, false), // ❌ No
+                                      child: const Text(
+                                        "No",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      onPressed: () => Navigator.pop(context, true), // ✅ Yes
+                                      child: const Text("Yes"),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              // 🟢 Proceed only if user pressed "Yes"
+                              if (confirm == true) {
+                                showOnlyLoaderDialog();
+                                createOrderId();
+                              }
+                            },
+                            leading: Image.asset(
+                              'assets/images/razorpay.png',
+                              height: 25,
+                            ),
+                            title: Text(
+                              AppLocalizations.of(context)!.lbl_rezorpay,
+                              style: textTheme.bodyLarge,
+                            ),
+                          )
+
+                    : SizedBox(),
                           global.paymentGateway!.stripe!.stripeStatus == 'Yes'
                               ? ListTile(
                                   onTap: () {
@@ -649,6 +733,14 @@ class _PaymentGatewayScreenState extends BaseRouteState {
           if (result != null) {
             if (result.status == "1") {
               _getAppInfo();
+              final LocalNotificationService _localNotification = LocalNotificationService();
+              _localNotification.init(); // initialize notifications
+
+              _localNotification.sendNotification(
+                title: "Order Placed",
+                subtitle: "Your Order has been placed",
+              );
+              hideLoader();
               // if (_isWallet == 1) {
               //   if (global.userProfileController.currentUser.wallet >= totalAmount) {
               //     global.userProfileController.currentUser.wallet = global.userProfileController.currentUser.wallet - totalAmount;

@@ -1,6 +1,8 @@
 
 abstract class StringFormatter{
   static String? convertListItemsToString(List<String?> items) {
+
+   if(items.length>0){
     String? result = items[0];
     if (items.length == 1) {
       return result;
@@ -9,7 +11,7 @@ abstract class StringFormatter{
       if(item == items[0]) continue;
       result = result! + ", $item";
     }
-    return result;
+    return result;}
   }
   static String getImageExtension(String imageUrl){
     List<String> names = imageUrl.split(".");

@@ -509,7 +509,7 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                                           .onSecondaryContainer,
                                                       child: Icon(
                                                         MdiIcons.plus,
-                                                        size: 17,
+                                                        size: 17,color: Colors.white,
                                                       )),
                                                 )
                                               ],
@@ -820,9 +820,7 @@ class _PopularProductsMenuItemState extends State<PopularProductsMenuItem> {
                                               child: Icon(
                                                 MdiIcons.plus,
                                                 size: 17,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimaryContainer,
+                                                color: Colors.white,
                                               )),
                                         )
                                       ],

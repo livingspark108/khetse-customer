@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
@@ -19,6 +20,8 @@ import 'package:user/screens/wallet_screen.dart';
 import 'package:user/utils/navigation_utils.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/dashboard_widgets.dart';
+
+import '../models/notificationModel.dart';
 
 class DashboardScreen extends BaseRoute {
   final Function()? onAppDrawerButtonPressed;
@@ -44,6 +47,32 @@ class _DashboardScreenState extends BaseRouteState {
   final CartController cartController = Get.put(CartController());
 
   _DashboardScreenState({this.onAppDrawerButtonPressed});
+  bool hasUnreadNotifications = false;
+  Future<void> markNotificationsAsRead() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('allNotificationsRead', true);
+  }
+
+  Future<void> _checkUnreadNotifications() async {
+    try {
+      bool isConnected = await br.checkConnectivity();
+      if (!isConnected) return;
+
+      var response = await apiHelper.getAllNotification(1); // first page
+      if (response != null && response.statusCode == 200) {
+        var notifications = response.data as List<NotificationModel>;
+
+        // Check if any notification is unread (e.g., is_read != 1)
+        hasUnreadNotifications = notifications.any((n) => n.readByUser != 1);
+
+        setState(() {}); // update UI
+      }
+    } catch (e) {
+      print("Exception in _checkUnreadNotifications: $e");
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -140,35 +169,37 @@ class _DashboardScreenState extends BaseRouteState {
                                   ),
                                 ),
                                 global.currentUser?.id != null
-                                    ? Stack(
-                                  clipBehavior: Clip.none,
+                                    ?
+                                Stack(
                                   children: [
                                     IconButton(
-                                      visualDensity:
-                                      const VisualDensity(horizontal: -4),
-                                      icon: const Icon(Icons.notifications_none,
-                                          color: Colors.black),
-                                      onPressed: () => Get.to(
-                                            () => NotificationScreen(
-                                          analytics: widget.analytics,
-                                          observer: widget.observer,
-                                        ),
-                                      ),
+                                      icon: const Icon(Icons.notifications),
+                                      onPressed: () async {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) =>  NotificationScreen()),
+                                        );
+                                        // ✅ Recheck after coming back
+                                        _checkUnreadNotifications();
+                                      },
                                     ),
-                                    Positioned(
-                                      right: 10,
-                                      top: 12,
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.green,
-                                          shape: BoxShape.circle,
+                                    if (hasUnreadNotifications)
+                                      Positioned(
+                                        right: 8,
+                                        top: 8,
+                                        child: Container(
+                                          width: 10,
+                                          height: 10,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
                                         ),
                                       ),
-                                    )
                                   ],
                                 )
+
+
                                     : const SizedBox(),
                               ],
                             ),
@@ -370,6 +401,7 @@ class _DashboardScreenState extends BaseRouteState {
       vsync: this,
     );
     _init();
+
   }
 
   List<Widget> _bannerItems(HomeScreenData homeScreenData) {
@@ -442,7 +474,11 @@ class _DashboardScreenState extends BaseRouteState {
       if (global.currentUser?.id != null) {
         cartController.getCartList();
       }
-      setState(() {});
+      setState(() {
+        _checkUnreadNotifications();
+
+
+      });
     } catch (e) {
       print("Exception - dashboard_screen.dart - _init():" + e.toString());
     }

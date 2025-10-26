@@ -312,7 +312,7 @@ class _ProfileEditScreenState extends BaseRouteState {
                         _save();
                         return;
                       }
-                      showToast("No changes to save");
+
                     }),
               ),
           )
@@ -424,13 +424,24 @@ class _ProfileEditScreenState extends BaseRouteState {
        showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Valid Email Id');
        return false;
      }
+     else if (_cPhone.text.length!=10) {
+       showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Valid Mobie No');
+       return false;
+     }
 
-    return _cSociety.text != _oldSocietyName ||
-        _cCity.text != _oldCityName ||
-        _cName.text != currentUser.name ||
-        _cEmail.text != currentUser.email ||
-        _cPhone.text != currentUser.userPhone ||
-        _tImage != null;
+
+  /*   else if (_cSociety.text != _oldSocietyName ||
+         _cCity.text != _oldCityName ||
+         _cName.text != currentUser.name ||
+         _cEmail.text != currentUser.email ||
+         _cPhone.text != currentUser.userPhone ||
+         _tImage != null) {
+       showSnackBar(key: _scaffoldKey, snackBarMessage: 'Please Enter Valid Mobie No');
+       return true;
+     }*/
+
+
+    return true;
   }
 
   _save() async {

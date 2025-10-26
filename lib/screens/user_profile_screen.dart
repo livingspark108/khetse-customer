@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:user/constants/color_constants.dart';
 import 'package:user/constants/image_constants.dart';
@@ -194,7 +195,14 @@ _signOutDialog(BuildContext context) async {
                       style: TextStyle(color: Colors.red)),
                   onPressed: () async {
                    //global.sp!.remove("currentUser");
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
+                    await prefs.setBool('allNotificationsRead', true);
+
+                    await prefs.remove('lastUserId');
                     global.sp!.clear();
+
                     global.currentUser = CurrentUser();
                     Get.offAll(
                       () => LoginScreen(),
@@ -340,7 +348,8 @@ class _UserProfileScreenState extends BaseRouteState {
       _buildMenuTile(
         Icons.subscriptions,
         "Membership",
-        onTap: () => Get.to(() => MemberShipScreen(
+        onTap: () =>
+            Get.to(() => MemberShipScreen(
           analytics: widget.analytics,
           observer: widget.observer,
         )),
@@ -349,7 +358,8 @@ class _UserProfileScreenState extends BaseRouteState {
     _buildMenuTile(
     Icons.location_on_outlined,
     "Address List",
-    onTap: () => Get.to(() => AddressListScreen(
+    onTap: () =>
+        Get.to(() => AddressListScreen(
       analytics: widget.analytics,
       observer: widget.observer,
     )),

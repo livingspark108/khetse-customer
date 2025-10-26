@@ -68,20 +68,21 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
       init: orderController,
       builder: (orderController) => InkWell(
         onTap: () {
-          Get.to(() => OrderSummaryScreen(
-            analytics: widget.analytics,
-            observer: widget.observer,
-            order: order,
-            orderController: orderController,
-          ));
+          if (order!.isPhotoOrder) {
+
+          } else {
+            Get.to(() => OrderSummaryScreen(
+              analytics: widget.analytics,
+              observer: widget.observer,
+              order: order,
+              orderController: orderController,
+            ));
+          }
         },
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Color(0xffF4F4F4),
-              width: 1.2,
-            ),
+            side: const BorderSide(color: Color(0xffF4F4F4), width: 1.2),
             borderRadius: BorderRadius.circular(6.0),
           ),
           elevation: 0,
@@ -91,21 +92,21 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// ===== Top row: Date • Time + Status badge =====
+
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${DateFormat('MMM d').format(DateTime.parse(order!.productList[0].orderDate.toString()))} • "
-                          "${DateFormat('h:mm a').format(DateTime.parse(order!.productList[0].orderDate.toString()))}",
+                      formatDate(order!.orderDate.toString()),
                       style: textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
                       ),
                     ),
+
                     Container(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: statusColor,
                         borderRadius: BorderRadius.circular(4),
@@ -126,7 +127,7 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                 const Divider(height: 1, color: Color(0xffE0E0E0)),
                 const SizedBox(height: 12),
 
-                /// ===== Title + Order ID + Item count =====
+                /// ===== Order Title =====
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -136,7 +137,9 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            StringFormatter.convertListItemsToString(_productName)!,
+                            order!.isPhotoOrder
+                                ? "Photo Order"
+                                : StringFormatter.convertListItemsToString(_productName)!,
                             style: textTheme.titleMedium!.copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
@@ -147,7 +150,7 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "Order ID: ${order!.cartid}",
+                            "Order ID: ${order!.cartid ?? order!.orderid ?? "-"}",
                             style: textTheme.bodySmall!.copyWith(
                               color: Colors.black54,
                               fontWeight: FontWeight.w500,
@@ -156,33 +159,36 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                         ],
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "${order!.productList.length} items",
-                          style: textTheme.bodySmall,
-                        ),
-                        const Row(
-                          children: [
-                            Icon(Icons.refresh, size: 14, color: Colors.green),
-                            SizedBox(width: 4),
-                            Text("Everyday",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.black87)),
-                            Icon(Icons.keyboard_arrow_up, size: 18),
-                          ],
-                        ),
-                      ],
-                    ),
                   ],
                 ),
 
                 const SizedBox(height: 12),
                 const Divider(height: 1, color: Color(0xffE0E0E0)),
 
-                /// ===== Product List =====
-                Column(
+                /// ===== Product List or Photo =====
+                order!.isPhotoOrder
+                    ? Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        global.appInfo!.imageUrl! + order!.listPhoto!,
+                        height: 120,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.broken_image, size: 80),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Uploaded photo order",
+                      style: textTheme.bodySmall!
+                          .copyWith(color: Colors.black54),
+                    ),
+                  ],
+                )
+                    : Column(
                   children: order!.productList.map((product) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -238,41 +244,45 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
 
                 const Divider(height: 20, color: Color(0xffE0E0E0)),
 
-                /// ===== Footer: Price + Buttons =====
+                /// ===== Footer =====
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${global.appInfo!.currencySign} ${(order!.remPrice! + order!.paidByWallet!).toStringAsFixed(2)}",
-                      style: textTheme.bodyLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
+                      order!.isPhotoOrder
+                          ? "Pending Review"
+                          : "${global.appInfo!.currencySign} ${(order!.remPrice! + order!.paidByWallet!).toStringAsFixed(2)}",
+                      style: textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                              Get.to(() => OrderSummaryScreen(
+
+
+                    !order!.isPhotoOrder?
+                    OutlinedButton(
+                      onPressed: () {
+                        if (order!.isPhotoOrder) {
+
+                        } else {
+                          Get.to(() => OrderSummaryScreen(
                             analytics: widget.analytics,
                             observer: widget.observer,
                             order: order,
                             orderController: orderController,
-                            ));
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.green),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          ),
-                          child: const Text(
-                            "View detail",
-                            style: TextStyle(color: Colors.green),
-                          ),
+                          ));
+                        }
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.green),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        const SizedBox(width: 10),
-
-                      ],
-                    )
+                      ),
+                      child: const Text(
+                        "View detail",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ):SizedBox.shrink(),
                   ],
                 ),
               ],
@@ -281,6 +291,7 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
         ),
       ),
     );
+
   }
 
 
@@ -513,6 +524,21 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
     } catch (e) {
       print("Exception - order_history_card.dart - reOrderItems():" +
           e.toString());
+    }
+  }
+  String formatDate(String? dateStr) {
+    if (dateStr == null ||
+        dateStr.isEmpty ||
+        dateStr == "0000-00-00" ||
+        dateStr == "0000-00-00 00:00:00") {
+      return "No Date";
+    }
+
+    try {
+      final date = DateTime.parse(dateStr);
+      return "${DateFormat('MMM d').format(date)} • ${DateFormat('h:mm a').format(date)}";
+    } catch (e) {
+      return "No Date";
     }
   }
 

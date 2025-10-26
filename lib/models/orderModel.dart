@@ -1,6 +1,8 @@
 import 'package:user/models/categoryProductModel.dart';
 
 class Order {
+  bool isPhotoOrder=false;
+  String? listPhoto;
   String? orderid;
   int? userid;
   int? storeid;
@@ -16,6 +18,7 @@ class Order {
   double? totalTaxPrice;
   String? orderDate;
   String? deliveryDate;
+
   double? deliveryCharge;
   String? timeSlot;
   int? dboyId;
@@ -59,7 +62,16 @@ class Order {
   Order();
   Order.fromJson(Map<String, dynamic> json) {
     try {
-      orderid = json['order_id'] != null ? json['order_id'].toString() : '';
+      isPhotoOrder = json['is_photo_order'] == true ||
+          json['is_photo_order'] == 1 ||
+          json['is_photo_order'] == "true";
+
+      /// ✅ 2. Photo path field (for photo orders)
+      listPhoto = json['list_photo'] != null ? json['list_photo'].toString() : null;
+      orderStatus = (json['order_status'] != null && json['order_status'].toString().isNotEmpty)
+          ? json['order_status'].toString()
+          : (isPhotoOrder ? "Pending" : "N/A");
+      orderid = json['order_id'] != null ? json['order_id'].toString() : 'N/A';
       userid = json['user_id'] != null ? int.parse(json['user_id'].toString()) : null;
       storeid = json['store_id'] != null ? int.parse(json['store_id'].toString()) : null;
       addressid = json['address_id'] != null ? int.parse(json['address_id'].toString()) : null;
@@ -77,7 +89,9 @@ class Order {
       deliveryCharge = json['delivery_charge'] != null ? double.parse('${json['delivery_charge']}') : null;
       timeSlot = json['time_slot'] != null ? json['time_slot'] : null;
       dboyId = json['dboy_id'] != null ? int.parse(json['dboy_id'].toString()) : null;
-      orderStatus = json['order_status'] != null ? json['order_status'] : null;
+
+
+
       userSignature = json['user_signature'] != null ? json['user_signature'] : '';
       cancellingReason = json['cancelling_reason'] != null ? json['cancelling_reason'] : '';
       couponId = json['coupon_id'] != null ? int.parse(json['coupon_id'].toString()) : null;
@@ -119,4 +133,10 @@ class Order {
       print("Exception - orderModel.dart - Order.fromJson():" + e.toString());
     }
   }
+}
+double? _toDouble(dynamic value) {
+  if (value == null) return null;
+  final str = value.toString().trim();
+  if (str.isEmpty) return null;
+  return double.tryParse(str);
 }

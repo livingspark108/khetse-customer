@@ -138,6 +138,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
   _getOrderHistory() async {
     await orderController.getActiveOrderList();
     await orderController.getCompletedOrderHistoryList();
+
     setState(() {});
   }
 

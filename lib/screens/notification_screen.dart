@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
@@ -234,19 +235,26 @@ class _NotificationScreenState extends BaseRouteState {
             page++;
           }
           await apiHelper.getAllNotification(page).then((result) async {
-            if (result != null) {
-              if (result.status == "1") {
-                List<NotificationModel> _tList = result.data;
-                if (_tList.isEmpty) {
-                  _isRecordPending = false;
-                }
-                _notificationList.addAll(_tList);
-                setState(() {
-                  _isMoreDataLoaded = false;
-                });
+            if (result != null && result.status == "1") {
+              List<NotificationModel> _tList = result.data;
+              if (_tList.isEmpty) {
+                _isRecordPending = false;
               }
+
+              _notificationList.addAll(_tList);
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('allNotificationsRead', true);
+              await prefs.setInt('lastNotificationCount', _notificationList.length);
+              await prefs.setInt('unreadCount', 0); // ✅ Reset unread count
+
+              setState(() {
+                _isMoreDataLoaded = false;
+              });
             }
           });
+
+
         }
       } else {
         showNetworkErrorSnackBar(_scaffoldKey);
@@ -255,6 +263,7 @@ class _NotificationScreenState extends BaseRouteState {
       print("Exception - notification_screen.dart - _getData():" + e.toString());
     }
   }
+
 
   _init() async {
     try {
@@ -271,7 +280,10 @@ class _NotificationScreenState extends BaseRouteState {
         }
       });
       _isDataLoaded = true;
-      setState(() {});
+      setState(() {
+
+apiHelper.mark();
+      });
     } catch (e) {
       print("Exception - notification_screen.dart - _init():" + e.toString());
     }

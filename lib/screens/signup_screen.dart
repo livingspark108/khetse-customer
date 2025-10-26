@@ -285,6 +285,9 @@ class _SignUpScreenState extends BaseRouteState {
                   FocusScope.of(context).requestFocus(_fReferral);
                 },
               ),
+              SizedBox(
+                height: 20,
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: MyTextField(
@@ -453,21 +456,9 @@ class _SignUpScreenState extends BaseRouteState {
               if (result.status == "1") {
                 global.currentUser = result.data;
                 global.userProfileController.currentUser = global.currentUser;
+                await sendOTP(_cPhoneNumber.text.trim());
 
-                if (global.appInfo!.firebase != 'off') {
-                  // if firebase is enabled then only we need to send OTP through firebase.
-                  print("DATA = ${result.data}");
-                  global.currentUser = result.data;
-                  global.userProfileController.currentUser = global.currentUser;
-                  // global.sp!.setString(
-                  //     'currentUser', json.encode(global.currentUser!.toJson()));
-                  hideLoader();
-                  // Get.offAll(() => HomeScreen(
-                  //   analytics: widget.analytics,
-                  //   observer: widget.observer,
-                  // ));
-                  await sendOTP(_cPhoneNumber.text.trim());
-                } else {
+
                   hideLoader();
                   Get.to(() => OtpVerificationScreen(
                         analytics: widget.analytics,
@@ -476,7 +467,7 @@ class _SignUpScreenState extends BaseRouteState {
                         referalCode: _cReferral.text.trim(),
                       ));
                 }
-              } else {
+              else {
                 hideLoader();
                 showSnackBar(
                     key: _scaffoldKey,
