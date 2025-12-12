@@ -29,12 +29,11 @@ class CheckoutScreen extends BaseRoute {
   _CheckoutScreenState createState() =>
       _CheckoutScreenState(cartController: cartController);
 }
-
 class _CheckoutScreenState extends BaseRouteState {
   CartController? cartController;
   GlobalKey<ScaffoldState>? _scaffoldKey;
   Address? _selectedAddress = new Address();
-  List<TimeSlot>? _timeSlotList = [];
+  List<TimeSlot> _timeSlotList = [];
   DateTime? _selectedDate;
   TimeSlot? _selectedTimeSlot;
   late var _openingTime;
@@ -332,34 +331,34 @@ class _CheckoutScreenState extends BaseRouteState {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            items: _timeSlotList!.map<
-                                                    DropdownMenuItem<TimeSlot>>(
-                                                (TimeSlot timeSlot) {
-                                              return DropdownMenuItem<TimeSlot>(
-                                                value: timeSlot,
-                                                enabled:
-                                                    timeSlot.availibility ==
+                                              items: (_timeSlotList??[]).map<
+                                                      DropdownMenuItem<TimeSlot>>(
+                                                  (TimeSlot timeSlot) {
+                                                return DropdownMenuItem<TimeSlot>(
+                                                  value: timeSlot,
+                                                  enabled:
+                                                      timeSlot.availability ==
+                                                              "available"
+                                                          ? true
+                                                          : false,
+                                                  child: Text(
+                                                    timeSlot.timeslot!,
+                                                    style: timeSlot
+                                                                .availability ==
                                                             "available"
-                                                        ? true
-                                                        : false,
-                                                child: Text(
-                                                  timeSlot.timeslot!,
-                                                  style: timeSlot
-                                                              .availibility ==
-                                                          "available"
-                                                      ? textTheme.bodyLarge!
-                                                          .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        )
-                                                      : textTheme.bodyLarge!
-                                                          .copyWith(
-                                                          color:
-                                                              Colors.grey[400],
-                                                        ),
-                                                ),
-                                              );
-                                            }).toList(),
+                                                        ? textTheme.bodyLarge!
+                                                            .copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          )
+                                                        : textTheme.bodyLarge!
+                                                            .copyWith(
+                                                            color:
+                                                                Colors.grey[400],
+                                                          ),
+                                                  ),
+                                                );
+                                              }).toList(),
                                             onChanged: (dynamic value) {
                                               setState(() {
                                                 _selectedTimeSlot = value;
@@ -510,27 +509,32 @@ class _CheckoutScreenState extends BaseRouteState {
     try {
       showOnlyLoaderDialog();
       bool isConnected = await br.checkConnectivity();
+
       if (isConnected) {
-        await apiHelper.getTimeSlot(_selectedDate).then((result) async {
-          _selectedTimeSlot = TimeSlot();
-          if (result != null) {
-            if (result.status == "1") {
-              _timeSlotList = result.data;
-              _selectedTimeSlot = _timeSlotList![0];
-            } else {
-              showSnackBar(key: _scaffoldKey, snackBarMessage: result.message);
-              _timeSlotList = [];
-            }
+        var result = await apiHelper.getTimeSlot(_selectedDate);
+
+        print("RESULT FROM HELPER: $result");  // debug
+
+        _timeSlotList = [];
+        _selectedTimeSlot = null;
+
+        if (result["status"] == "1") {
+          _timeSlotList = List<TimeSlot>.from(result["data"]);
+          if (_timeSlotList.isNotEmpty) {
+            _selectedTimeSlot = _timeSlotList.first;
           }
-          setState(() {});
-        });
+        } else {
+          showSnackBar(key: _scaffoldKey, snackBarMessage: result["message"]);
+        }
+
+        setState(() {});
       } else {
         showNetworkErrorSnackBar(_scaffoldKey);
       }
+
       hideLoader();
     } catch (e) {
-      print("Exception - checkout_screen.dart - _getTimeSlotList():" +
-          e.toString());
+      print("Exception - checkout_screen.dart - _getTimeSlotList(): $e");
     }
   }
 

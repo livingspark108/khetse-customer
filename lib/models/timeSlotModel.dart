@@ -1,15 +1,16 @@
-class TimeSlot{
+class TimeSlot {
   String? timeslot;
-  String? availibility;
+  String? availability;
 
-  TimeSlot();
+  TimeSlot({this.timeslot, this.availability});
 
   TimeSlot.fromJson(Map<String, dynamic> json) {
-    try {
-      timeslot = json['timeslot'] != null ? json['timeslot'] : '';
-      availibility = json['availibility'] != null ? json['availibility'] : '';
-    } catch (e) {
-      print("Exception - timeSlotModel.dart - TimeSlot.fromJson():" + e.toString());
-    }
+    timeslot = json["timeslot"];
+    availability = json["availability"] ?? json["availibility"];
   }
+
+  Map<String, dynamic> toJson() => {
+    "timeslot": timeslot,
+    "availability": availability,
+  };
 }

@@ -12,6 +12,7 @@ import 'package:user/screens/home_screen.dart';
 import 'package:user/widgets/app_bar_title_message.dart';
 import 'package:user/widgets/order_history_card.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user/widgets/order_history_card_photo.dart';
 
 class OrderHistoryScreen extends BaseRoute {
   final bool disableWillpop;
@@ -70,7 +71,7 @@ class _OrderHistoryScreenState extends BaseRouteState {
                     (orderController.activeOrderList?.length ?? 0) == 0
                 ? _emptyOrderListWidget()
                 : DefaultTabController(
-                    length: 2,
+                    length: 3,
                     child: Column(children: [
                       TabBar(
                         tabs: [
@@ -79,7 +80,10 @@ class _OrderHistoryScreenState extends BaseRouteState {
                                   AppLocalizations.of(context)!.lbl_all_orders),
                           Tab(
                               text:
-                                  AppLocalizations.of(context)!.lbl_past_orders)
+                                  AppLocalizations.of(context)!.lbl_past_orders),
+                          Tab(
+                              text:
+                              "Photo Order")
                         ],
                         isScrollable: false,
                         onTap: (int index) {
@@ -103,7 +107,9 @@ class _OrderHistoryScreenState extends BaseRouteState {
                               return TabBarView(
                                 children: [
                                   AllOrderHistoryList(),
-                                  PastOrderHistoryList()
+
+                                  PastOrderHistoryList(),
+                                  PhotoOrderHistoryList(),
                                 ],
                                 physics: const NeverScrollableScrollPhysics(),
                               );
@@ -275,7 +281,66 @@ final class AllOrderHistoryList extends StatelessWidget {
     }
   }
 }
+final class PhotoOrderHistoryList extends StatelessWidget {
+  late final List<Order> _orders;
+  final OrderController orderController = Get.find();
+  late final FirebaseAnalytics? analytics;
+  final FirebaseAnalyticsObserver? observer;
+  final scrollController = ScrollController();
 
+  PhotoOrderHistoryList({this.analytics, this.observer, super.key}) {
+    _orders = orderController.activeOrderList!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        await _onRefresh();
+      },
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: _orders.length,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, i) {
+                  return Column(
+                    children: [
+                      OrderHistoryCardPhoto(
+                        analytics: this.analytics,
+                        observer: this.observer,
+                        order: _orders[i],
+                        index: i,
+                      ),
+                      SizedBox(height: 8),
+                    ],
+                  );
+                },
+              ),
+              orderController.isMoreDataLoaded.value == true
+                  ? SizedBox(child: CircularProgressIndicator())
+                  : SizedBox()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _onRefresh() async {
+    try {
+      orderController.getOrderHistory();
+    } catch (e) {
+      print("Exception - order_history_screen.dart - _onRefresh():" +
+          e.toString());
+    }
+  }
+}
 final class PastOrderHistoryList extends StatelessWidget {
   late final List<Order> _orders;
   final OrderController orderController = Get.find();

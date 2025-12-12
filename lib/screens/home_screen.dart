@@ -135,32 +135,52 @@ class _HomeScreenState extends BaseRouteState {
                 controller.changeTabIndex(value);
               },
             ),
-            floatingActionButton: FloatingActionButton(
-                child: Icon(
-                  Icons.add_shopping_cart_outlined,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+            floatingActionButton: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                FloatingActionButton(
+                  child: const Icon(Icons.add_shopping_cart_outlined),
+                  onPressed: () {
+                    if (global.currentUser?.id == null) {
+                      Get.to(() => LoginScreen(
+                          analytics: widget.analytics, observer: widget.observer));
+                    } else {
+                      Get.to(() => CartScreen(
+                          analytics: widget.analytics, observer: widget.observer));
+                    }
+                  },
                 ),
-                onPressed: () {
-                  if (global.currentUser?.id == null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer),
-                      ),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CartScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer),
-                      ),
-                    );
-                  }
-                }),
+
+                // BADGE POSITION
+                Positioned(
+                  right: -2,
+                  top: -2,
+                  child: GetBuilder<CartController>(
+                    builder: (controller) {
+                      return controller.cartItemsList == null ||
+                          controller.cartItemsList!.cartList.isEmpty
+                          ? SizedBox()
+                          : Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          "${global.cartCount}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
           );
@@ -172,7 +192,8 @@ class _HomeScreenState extends BaseRouteState {
   @override
   void initState() {
     super.initState();
-    print('uID ${global.currentUser!.id}');
+
+    cartController.getCartList();
     if (screenId == 1) {
       homeController.changeTabIndex(4);
     } else if (screenId == 2) {

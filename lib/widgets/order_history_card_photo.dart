@@ -16,13 +16,13 @@ import 'package:user/screens/rating_review_screen.dart';
 import 'package:user/utils/string_formatter.dart';
 import 'package:user/widgets/toastfile.dart';
 
-class OrderHistoryCard extends StatefulWidget {
+class OrderHistoryCardPhoto extends StatefulWidget {
   final Order? order;
   final dynamic analytics;
   final dynamic observer;
   final int? index;
 
-  OrderHistoryCard({this.order, this.analytics, this.observer, this.index})
+  OrderHistoryCardPhoto({this.order, this.analytics, this.observer, this.index})
       : super();
 
   @override
@@ -30,7 +30,7 @@ class OrderHistoryCard extends StatefulWidget {
       order: order, analytics: analytics, observer: observer, index: index);
 }
 
-class _OrderHistoryCardState extends State<OrderHistoryCard> {
+class _OrderHistoryCardState extends State<OrderHistoryCardPhoto> {
   Order? order;
   dynamic analytics;
   dynamic observer;
@@ -81,8 +81,8 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
         },
         child:
 
-       ! order!.isPhotoOrder?
-        Card(
+        order!.isPhotoOrder
+            ? Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Color(0xffF4F4F4), width: 1.2),
@@ -95,19 +95,10 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-
+                /// ===== Status Label =====
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      formatDate(order!.orderDate.toString()),
-                      style: textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
@@ -126,123 +117,36 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                   ],
                 ),
 
-                const SizedBox(height: 12),
-                const Divider(height: 1, color: Color(0xffE0E0E0)),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
 
                 /// ===== Order Title =====
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            order!.isPhotoOrder
-                                ? "Photo Order"
-                                : StringFormatter.convertListItemsToString(_productName)!,
-                            style: textTheme.titleMedium!.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                              color: Colors.black87,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Order ID: ${order!.cartid ?? order!.orderid ?? "-"}",
-                            style: textTheme.bodySmall!.copyWith(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                Text(
+                  "Photo Order",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
                 ),
 
                 const SizedBox(height: 12),
                 const Divider(height: 1, color: Color(0xffE0E0E0)),
 
-                /// ===== Product List or Photo =====
-                order!.isPhotoOrder
-                    ? Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        global.appInfo!.imageUrl! + order!.listPhoto!,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.broken_image, size: 80),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Uploaded photo order",
-                      style: textTheme.bodySmall!
-                          .copyWith(color: Colors.black54),
-                    ),
-                  ],
-                )
-                    : Column(
-                  children: order!.productList.map((product) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Image.network(
-                              global.appInfo!.imageUrl! + product.varientImage!,
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.image_not_supported, size: 40),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  product.productName ?? "",
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "${global.appInfo!.currencySign} ${product.price.toString()}",
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87),
-                              ),
-                              Text(
-                                "${product.qty.toString()} ${product.unit ?? ""}",
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                /// ===== Uploaded Photo =====
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    "${global.appInfo!.imageUrl!}${order!.listPhoto!}",
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image, size: 80),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Uploaded photo order",
+                  style: textTheme.bodySmall!.copyWith(color: Colors.black54),
                 ),
 
                 const Divider(height: 20, color: Color(0xffE0E0E0)),
@@ -250,48 +154,19 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
                 /// ===== Footer =====
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: const [
                     Text(
-                      order!.isPhotoOrder
-                          ? "Pending Review"
-                          : "${global.appInfo!.currencySign} ${(order!.remPrice! + order!.paidByWallet!).toStringAsFixed(2)}",
-                      style: textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      "Pending Review",
+                      style: TextStyle(fontWeight: FontWeight.w500),
                     ),
-
-
-                    !order!.isPhotoOrder?
-                    OutlinedButton(
-                      onPressed: () {
-                        if (order!.isPhotoOrder) {
-
-                        } else {
-                          Get.to(() => OrderSummaryScreen(
-                            analytics: widget.analytics,
-                            observer: widget.observer,
-                            order: order,
-                            orderController: orderController,
-                          ));
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.green),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      child: const Text(
-                        "View detail",
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ):SizedBox.shrink(),
                   ],
                 ),
               ],
             ),
           ),
-        ):SizedBox.shrink(),
+        )
+            : const SizedBox.shrink(), // 👈 nothing shows if not photo order
+
       ),
     );
 
@@ -539,7 +414,7 @@ class _OrderHistoryCardState extends State<OrderHistoryCard> {
 
     try {
       final date = DateTime.parse(dateStr);
-      return "${DateFormat('MMM d y').format(date)}";
+      return "${DateFormat('MMM d').format(date)} • ${DateFormat('h:mm a').format(date)}";
     } catch (e) {
       return "No Date";
     }

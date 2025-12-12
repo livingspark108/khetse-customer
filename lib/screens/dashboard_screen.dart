@@ -13,6 +13,7 @@ import 'package:user/models/homeScreenDataModel.dart';
 import 'package:user/screens/login_screen.dart';
 import 'package:user/screens/notification_screen.dart';
 import 'package:user/screens/product_description_screen.dart';
+import 'package:user/screens/product_request_screen.dart';
 import 'package:user/screens/productlist_screen.dart';
 import 'package:user/screens/search_results_screen.dart';
 import 'package:user/screens/search_screen.dart';
@@ -167,6 +168,17 @@ class _DashboardScreenState extends BaseRouteState {
                                       ),
                                     ),
                                   ),
+                                ),
+                                IconButton(
+                                  visualDensity: VisualDensity(horizontal: -4),
+                                  icon: Icon(
+                                    Icons.article,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () => Get.to(() => ProductRequestScreen(
+                                    analytics: widget.analytics,
+                                    observer: widget.observer,
+                                  )),
                                 ),
                                 global.currentUser?.id != null
                                     ?

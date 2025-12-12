@@ -536,9 +536,18 @@ class _ProductDescriptionScreenState extends BaseRouteState {
     try {
       if (screenId == 0) {
         await _getBannerProductDetail();
-      } else if (productDetail != null) {
+      }
+
+     else if(screenId==4){
+
+        await _getProductDetail();
+      }
+      else if (productDetail != null) {
         _productDetail = productDetail;
-      } else {
+      }
+
+
+      else {
         await _getProductDetail();
       }
       _isDataLoaded = true;

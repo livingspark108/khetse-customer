@@ -3,6 +3,8 @@ import 'package:user/models/tagsModel.dart';
 import 'package:user/models/varientModel.dart';
 
 class Product {
+  String? itemStatus;
+
   int? pId;
   int? varientId;
   int? stock;
@@ -55,8 +57,10 @@ class Product {
   Product.fromJson(Map<String, dynamic> json) {
     try {
       pId = json['p_id'] != null ? int.parse(json['p_id'].toString()) : null;
+      itemStatus = json['item_status'] != null ? json['item_status'].toString() : null;
+
       varientId = json['varient_id'] != null ? int.parse(json['varient_id'].toString()) : null;
-      stock = json['stock'] != null ? int.parse(json['stock'].toString()) : null;
+      stock = json['stock'] != null ? int.parse(json['stock'].toString()) : 0;
       storeId = json['store_id'] != null ? int.parse(json['store_id'].toString()) : null;
       storeOrderId = json['store_order_id'] != null ? int.parse(json['store_order_id'].toString()) : null;
       mrp = json['mrp'] != null ? double.parse('${json['mrp']}') : null;

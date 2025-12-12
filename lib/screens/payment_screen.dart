@@ -201,9 +201,51 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                                               'wallet', 'wallet', null);
                                         } else if (screenId == 1 &&
                                             order != null) {
-                                          showOnlyLoaderDialog();
-                                          await _orderCheckOut(
-                                              'success', 'wallet', null, null);
+
+
+                                          final bool? confirm = await showDialog<bool>(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text(
+                                                "Confirm Payment",
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                              content: const Text("Are you sure you want to place this order with Wallet?"),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(context, false), // ❌ No
+                                                  child: const Text(
+                                                    "No",
+                                                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.green,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                  ),
+                                                  onPressed: () => Navigator.pop(context, true), // ✅ Yes
+                                                  child: const Text("Yes"),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+
+                                          // 🟢 Proceed only if user pressed "Yes"
+                                          if (confirm == true) {
+                                            showOnlyLoaderDialog();
+                                            await _orderCheckOut(
+                                                'success', 'wallet', null, null);
+                                          }
+
+
+
+
                                         }
                                       } else {
                                         totalAmount = totalAmount! -
@@ -232,38 +274,38 @@ class _PaymentGatewayScreenState extends BaseRouteState {
                             onTap: () async {
                               if (screenId == 1 && order != null) {
                                 // 🟢 Show confirmation dialog before checkout
-                                final bool? confirm = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text(
-                                      "Confirm Payment",
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    content: const Text("Are you sure you want to place this order with Cash on Delivery?"),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context, false), // ❌ No
-                                        child: const Text(
-                                          "No",
-                                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-                                        ),
+                                  final bool? confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text(
+                                        "Confirm Payment",
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(6),
+                                      content: const Text("Are you sure you want to place this order with Cash on Delivery?"),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, false), // ❌ No
+                                          child: const Text(
+                                            "No",
+                                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
                                           ),
                                         ),
-                                        onPressed: () => Navigator.pop(context, true), // ✅ Yes
-                                        child: const Text("Yes"),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                          ),
+                                          onPressed: () => Navigator.pop(context, true), // ✅ Yes
+                                          child: const Text("Yes"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
 
                                 // 🟢 Proceed only if user pressed "Yes"
                                 if (confirm == true) {

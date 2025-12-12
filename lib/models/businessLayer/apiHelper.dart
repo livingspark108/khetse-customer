@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -1686,32 +1686,38 @@ class APIHelper {
     try {
       Response response;
       var dio = Dio();
+
       var formData = FormData.fromMap({
         'store_id': global.nearStoreModel!.id,
-        'selected_date': selectedDate
+        'selected_date': DateFormat('yyyy-MM-dd').format(selectedDate!)
       });
 
-      response = await dio
-          .post('${global.baseUrl}timeslot',
-              data: formData,
-              options: Options(
-                headers: await global.getApiHeaders(true),
-              ))
-          .timeout(Duration(seconds: 60));
-      dynamic recordList;
-      print(response.data);
-      if (response.statusCode == 200 && response.data["status"] == '1') {
-        recordList = List<TimeSlot>.from(
-            response.data["data"].map((x) => TimeSlot.fromJson(x)));
-      } else {
-        recordList = null;
+      response = await dio.post(
+        '${global.baseUrl}timeslot',
+        data: formData,
+        options: Options(headers: await global.getApiHeaders(true)),
+      );
+
+      print("API RESPONSE: ${response.data}");
+
+      if (response.statusCode == 200) {
+        return {
+          "status": response.data["status"].toString(),
+          "message": response.data["message"] ?? "",
+          "data": (response.data["data"] as List)
+              .map((x) => TimeSlot.fromJson(x))
+              .toList()
+        };
       }
-      return getDioResult(response, recordList);
+
+      return {"status": "0", "message": "Failed", "data": []};
     } catch (e) {
-      //throw Exception(e.toString());
-      print("Exception - getTimeSlot(): " + e.toString());
+      print("Exception - getTimeSlot(): $e");
+      return {"status": "0", "message": e.toString(), "data": []};
     }
   }
+
+
 
   Future<dynamic> getTopSellingProducts(
       int page, ProductFilter productFilter) async {
