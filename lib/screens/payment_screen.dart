@@ -775,13 +775,13 @@ class _PaymentGatewayScreenState extends BaseRouteState {
           if (result != null) {
             if (result.status == "1") {
               _getAppInfo();
-              final LocalNotificationService _localNotification = LocalNotificationService();
+              /*final LocalNotificationService _localNotification = LocalNotificationService();
               _localNotification.init(); // initialize notifications
 
               _localNotification.sendNotification(
                 title: "Order Placed",
                 subtitle: "Your Order has been placed",
-              );
+              );*/
               hideLoader();
               // if (_isWallet == 1) {
               //   if (global.userProfileController.currentUser.wallet >= totalAmount) {

@@ -206,6 +206,36 @@ class APIHelper {
       print("Exception - addToCart(): $stacktrace " + e.toString());
     }
   }
+  Future<dynamic> saveFcmToken(String fcmToken) async {
+    try {
+      Response response;
+      var dio = Dio();
+
+      var formData = FormData.fromMap({
+        'user_id': global.currentUser!.id,
+        'fcm_token': fcmToken,
+      });
+
+      response = await dio.post(
+        '${global.baseUrl}save-fcm-token',
+        data: formData,
+        options: Options(
+          headers: await global.getApiHeaders(true),
+        ),
+      );
+
+      dynamic record;
+      if (response.statusCode == 200 && response.data['status'] == '1') {
+        record = true;
+      } else {
+        record = null;
+      }
+
+      return getDioResult(response, record);
+    } catch (e) {
+      print("Exception - saveFcmToken(): ${e.toString()}");
+    }
+  }
 
   Future<dynamic> addWishListToCart() async {
     try {
@@ -264,6 +294,7 @@ class APIHelper {
       print("Exception - addWishListToCart(): " + e.toString());
     }
   }
+
   Future<dynamic> appAboutUs() async {
     try {
       Response response;

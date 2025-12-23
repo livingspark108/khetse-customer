@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -461,6 +462,15 @@ class _DashboardScreenState extends BaseRouteState {
         dynamic result = await apiHelper.getHomeScreenData();
         if (result != null) {
           if (result.status == "1") {
+
+
+            String? token = await FirebaseMessaging.instance.getToken();
+            if (token != null) {
+
+
+              print("Token"+token);
+              await apiHelper.saveFcmToken(token);
+            }
             return result.data;
           }
         }

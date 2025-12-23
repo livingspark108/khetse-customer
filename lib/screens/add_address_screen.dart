@@ -9,6 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
 import 'package:user/models/businessLayer/global.dart' as global;
+import 'package:user/models/cityModel.dart';
 import 'package:user/models/societyModel.dart';
 import 'package:user/screens/placesearch.dart';
 import 'package:user/widgets/bottom_button.dart';
@@ -50,10 +51,17 @@ class _AddAddressScreenState extends BaseRouteState {
   Address? address;
   int? screenId;
   bool _isDataLoaded = false;
+  var _cSearchCity = new TextEditingController();
+  City? _selectedCity = new City();
+ // Society? _selectedSociety = new Society();
   bool _mapDraggable = true;
-  LatLng? _selectedLatLng;
+  List<City>? _citiesList = [];
   List<Society>? _societyList = [];
+  List<City> _tCityList = [];
   List<Society> _tSocietyList = [];
+  LatLng? _selectedLatLng;
+/*  List<Society>? _societyList = [];
+  List<Society> _tSocietyList = [];*/
   var _fSearchSociety = new FocusNode();
   double? latitude,longitute;
   GoogleMapController? _controller;
@@ -174,25 +182,7 @@ class _AddAddressScreenState extends BaseRouteState {
                               },
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                            margin: EdgeInsets.only(top: 15, left: 16, right: 16),
-                            padding: EdgeInsets.only(),
-                            child: MyTextField(
-                              Key('24'),
-                              controller: _cSociety,
-                              focusNode: _fSociety,
-                              readOnly: true,
-                              maxLines: 3,
-                              hintText: '${AppLocalizations.of(context)!.lbl_society} ',
-                              onFieldSubmitted: (val) {
-                                FocusScope.of(context).requestFocus(_fCity);
-                              },
-                              onTap: () {
-                                _showSocietySelectDialog();
-                              },
-                            ),
-                          ),
+
 
                        Padding(padding: EdgeInsets.all(20),
                        child:
@@ -306,7 +296,7 @@ class _AddAddressScreenState extends BaseRouteState {
                                     focusNode: _fCity,
                                     hintText: '${AppLocalizations.of(context)!.lbl_city} ',
                                     readOnly: true,
-                                    onFieldSubmitted: (val) {
+                                    onTap: _showCitySelectDialog,                                    onFieldSubmitted: (val) {
                                       FocusScope.of(context).requestFocus(_fState);
                                     },
                                   ),
@@ -330,6 +320,25 @@ class _AddAddressScreenState extends BaseRouteState {
                                 ),
                               ),
                             ],
+                          ),
+                          Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(0.0))),
+                            margin: EdgeInsets.only(top: 15, left: 16, right: 16),
+                            padding: EdgeInsets.only(),
+                            child: MyTextField(
+                              Key('24'),
+                              controller: _cSociety,
+                              focusNode: _fSociety,
+                              readOnly: true,
+                              maxLines: 3,
+                              hintText: '${AppLocalizations.of(context)!.lbl_society} ',
+                              onFieldSubmitted: (val) {
+                                FocusScope.of(context).requestFocus(_fCity);
+                              },
+                              onTap: () {
+                                _showSocietySelectDialog();
+                              },
+                            ),
                           ),
                           ListTile(
                             title: Text(
@@ -507,13 +516,18 @@ class _AddAddressScreenState extends BaseRouteState {
 
   _init() async {
     try {
+      await _getCities();
       await _getSocietyList();
+      if (global.userProfileController.currentUser != null && global.userProfileController.addressList.length > 0) {
+        await _getSociety(global.currentUser!.userCity, false);
+
+      }
       if (address!.addressId != null) {
         _fillData();
       } else {
         // print("USER CITY N AREA${global.currentUser.userCity}, ${global.currentUser.userArea}");
         // _cCity.text = global.userProfileController.currentUser.userCity.
-        _cCity.text = global.nearStoreModel!.city!;
+       // _cCity.text = global.nearStoreModel!.city!;
       }
       _isDataLoaded = true;
       setState(() {});
@@ -521,7 +535,160 @@ class _AddAddressScreenState extends BaseRouteState {
       print("Exception - add_address_screen.dart -  _init():" + e.toString());
     }
   }
+  void _showCitySelectDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black38,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, dialogSetState) {
+            return AlertDialog(
+              elevation: 2,
+              backgroundColor:
+              Theme.of(context).inputDecorationTheme.fillColor,
 
+              title: Text(
+                AppLocalizations.of(context)!.hnt_select_city,
+                textAlign: TextAlign.center,
+              ),
+
+              content: SizedBox(
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Column(
+                  children: [
+
+                    /// 🔍 SEARCH
+                    TextFormField(
+                      controller: _cSearchCity,
+                      decoration: InputDecoration(
+                        hintText:
+                        AppLocalizations.of(context)!.hnt_search_city,
+                        contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      onChanged: (val) {
+                        dialogSetState(() {
+                          _citiesList!.clear();
+                          if (val.length > 2) {
+                            _citiesList!.addAll(
+                              _tCityList.where(
+                                    (e) => e.cityName!
+                                    .toLowerCase()
+                                    .contains(val.toLowerCase()),
+                              ),
+                            );
+                          } else {
+                            _citiesList!.addAll(_tCityList);
+                          }
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    /// 📋 CITY LIST
+                    Expanded(
+                      child: _citiesList!.isNotEmpty
+                          ? ListView.builder(
+                        itemCount: _citiesList!.length,
+                        itemBuilder: (context, index) {
+                          final city = _citiesList![index];
+                          return RadioListTile(
+                            title: Text(city.cityName!),
+                            value: city,
+                            groupValue: _selectedCity,
+                            onChanged: (val) async {
+                              dialogSetState(() {
+                                _selectedCity = val;
+                              });
+
+                              _cCity.text = city.cityName!;
+                              _cSociety.clear();
+                              _selectedSociety = null;
+
+                              await _getSociety(city.cityId, true);
+
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      )
+                          : Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.txt_no_city,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child:
+                  Text(AppLocalizations.of(context)!.btn_close),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  _getCities() async {
+    try {
+      bool isConnected = await br.checkConnectivity();
+      if (isConnected) {
+        await apiHelper.getCity().then((result) {
+          if (result != null && result.statusCode == 200 && result.status == '1') {
+            _citiesList = result.data;
+            _tCityList.addAll(_citiesList!);
+          } else {
+            _citiesList = [];
+          }
+        });
+      } else {
+        showNetworkErrorSnackBar(_scaffoldKey);
+      }
+    } catch (e) {
+      print("Exception - profile_edit_screen.dart - _getCities():" + e.toString());
+    }
+  }
+
+  _getSociety(int? cityId, bool openDialog) async {
+    try {
+      bool isConnected = await br.checkConnectivity();
+      if (isConnected) {
+        await apiHelper.getSociety(cityId).then((result) {
+          if (result != null && result.statusCode == 200 && result.status == '1') {
+            _societyList = result.data;
+
+            if (openDialog) {
+              _tSocietyList.addAll(_societyList!);
+              Navigator.of(context).pop();
+              _cSearchCity.clear();
+              _showSocietySelectDialog();
+            }
+
+            setState(() {});
+          } else {
+            Navigator.of(context).pop();
+            _cSearchCity.clear();
+            _societyList = [];
+
+            showSnackBar(key: _scaffoldKey, snackBarMessage: result.message);
+          }
+        });
+      } else {
+        showNetworkErrorSnackBar(_scaffoldKey);
+      }
+    } catch (e) {
+      print("Exception - profile_edit_screen.dart - _getSociety():" + e.toString());
+    }
+  }
   _save() async {
     try {
       if (_cName.text.isNotEmpty && _cPhone.text.isNotEmpty && _cPhone.text.length == global.appInfo!.phoneNumberLength && _cPincode.text.isNotEmpty && _cAddress.text.isNotEmpty && _cLandmark.text.isNotEmpty && _cSociety.text.isNotEmpty && _cCity.text.isNotEmpty) {

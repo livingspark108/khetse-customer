@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -20,6 +21,7 @@ class _CustomPlaceAutocompleteState extends State<CustomPlaceAutocomplete> {
   List<dynamic> _placePredictions = [];
   Timer? _debounce;
   late FocusNode _focusNode;
+  LatLng? _currentLatLng;
 
   final String apiKey = "AIzaSyBdt6B5LE9e7jIrFPG0qmsCNFd9bDiWoAc";
 
@@ -35,10 +37,34 @@ class _CustomPlaceAutocompleteState extends State<CustomPlaceAutocomplete> {
       }
     });
   }
+  Future<void> _getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        _currentLatLng = LatLng(pos.latitude, pos.longitude);
+      });
+    }
+  }
 
   Future<void> _fetchSuggestions(String input) async {
+    if (_currentLatLng == null) return;
+
     final url =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=geocode&components=country:in&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+        '?input=$input'
+        '&location=${_currentLatLng!.latitude},${_currentLatLng!.longitude}'
+        '&radius=20000'
+        '&strictbounds=false'
+        '&components=country:in'
+        '&key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
 
@@ -49,14 +75,8 @@ class _CustomPlaceAutocompleteState extends State<CustomPlaceAutocomplete> {
           _placePredictions = json['predictions'];
         });
       } else {
-        setState(() {
-          _placePredictions = [];
-        });
+        setState(() => _placePredictions = []);
       }
-    } else {
-      setState(() {
-        _placePredictions = [];
-      });
     }
   }
 
@@ -95,6 +115,7 @@ class _CustomPlaceAutocompleteState extends State<CustomPlaceAutocomplete> {
       }
     });
     _controller.addListener(_onSearchChanged);
+    _getCurrentLocation();
   }
 
   @override

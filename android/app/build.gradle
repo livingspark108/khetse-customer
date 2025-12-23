@@ -29,7 +29,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 35
-    namespace "com.tecmanic.gogrocer.user"
+    namespace "com.khetsec"
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -48,7 +48,7 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.tecmanic.gogrocer.user"
+        applicationId "com.khetsec"
         minSdkVersion 24
         targetSdkVersion 35
         versionCode 1

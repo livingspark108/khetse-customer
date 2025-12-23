@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "705090576020",
-    "project_id": "khet-se",
-    "storage_bucket": "khet-se.firebasestorage.app"
+    "project_number": "42499581272",
+    "project_id": "khetse-806c1",
+    "storage_bucket": "khetse-806c1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:705090576020:android:c8acd286932747d633de81",
+        "mobilesdk_app_id": "1:42499581272:android:1706db98e1c8d52247b12d",
         "android_client_info": {
-          "package_name": "com.tecmanic.gogrocer.user"
+          "package_name": "com.khetsec"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "705090576020-frakljovtjkl6ed3ue3il3num5bdoge2.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.tecmanic.gogrocer.user",
-            "certificate_hash": "1e03d59236b9adb656c270474345d524c2a96d82"
-          }
-        },
-        {
-          "client_id": "705090576020-dkpv9sllqg7qpr9p6gkidla1akts1794.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCNzNI4KCoaTGaccvyiA-YzBVOtW2S5gII"
+          "current_key": "AIzaSyCyP97kZmPSuF756524BCD1QfHlBd7cB5s"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "705090576020-dkpv9sllqg7qpr9p6gkidla1akts1794.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

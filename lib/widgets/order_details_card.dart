@@ -191,7 +191,7 @@ class _OrderDetailsCardState extends State<OrderDetailsCard> {
               ),
             ),
 
-            // PRICE DETAILS
+
             _priceRow(
               context,
               AppLocalizations.of(context)!.txt_total_price,

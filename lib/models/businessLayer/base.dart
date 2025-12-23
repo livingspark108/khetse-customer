@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -384,6 +385,14 @@ class BaseState extends State<Base> with TickerProviderStateMixin, WidgetsBindin
     await apiHelper.sendotp(phoneNumber).then((result) async {
       if (result != null) {
         if (result.status == "1") {
+          late APIHelper apiHelper;
+
+          String? token = await FirebaseMessaging.instance.getToken();
+          if (token != null) {
+            print("FCM Token"+token);
+            apiHelper = new APIHelper();
+            await apiHelper.saveFcmToken(token);
+          }
 showToast("OTP sent check Whatsapp No");
           Navigator.of(context).push(
               MaterialPageRoute(

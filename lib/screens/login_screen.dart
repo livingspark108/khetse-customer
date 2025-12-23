@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -398,6 +399,8 @@ class _LoginScreenState extends BaseRouteState {
 
               print("MESSAGE = ${result.message}");
 
+
+
               // registration required
               // if(result.message == "go to register details page") {
               //   Get.to(() => SignUpScreen(
@@ -413,7 +416,13 @@ class _LoginScreenState extends BaseRouteState {
               //   ));
               // }
               if (result.status == "1") {
+                late APIHelper apiHelper;
 
+                String? token = await FirebaseMessaging.instance.getToken();
+                if (token != null) {
+                  apiHelper = new APIHelper();
+                  await apiHelper.saveFcmToken(token);
+                }
                   // if firebase is enabled then only we need to send OTP through firebase.
                   await sendOTP(_cPhone.text.trim());
 
