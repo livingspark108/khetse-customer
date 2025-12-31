@@ -720,7 +720,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     var options;
 
     options = {
-      'key': "rzp_live_U6wvXUbUnHcYeY",
+      'key': "rzp_live_oXy7u4du0pMm9Y",
      //  'key': "rzp_test_WswwkR1HmzuuBQ",
       'amount': _amountInPaise(totalAmount!),
       'name': "${global.currentUser!.name}",
