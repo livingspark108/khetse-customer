@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:user/l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_number/mobile_number.dart';

@@ -5,7 +5,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:user/l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:user/models/addressModel.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';

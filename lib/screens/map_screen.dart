@@ -4,12 +4,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:user/l10n/app_localizations.dart';
 import 'package:flutter_polyline_points_plus/flutter_polyline_points_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:timelines/timelines.dart';
+import 'package:timeline_tile/timeline_tile.dart';  // Temporarily disabled
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:user/controllers/order_controller.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';
@@ -213,58 +213,55 @@ class _MapScreenState extends BaseRouteState {
               // Timeline progress bar
               Container(
                 height: 130,
-                child: Timeline.tileBuilder(
-                  theme: TimelineThemeData(
-                    direction: Axis.horizontal,
-                    connectorTheme:
-                    const ConnectorThemeData(thickness: 5.0),
-                  ),
-                  builder: TimelineTileBuilder.connected(
-                    connectionDirection: ConnectionDirection.before,
-                    itemExtentBuilder: (_, __) =>
-                    MediaQuery.of(context).size.width / _processes.length,
-                    itemCount: _processes.length,
-                    contentsBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          _processes[index],
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(color: getColor(index)),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _processes.length,
+                  itemBuilder: (context, index) {
+                    final isFirst = index == 0;
+                    final isLast = index == _processes.length - 1;
+                    final isCompleted = index < _processIndex;
+                    final isCurrent = index == _processIndex;
+                    
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width / _processes.length,
+                      child: TimelineTile(
+                        axis: TimelineAxis.horizontal,
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.1,
+                        isFirst: isFirst,
+                        isLast: isLast,
+                        beforeLineStyle: LineStyle(
+                          color: (isCompleted || isCurrent) ? completeColor : todoColor,
+                          thickness: 5.0,
                         ),
-                      );
-                    },
-                    indicatorBuilder: (_, index) {
-                      Color color = getColor(index);
-                      Widget? child;
-
-                      if (index == _processIndex) {
-                        child = const Icon(Icons.check,
-                            color: Colors.white, size: 16);
-                      } else if (index < _processIndex) {
-                        child = const Icon(Icons.check,
-                            color: Colors.white, size: 16);
-                      }
-
-                      return DotIndicator(
-                        size: 28,
-                        color: color,
-                        child: child,
-                      );
-                    },
-                    connectorBuilder: (_, index, __) {
-                      if (index < _processIndex) {
-                        return SolidLineConnector(color: completeColor);
-                      } else if (index == _processIndex) {
-                        return SolidLineConnector(color: inProgressColor);
-                      } else {
-                        return SolidLineConnector(color: todoColor);
-                      }
-                    },
-                  ),
+                        afterLineStyle: LineStyle(
+                          color: isCompleted ? completeColor : (isCurrent ? inProgressColor : todoColor),
+                          thickness: 5.0,
+                        ),
+                        indicatorStyle: IndicatorStyle(
+                          width: 28,
+                          height: 28,
+                          color: getColor(index),
+                          iconStyle: (isCompleted || isCurrent) ? IconStyle(
+                            color: Colors.white,
+                            iconData: Icons.check,
+                            fontSize: 16,
+                          ) : null,
+                        ),
+                        endChild: Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            _processes[index],
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: getColor(index)),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
 

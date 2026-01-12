@@ -30,10 +30,10 @@ dependencies:
   get: ^4.6.5
   percent_indicator: ^4.2.2
   shared_preferences: ^2.0.15
-  firebase_analytics: ^10.1.1
-  firebase_core: ^2.5.0
+  firebase_analytics: ^11.3.3
+  firebase_core: ^3.6.0
   google_sign_in: ^6.1.0
-  firebase_auth: ^4.7.2
+  firebase_auth: ^5.3.1
   connectivity_plus: ^4.0.2
   #  flutter_facebook_auth: ^3.5.3
   #  flutter_facebook_login: ^3.0.0
@@ -51,12 +51,11 @@ dependencies:
   cached_network_image: ^3.2.1
   shimmer: ^3.0.0
   razorpay_flutter: ^1.3.4
-  flutter_paystack: ^1.0.7
+  # flutter_paystack: ^1.0.7  # Temporarily disabled - incompatible with current Flutter version
   carousel_slider: ^5.0.0
   dots_indicator: ^3.0.0
-  firebase_messaging: ^14.2.2
-
-  flutter_local_notifications: ^15.1.0+1
+  firebase_messaging: ^15.1.3
+  flutter_local_notifications: ^15.1.3
   flutter_html: ^3.0.0-beta.2
   url_launcher: ^6.1.2
   google_maps_flutter: ^2.1.5
@@ -69,11 +68,10 @@ dependencies:
   photo_view: ^0.14.0
   flutter_polyline_points_plus: ^3.0.0
   badges: ^3.0.2
-
   sign_in_with_apple: ^7.0.1
-  cloud_firestore: ^4.8.4
-  firebase_storage: ^11.0.11
-  timelines: ^0.1.0
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.2
+  timeline_tile: ^2.0.0  # Alternative to timelines package
   readmore: 2.2.0
   marquee: ^2.2.2
   flutter_speed_dial: ^7.0.0
@@ -116,11 +114,13 @@ flutter:
       fonts:
         - asset: assets/fonts/ProductSans-Regular.ttf
 
-  # Localization (must be under flutter:)
+# Localization configuration at root level
 l10n:
-    arb-dir: lib/l10n
-    template-arb-file: app_en.arb
-    output-localization-file: app_localizations.dart
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: app_localizations.dart
+  output-dir: lib/generated/l10n
+  synthetic-package: false
 
 
 

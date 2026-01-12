@@ -65,7 +65,7 @@ class BaseRouteState extends BaseState with RouteAware {
     if(widget.observer != null) {
       await widget.observer!.analytics.logEvent(
         name: widget.routeName!,
-        parameters: <String, dynamic>{},
+        parameters: <String, Object>{},
       );
     }
   }

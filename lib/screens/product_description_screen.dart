@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:user/constants/color_constants.dart';
 import 'package:user/controllers/cart_controller.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:user/l10n/app_localizations.dart';
 
 import 'package:user/models/addtocartmessagestatus.dart';
 import 'package:user/models/businessLayer/baseRoute.dart';

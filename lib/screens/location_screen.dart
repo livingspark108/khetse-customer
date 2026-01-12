@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:user/l10n/app_localizations.dart';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart' as autoCmplt;
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';

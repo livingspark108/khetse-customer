@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:user/l10n/app_localizations.dart';
+// import 'package:flutter_paystack/flutter_paystack.dart';  // Temporarily disabled
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:http/http.dart';
@@ -57,7 +57,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
 
   late Razorpay _razorpay;
   bool _isDataLoaded = false;
-  var payPlugin = PaystackPlugin();
+  // var payPlugin = PaystackPlugin(); // Disabled due to package compatibility
   TextEditingController _cCardNumber = new TextEditingController();
   TextEditingController _cExpiry = new TextEditingController();
   TextEditingController _cCvv = new TextEditingController();
@@ -66,7 +66,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
   int? _month;
   int? _year;
   String? number;
-  CardType? cardType;
+  // CardType? cardType; // Disabled due to package compatibility
   int _isWallet = 0;
   final _formKey = new GlobalKey<FormState>();
   bool _autovalidate = false;
@@ -741,6 +741,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
   }
 
   void payStack(String? key) async {
+    /*
+    // Disabled due to flutter_paystack package compatibility issues
     try {
       payPlugin
           .initialize(
@@ -756,6 +758,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       print("Exception - paymentGatewaysScreen.dart - payStatck(): " +
           e.toString());
     }
+    */
   }
 
   _orderCheckOut(String paymentStatus, String paymentMethod, String? paymentId,
@@ -1282,6 +1285,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
         });
   }
 
+  /*
+  // Disabled due to flutter_paystack package compatibility issues
   _chargeCard(Charge charge) async {
     try {
       payPlugin.chargeCard(context, charge: charge).then((value) async {
@@ -1326,7 +1331,10 @@ class _PaymentGatewayScreenState extends BaseRouteState {
           e.toString());
     }
   }
+  */
 
+  /*
+  // Disabled due to flutter_paystack package compatibility issues  
   PaymentCard _getCardFromUI() {
     return PaymentCard(
       number: _cCardNumber.text,
@@ -1335,6 +1343,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
       expiryYear: _year,
     );
   }
+  */
 
   Future _getPaymentGateways() async {
     try {
@@ -1530,6 +1539,8 @@ class _PaymentGatewayScreenState extends BaseRouteState {
     }
   }
 
+  /*
+  // Disabled due to flutter_paystack package compatibility issues
   _startAfreshCharge(int price) async {
     try {
       Charge charge = Charge()
@@ -1545,6 +1556,7 @@ class _PaymentGatewayScreenState extends BaseRouteState {
           e.toString());
     }
   }
+  */
 
   _tryAgainDialog(Function onClickAction) {
     try {
